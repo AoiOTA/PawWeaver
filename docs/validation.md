@@ -83,6 +83,16 @@ TCP 误差均值 `0.240611 m`、最大 `0.619186 m`、最后一步环境均值 `
 
 `diagnostic_geometry_fixed_groups_seed0/` 完成现有 4×16 PPO：4 次更新、Actor 最大变化 0.00160773，状态/损失/梯度全部有限，零饱和/跌倒；约 71.41 环境步/秒。runtime 包校验通过，`trained=false`，run metadata 与新 USD locator、26 个关系及当前 producer/source 哈希一致。4 项固定拓扑边界测试通过。站立尺度 `.2` 的常量动作候选继续只保存在 `diagnostic_standing_authority_seed0/`，未改变默认 `.1/.005` 诊断配置或原性能验收。
 
+## MuJoCo 实验初始化纠正及重验 · 2026-09-09
+
+`diagnostic_real_leg_pd/` 的真实腿阶跃暴露了 **artifact 脚本在编译后改 armature，却未刷新 `dof_invweight0`** 的问题；friction constraint 实际已启用，不能把旧差异归因于“MuJoCo 未启用摩擦”。同参数写入 XML 后编译与 `mj_setConst` 对照完全一致。生产 MJCF 路径在编译前写入参数，无需添加 runtime 刷新循环。原始失败及旧结果均保留；此前 `diagnostic_sdk_zero_armature_settling10s/`、`diagnostic_standing_authority_seed0/` 及 `.005` 系列较短重力/负载 artifact 的加载接触数值不能继续作为正确常量下的证据。以下重验**替代相应旧证据**，不静默改写历史；静态重力/支撑计算不受此次模型常量问题影响。
+
+`artifacts/runs/diagnostic_mujoco_constants_revalidation/` 保存编译输入 XML、实际按名 `dof_invweight0`、精确 spec/action、2 ms 状态/力矩/饱和轨迹，以及每步全部接触 wrench 和关节限位反力。仅纠正参数编译时机，无增益、几何、默认 spec 或动作调参。默认 `.1` 零动作 10 秒终态为 z **0.228777 m**、pitch **-13.355°**；末两秒最大关节速度 **0.02122 rad/s**、高度范围 **1.413 mm**，四足持续有力，但 RR/RL 大腿分别从 **7.868/7.942 s** 接地，不能称为稳定站立。精确重放旧 `.2` 腿尺度及保存的常量动作候选，终态 z **0.316169 m**、pitch **+0.304°**，末两秒最大速度 **0.001868 rad/s**、高度范围 **0.0226 mm**，全程仅四足接地。两例各 90,000 关节物理样本均有限、零饱和、未触发既有跌倒阈值；J2/J3 限位反力持续存在，最大软限位越界分别 **0.001450/0.001272 rad**，候选仍不是主动臂策略或硬件验收。
+
+与持久过滤后的既有 PhysX 零动作记录在 **0.02–2.00 s、100 个 50 Hz 样本**重叠比较，默认 spec 与初始高度一致：MuJoCo 2 秒 z **0.273441 m**，PhysX **0.281055 m**，最大高度差 **7.615 mm**、最大关节差 **0.06754 rad**，仍不等价。保存的 PhysX 记录没有姿态角，不重构 pitch 差；其足力为 net magnitude，MuJoCo 为 normal force。`.2` 候选与该 PhysX 零动作的对照仅作不同输入描述，不能当作引擎一致性检验。`overlap_comparison.json` 保存逐项误差与证据边界。
+
+同目录 `wrist/` 用正确编译常量重放 `.005`、固定基座、无重力的 0.2 秒 J4/J6 ±0.0001 rad 扰动：100 个 2 ms 步后分别为 **-7.175e-6 / +7.251e-6 rad**，无接触、零饱和、状态有限；线性阻尼步长界仍为 **12.888 ms**。这替代旧定量衰减证据，并不将 standard Piper 仿真 armature 升格为 Piper-H 实测值。修正后的无重力真实腿阶跃最大位置差为 hip **0.003172 rad**、thigh **0.004646 rad**、calf **0.011418 rad**；前两者满足既有软件参考，calf 不满足，剩余被动响应差异的具体求解器原因未闭合。全部重验只属工程证据，原任务性能验收不变。
+
 ## 尚未完成的验收
 
 - Piper-H 质量/限位/驱动版本，转接板/支撑/线缆，真实相机惯性及标定等 M0 参数。
