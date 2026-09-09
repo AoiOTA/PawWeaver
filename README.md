@@ -1,4 +1,4 @@
-# AS2 EDU + Piper-H 全身移动操作
+# PawWeaver · 四足机械臂全身协同
 
 世界系末端目标 → 单一 18 关节 Actor → 显式 PD。Isaac Lab/PhysX 训练，独立 MuJoCo 验证；后续将 DaBai DC1 的视觉测量接入相同控制器。
 
@@ -6,17 +6,20 @@
 
 项目正在按阶段实施。**还没有经过验收的训练策略。** 正式训练必须先通过 M0 硬件参数检查；公开模型中的占位力矩、质量差异和未核实的 DC1 参数不会自动成为已验证值。
 
-所有源码和本地依赖都位于本项目目录。`.deps/`、`.venv*/`、下载的模型、数据、日志、权重和生成产物不纳入 Git；版本与来源由配置及校验记录管理。
+工作区位于 `/home/lyb/pawweaver`。软件分别安装在 `pawweaver-train`、`pawweaver-runtime` 和 `pawweaver-data` 三个 Conda 环境；不修改 `base` 或原有 `isaacsim`。`.deps/`、下载的模型、数据、日志、权重和生成产物不纳入 Git；版本与来源由配置及校验记录管理。
 
 ## 资产与检查
 
 ```bash
-python -m pip install -e '.[test]'
-loco fetch-assets
-loco audit
+python scripts/setup_environments.py --role all
+conda activate pawweaver-runtime
+pawweaver fetch-assets
+pawweaver audit
 ```
 
 `audit` 将报告写入 `artifacts/audit/`；M0 未闭合时返回退出码 2。原始模型不会被修改。
+
+环境安装与兼容性修正详见 [环境说明](docs/environments.md)。
 
 ## 设计边界
 
@@ -31,4 +34,3 @@ loco audit
 ## 本地 Git
 
 按功能阶段进行本地提交，并在每次提交前运行相应检查。当前不配置远程仓库，也不执行 push。后续新增远程不会影响已有本地历史。
-

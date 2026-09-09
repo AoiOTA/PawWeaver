@@ -13,7 +13,7 @@ from pathlib import Path, PurePosixPath
 def _get(url: str) -> bytes:
     for attempt in range(4):
         try:
-            request = urllib.request.Request(url, headers={"User-Agent": "AS2-Piper-asset-audit/0.1"})
+            request = urllib.request.Request(url, headers={"User-Agent": "PawWeaver-asset-audit/0.1"})
             with urllib.request.urlopen(request, timeout=90) as response:
                 return response.read()
         except (urllib.error.URLError, TimeoutError):

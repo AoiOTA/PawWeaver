@@ -1,6 +1,7 @@
 .deps/
 .venv*/
 .cache/
+.cache-*.log
 assets/upstream/
 assets/generated/
 artifacts/
@@ -13,4 +14,3 @@ __pycache__/
 .ruff_cache/
 build/
 dist/
-

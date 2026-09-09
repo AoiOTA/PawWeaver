@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import json
-from loco_manipulation.assets.fetch import fetch_sources
-from loco_manipulation.paths import project_root
+from pawweaver.assets.fetch import fetch_sources
+from pawweaver.paths import project_root
 
 if __name__ == "__main__":
     root = project_root()

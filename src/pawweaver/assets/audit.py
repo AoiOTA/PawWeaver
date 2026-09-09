@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 import numpy as np
 
-from loco_manipulation.contracts import ActuatorSpec
+from pawweaver.contracts import ActuatorSpec
 
 
 def source_paths(upstream: Path) -> tuple[Path, Path, Path]:

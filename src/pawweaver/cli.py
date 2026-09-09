@@ -17,6 +17,11 @@ def main():
     audit.add_argument("--hardware", type=Path, default=root/"configs/hardware.json")
     audit.add_argument("--upstream", type=Path, default=root/"assets/upstream")
     audit.add_argument("--output", type=Path, default=root/"artifacts/audit")
+    build = commands.add_parser("build-assets", help="Generate canonical URDF and MJCF; default requires verified M0 parameters")
+    build.add_argument("--hardware", type=Path, default=root/"configs/hardware.json")
+    build.add_argument("--upstream", type=Path, default=root/"assets/upstream")
+    build.add_argument("--output", type=Path)
+    build.add_argument("--diagnostic", action="store_true", help="Source-only geometry preview; omits unresolved DC1/adapter/cables; cannot train")
     args = parser.parse_args()
     if args.command == "fetch-assets":
         from .assets.fetch import fetch_sources
@@ -30,8 +35,13 @@ def main():
                           "report": str(args.output / "hardware-audit.md")}, indent=2))
         if not result["ready_for_training"]:
             raise SystemExit(2)
+    elif args.command == "build-assets":
+        from .assets.build import build_assets
+        output = args.output or root/"assets/generated"/("diagnostic" if args.diagnostic else "verified")
+        result = build_assets(args.hardware,args.upstream,output,args.diagnostic)
+        print(json.dumps({"output":str(output),"ready_for_training":result["ready_for_training"],
+                          "mass_kg":result["mass_kg"],"asset_hash":result["asset_hash"]},indent=2))
 
 
 if __name__ == "__main__":
     main()
-

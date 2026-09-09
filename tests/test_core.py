@@ -4,10 +4,10 @@ import unittest
 import numpy as np
 import torch
 
-from loco_manipulation.contracts import ActuatorSpec, JOINT_NAMES, RobotState, named_indices
-from loco_manipulation.control import JointPD
-from loco_manipulation.math import quat_apply, rpy_quat
-from loco_manipulation.observations import ObservationBuilder, ObservationSpec
+from pawweaver.contracts import ActuatorSpec, JOINT_NAMES, RobotState, named_indices
+from pawweaver.control import JointPD
+from pawweaver.math import quat_apply, rpy_quat
+from pawweaver.observations import ObservationBuilder, ObservationSpec
 
 
 def fixture_spec(delay=0):
