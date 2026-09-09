@@ -58,7 +58,7 @@ checkpoint实际腿部标准差为 **.331–.855**；对4个moving案例的 **3,
 
 直接PhysX比较见 `paired_control_candidate.json`，相对原1000轮比较见 `paired_before_control.json`／`paired_before_candidate.json`，两组跨引擎比较见 `cross_engine_control.json`／`cross_engine_candidate.json`；MuJoCo组间数值按两份原始 `eval_mujoco_*/report.json` 的同名案例复算。将PhysX专用 `compare_pose8.py` 用于MuJoCo组间报告曾被“expected world_tcp_pose PhysX report”拒绝，空输出保留为 `paired_mujoco_control_candidate.failed_empty.json`，不作为有效比较报告，未改脚本绕过边界。
 
-此前建议的CPU配对回放已完成（退出码0）：复用 `orientation_weight_comparison/` 两组bundle及 `eval_control/`、`eval_candidate/` 原始trace，`clip(raw)` 与保存action最大差 **1.55e-6**。在两组moving4的 `t >= 2 s` 保存状态上，腿raw动作越界比例 **90.28% → 90.87%**，臂 **4.79% → 3.59%**，臂均仅J5越界；基座倾斜变化混合，未见权重4新增普遍裁剪。两组都存在腿动作顶边，不能据此把位置代价单独归因于候选新增裁剪；观测与步后状态按一帧偏移对齐，TCP位置重建残差小于 **.281 µm**；足路径仅报未接触门控的FK运动，不新增承重／步态结论。这是保存状态关联证据，不是奖励或探索的动态因果证明。 后续trace的接触列名补充由评估器owner处理，旧文件不补造，也不将该记录缺口设为新训练门槛。
+此前建议的CPU配对回放已完成（退出码0）：复用 `orientation_weight_comparison/` 两组bundle及 `eval_control/`、`eval_candidate/` 原始trace，`clip(raw)` 与保存action最大差 **1.55e-6**。在两组moving4的 `t >= 2 s` 保存状态上，腿raw动作越界比例 **90.28% → 90.87%**，臂 **4.79% → 3.59%**，臂均仅J5越界；基座倾斜变化混合，未见权重4新增普遍裁剪。两组都存在腿动作顶边，不能据此把位置代价单独归因于候选新增裁剪；观测与步后状态按一帧偏移对齐，TCP位置重建残差小于 **.281 µm**；足路径仅报未接触门控的FK运动，不新增承重／步态结论。这是保存状态关联证据，不是奖励或探索的动态因果证明。 评估器已在8059924中为新trace保存本次runtime的contact_body_names，3项CPU序列化测试通过；下一次正常PhysX评估将检验实际输出。旧trace没有补填。
 
 **当前联合位姿奖励候选已启动，结果待完成**：将 `2*rpos+rrot` 改为 `3*rpos*rrot`，位置／朝向宽度仍为 `.15 m／.5 rad`，峰值均为3，但梯度不同；检验同时降低两类误差是否优于分项奖励。源代码 `d26b514` 已独立review且12项CPU测试通过。候选从原 `checkpoint_000999.pt` 经fresh Adam、初始LR `1e-5`、seed0训练250轮，其余配置固定；复用已完成w1控制组，随后进行PhysX8和MuJoCo8。operator已确认实际启动，输出和复现命令见 [coupled_pose_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/coupled_pose_comparison/README.md)，当前无任务效果结论。
 
