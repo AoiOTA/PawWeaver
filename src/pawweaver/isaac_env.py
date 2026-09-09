@@ -33,6 +33,10 @@ class WholeBodyEnv:
                     if sensor.num_sensors!=1 or sensor.body_names!=[name.removeprefix("contact_")]:
                         raise ValueError(f"Contact sensor maps unexpected bodies: {name} {sensor.body_names}")
         self.joint_ids=named_indices(self.robot.joint_names,JOINT_NAMES)
+        if diagnostic:
+            self.loaded_armature=self.robot.root_view.get_dof_armatures().numpy()[:,self.joint_ids]
+            if not np.allclose(self.loaded_armature,np.asarray(self.spec.armature)[None,:],rtol=1e-6,atol=1e-8):
+                raise ValueError("PhysX named armature differs from the supplied diagnostic spec")
         self.foot_ids=named_indices(self.robot.body_names,FOOT_NAMES)
         self.gripper_id=self.robot.body_names.index("arm_gripper_base")
         tree=RobotTree.load(asset/"robot.urdf")

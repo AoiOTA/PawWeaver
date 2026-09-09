@@ -70,6 +70,7 @@ try:
             source_sha256={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in
                 (Path(__file__),Path("src/pawweaver/isaac_env.py"),Path("src/pawweaver/training_inputs.py"),
                  Path("src/pawweaver/learning.py"),Path("src/pawweaver/isaac_robot.py"))},
+            actual_armature_kg_m2={name:env.loaded_armature[:,i].tolist() for i,name in enumerate(env.spec.joint_names)},
             contact_body_mapping={name:sensor.body_names for name,sensor in env.scene.sensors.items()},
             initial_foot_link_height_m=(env.robot.data.body_link_pose_w.torch[:,env.foot_ids,2]-env.scene.env_origins[:,None,2]).tolist(),
             initial_base_height_m=(env.state().base_pos_w[:,2]-env.scene.env_origins[:,2]).tolist(),

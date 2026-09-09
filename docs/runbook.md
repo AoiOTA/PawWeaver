@@ -41,14 +41,27 @@ MUJOCO_GL=egl bash scripts/check.sh
 M0 未闭合时，只能显式提供带来源的临时执行器参数。复用已有组合几何/USD，不重建资产：
 
 ```bash
-env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec configs/diagnostic_actuators.json --config configs/diagnostic_training.json --output artifacts/runs/diagnostic_geometry_sdk_zero_seed0 --seed 0 --num-envs 4 --iterations 1 --headless
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec configs/diagnostic_actuators.json --config configs/diagnostic_training.json --output artifacts/runs/diagnostic_geometry_sdk_zero_armature_seed0 --seed 0 --num-envs 4 --iterations 1 --headless
 ```
 
-该配置为 16 步、2 epoch、2 minibatch，关闭预测、速度估计、自适应采样、随机化和示范。参数文件绑定当前资产哈希，按关节名使用 canonical URDF 的位置/速度限位；增益/力矩为记录的官方候选参数，臂力矩仅是 CAN 编码范围，臂被动动力学取零未经验证。腿部初始姿态仍取参考姿态；臂使用固定版本 SDK 的六零参考 `[0,0,0,0,0,0]`，控制器保持启用。来源为 `pyAgxArm@e7aef17d54cac80cbaeb1b4110ab3d8f1337a95b` 的 Piper-H demo `test1.py` 第 104/127 行 `move_j([0.0]*robot.joint_nums)`；这不是已验证的 GUI/固件厂家 home 数值或断电姿态。动作尺度 0.1 rad、零延迟均为工程选择，不能声明硬件有效。
+该配置为 16 步、2 epoch、2 minibatch，关闭预测、速度估计、自适应采样、随机化和示范。参数文件绑定当前资产哈希，按关节名使用 canonical URDF 的位置/速度限位；增益/力矩为记录的官方候选参数，臂力矩仅是 CAN 编码范围，六个臂关节的 armature 现取 0.005 kg·m²，来自固定版本标准 Piper 厂商仿真并临时迁移至 Piper-H，不是 Piper-H 实测电机反射惯量；仅此参数替代零假设，臂 damping/frictionloss 仍为零且未经验证。腿部初始姿态仍取参考姿态；臂使用固定版本 SDK 的六零参考 `[0,0,0,0,0,0]`，控制器保持启用。来源为 `pyAgxArm@e7aef17d54cac80cbaeb1b4110ab3d8f1337a95b` 的 Piper-H demo `test1.py` 第 104/127 行 `move_j([0.0]*robot.joint_nums)`；这不是已验证的 GUI/固件厂家 home 数值或断电姿态。动作尺度 0.1 rad、零延迟均为工程选择，不能声明硬件有效。
 
 `initial_base_height_m` 为可选场景配置，缺省仍为 0.5 m。诊断配置取 0.317621507 m：由相同腿姿态下的实际 28 mm 足部碰撞球测得 0.183378493 m 悬空间隙，再保留 1 mm 初始间隙。重置复用该场景初始根位姿；Isaac 初始化不引入 MuJoCo 依赖。来源记录在诊断配置中。`render_asset.py` 读取同一诊断参数文件中的 q0；`artifacts/preview/robot.png` 已更新为六零参考。历史候选同角度图片和静态接触结果见 `artifacts/preview/initial_pose_candidates/`；静态无非相邻接触不能证明动态或硬件安全。
 
-`run.json` 保存完整临时参数、来源、资产/USD 标识、初始足端高度和传感器映射；`metrics.jsonl` 保存有限性检查、每个物理子步的力矩饱和、TCP 误差、跌倒/重置、吞吐和优化器实测更新。检查点禁止混合诊断/正式模式或不同临时参数/来源。导出包始终 `trained=false`，正式评估会拒绝它。此次输出已存在，复现实验请使用新的输出目录以保留记录。
+`run.json` 保存完整临时参数、来源、资产/USD 标识、初始足端高度和传感器映射，并按关节名记录从 PhysX 直接读取且核对的实际 armature；`metrics.jsonl` 保存有限性检查、每个物理子步的力矩饱和、TCP 误差、跌倒/重置、吞吐和优化器实测更新。检查点禁止混合诊断/正式模式或不同临时参数/来源。导出包始终 `trained=false`，正式评估会拒绝它。此次输出已存在，复现实验请使用新的输出目录以保留记录。
+
+目前的保持证据仍不是稳定工作初态：10 秒 MuJoCo 最后两秒运动很小，但基座俯仰约 -14.16°、后大腿碰撞几何接地；2 秒 PhysX 则约 -1.12°，还出现臂法兰/相机支架接触力。两引擎的加载/接触差异尚未闭合。
+
+可在新的 artifact 目录复用有界保持脚本（保持默认 PD/50 Hz/2 ms 不变）：
+
+```bash
+mkdir -p artifacts/runs/reproduce_armature_hold10s
+cp artifacts/runs/diagnostic_sdk_zero_armature_settling10s/probe.py artifacts/runs/reproduce_armature_hold10s/probe.py
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python artifacts/runs/reproduce_armature_hold10s/probe.py
+mkdir -p artifacts/runs/reproduce_physx_hold2s
+cp artifacts/runs/diagnostic_physx_sdk_zero_armature_hold2s/probe.py artifacts/runs/reproduce_physx_hold2s/probe.py
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python artifacts/runs/reproduce_physx_hold2s/probe.py --headless
+```
 
 ## 正式训练与课程
 

@@ -55,7 +55,15 @@
       "sha256": "7d1e615f9552447209b9c01a531ab385e5a106ce2df1266d68017de5947f0beb",
       "status": "Local official simulation reference, not verified EDU hardware."
     },
-    "arm_passive_dynamics": "Zero armature, damping, frictionloss are unverified assumptions.",
+    "arm_passive_dynamics": {
+      "armature": {
+        "value_kg_m2": 0.005,
+        "source": "https://github.com/agilexrobotics/agx_arm_sim/blob/f8cd8b147c75d59e14f90fb0646770eefa268ed0/mujoco/agilex_arm/agilex_piper/piper.xml#L4",
+        "source_lines": "4-9",
+        "limitation": "standard Piper vendor-simulation value provisionally transferred to Piper-H; not a measured Piper-H motor/reflected inertia"
+      },
+      "damping_frictionloss": "Remain zero, unchanged unverified assumptions; vendor frictionloss 0.3 is NOT transferred."
+    },
     "initial_pose": {
       "leg_pose": "[0,0.85,-1.65] repeated FR,FL,RR,RL from render reference; not validated stable standing",
       "arm_pose": "Six-zero pinned SDK reference with controls enabled; not a verified firmware factory-home target or powered-off pose",
@@ -260,12 +268,12 @@
       0.026,
       0.026,
       0.038,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
+      0.005,
+      0.005,
+      0.005,
+      0.005,
+      0.005,
+      0.005
     ],
     "damping": [
       0.2,

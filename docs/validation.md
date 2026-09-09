@@ -59,6 +59,18 @@ TCP 误差均值 `0.240611 m`、最大 `0.619186 m`、最后一步环境均值 `
 
 `artifacts/runs/diagnostic_sdk_zero_wrist_numerics/` 做了一组 0.2 秒数值判别：固定基座、关重力、无接触，同一六零目标，只给 arm4/arm6 初始 ±0.0001 rad 扰动。原 2 ms 显式 PD 下误差放大到约 2.024/2.224 rad，峰值速度约 94.7/108.4 rad/s；保持相同参数、将物理/反馈步长临时缩至按质量矩阵预先计算的 0.0971 ms 后，误差衰减至约 8.2e-6 rad、无饱和。零臂 armature 假设下，质量矩阵最小特征值约 0.0001553 kg·m²，模式主要为 arm4/arm6 反向运动；`λmax(M^-1 D)≈5151/s` 的线性显式阻尼步长界约 0.388 ms，小于 2 ms。这隔离出即使无重力/碰撞仍存在的显式 PD 与临时惯性/离散步长问题；不能把全部失稳归给重力。小步长仅用于判别，产品 2 ms/50 Hz、增益、力矩和 armature 均未修改。应先核实有来源的电机反射惯量/执行器模型，再决定实现；不把零臂 armature 或该数值界限当作硬件结论。
 
+## 当前臂 armature 假设及加载检查 · 2026-09-09
+
+诊断默认六臂 armature 从零改为 0.005 kg·m²，来源为 [标准 Piper 厂商仿真](https://github.com/agilexrobotics/agx_arm_sim/blob/f8cd8b147c75d59e14f90fb0646770eefa268ed0/mujoco/agilex_arm/agilex_piper/piper.xml#L4)。这是 **standard Piper vendor-simulation value provisionally transferred to Piper-H**，不是 Piper-H 实测转子/反射惯量。未迁移该文件的 frictionloss 0.3，未改变臂 damping/frictionloss、增益、力矩、q0、50 Hz/2 ms 合同。
+
+`artifacts/runs/diagnostic_sdk_zero_armature_probe/` 先只变此参数重复原无重力/接触的 0.2 秒腕扰动：实际按名加载 .005，2 ms 下误差衰减至约 ±7.25e-6 rad、无饱和；阻尼线性步长界约 12.888 ms。固定基座开重力后腕振荡消失，但 J5 有约 0.131 rad 负载偏移、J2/J3 仍受软限位支撑。
+
+`diagnostic_sdk_zero_armature_settling10s/` 延长全身零动作保持到 10 秒：最后两秒最大关节速度 0.00491 rad/s、基座高度变化 0.556 mm、俯仰变化 0.126°，四足持续接触，90,000 个关节物理样本无饱和/跌倒，状态有限。最终基座却仅 0.22851 m、俯仰 -14.16°，软限位最大越界 0.00205 rad。保存终态的几何重放还发现两个后大腿 `collision_2` 与地面接触（约 22 μm 浅穿透，重放不声明接触力）。这是趋于安静的低姿态，不是已证明的稳定站立。原控制台样本数继承了 2 秒脚本常量；`result.json` 已据 5,000 步轨迹纠正为 90,000，原执行脚本和日志保留。
+
+`diagnostic_physx_sdk_zero_armature_hold2s/` 通过现有 WholeBodyEnv 运行 2 秒零动作：实际六臂 armature 为 .005，最终基座 0.28106 m、俯仰 -1.12°，末半秒最大关节速度 0.00741 rad/s，四足有力、零饱和/跌倒且全部有限。对应 MuJoCo 2 秒为 0.25708 m/-5.95°；PhysX 还曾记录 `arm_flange_link`/`rgbd_stand` 大于 1 N 的接触力，MuJoCo 臂/相机接触列表为空。未辨认该 PhysX 接触对，不声称双引擎加载行为一致；这是当前具体未解问题。
+
+`diagnostic_geometry_sdk_zero_armature_seed0/` 完成现有 4×16 PhysX PPO：4 次优化器更新、Actor 最大变化 0.00160793、有限损失/状态/梯度，零饱和/跌倒；约 68.85 环境步/秒，TCP 误差均值 0.09842 m。`run.json` 保存 PhysX 按名直接读取的六臂 .005、源代码/配置/资产身份；runtime 已校验导出包和相同 metadata，仍为 `trained=false`。这些工程结果既不闭合硬件参数，也不替代原任务性能验收。
+
 ## 尚未完成的验收
 
 - Piper-H 质量/限位/驱动版本，转接板/支撑/线缆，真实相机惯性及标定等 M0 参数。
