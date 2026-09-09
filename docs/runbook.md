@@ -63,6 +63,28 @@ cp artifacts/runs/diagnostic_physx_sdk_zero_armature_hold2s/probe.py artifacts/r
 env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python artifacts/runs/reproduce_physx_hold2s/probe.py --headless
 ```
 
+## 近距离学习结果与 4096 环境候选
+
+`artifacts/runs/diagnostic_near_goal_learning_seed0/README.md` 的 **Executed result** 记录已完成的 32 环境 × 256 步 × 20 次 PPO（163,840 transitions、80 次优化器更新），以及同一冻结 16 例的顺序前后评估。实际前测是修复后的 `eval_pre_retry/results.json`，不是首次失败的 `eval_pre/results.json`；后测是 `eval_post20/results.json`。`paired20_summary.json` 显示 2 秒后的平均逐例 RMSE 从 0.0630698 降至 0.0624163 m，但仅 5 例改善、11 例变差，四条线轨迹全部变差，连续 2 秒处于 5 cm 内的案例从 9 减至 8。这是有效的负面学习结果，不能由总体均值的小幅改善宣布跟踪成功。前后各 16×20 秒均完整、有限，无跌倒、动作裁剪或力矩饱和；非零 goal-swap 响应只说明输出开始受目标影响。包仍为 `trained=false`。
+
+首次前测因 `inference_mode` 创建的 PD target 在该上下文外被原位修改而失败；artifact 评估器改用 `no_grad` 后完成重跑，并精确复现第一例。另已纠正报告中的完整 canonical bundle hash。失败脚本、日志和 hash 修正前报告均保留，生产控制器没有因此修改。`artifacts/runs/diagnostic_batched_eval_probe/initial_two_comparison.json` 的两例批量对照虽满足状态/误差容差，但两例的连续 5 cm hold 时长均未精确一致，因此 `passed=false`；未放宽标准，也未进行 16 例批量评估。当前有效学习比较仍采用顺序评估。
+
+4096 配置和历史容量命令见 `artifacts/runs/diagnostic_4096_scale/README.md`；以下记录替代其中早期直接追加 997 次的建议。它只将上述训练配置改为 4096 环境、24 步 rollout、5 epoch、4 minibatch，复用完全相同的 `artifacts/runs/diagnostic_near_goal_learning_seed0/candidate_spec.json`，保持单个 18 关节 Actor、任务、奖励、2 ms/50 Hz、stage 0 和其他选项。`capacity3_summary.json` 已记录真实容量运行 exit 0：3 次迭代、294,912 transitions、60 次优化器更新，全部有限，零跌倒，53,084,160 个子步关节样本零饱和。吞吐约 29.8k–32.3k 环境控制步/秒；500 ms 采样的设备显存峰值 6,652 MiB 包含后台占用，也可能漏掉更短峰值。每环境仅 1.44 秒，不能据此认定长期学习或跟踪有效。
+
+原 200 m 有限地面无法覆盖 8 m 间距下 1024/4096 环境的 ±124/±252 m 原点范围。修复 `a2076da` 按 cloner 网格跨度加两侧各 100 m 计算宽度；1/32/1024/4096 环境分别为 200/240/448/704 m。`cpu_coverage.json` 用安装版本 cloner 与 canonical 足部碰撞球验证重置几何，最小足部边缘余量约 99.754 m，地面材质、高度和厚度未变。CPU XY 布局证据与真实容量步进证据分别保留；运行 metadata 没有保存实际 XY 原点或地面宽度，不外推动态覆盖。
+
+容量三轮 KL 为 42.725、0.0693、0.0358，保存的 Adam 学习率已到 `1e-5`。`artifacts/runs/diagnostic_4096_scale/kl_probe/README.md` 的固定观测判别支持 fresh Adam／`.001` 学习率重启对窄 Gaussian std 的敏感性，normalizer 变化也有影响；未发现 Actor/Critic/normalizer 加载错误，未保存真实首 minibatch，不能精确重建其因果。选择已有 `--resume` 保留 Adam 和低学习率进行有界续训，不再次初始化。
+
+首次 `train50` 恢复在新增任何迭代前失败：`map_location` 将 CUDA RNG 状态搬到 GPU，但恢复 API 需要 CPU ByteTensor。最小修复 `f114ae5` 仅将 RNG 状态转回 CPU，5 项测试含真实 CUDA，实际 checkpoint 重放和独立 review 通过。失败日志及验证见 `train50_console.log` 和 `kl_probe/resume_actual_checkpoint.json`。修复后的 `train100/` 已用下列命令从 capacity iteration 2 严格恢复并完成 97 个追加迭代，达到总计 100 次；不重复启动同一目录。仿真回合按既有语义重新开始。
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec artifacts/runs/diagnostic_near_goal_learning_seed0/candidate_spec.json --config artifacts/runs/diagnostic_4096_scale/candidate_training.json --resume artifacts/runs/diagnostic_4096_scale/capacity3/checkpoint_000002.pt --output artifacts/runs/diagnostic_4096_scale/train100 --seed 0 --num-envs 4096 --iterations 97 --headless
+```
+
+4096 阶段总计 9,830,400 transitions、2,000 次优化；97 轮续训全部有限，零跌倒/饱和、8,192 次超时重置，最终学习率自行恢复至约 `.000256289`。`checkpoint_000099.pt` 及 bundle 已在 runtime 独立校验；原冻结 16×20 秒顺序 `eval_post100` 正在评估，不由训练指标宣布改善。所有 GPU 执行仍由唯一 operator 顺序完成，重复实验使用新输出路径。
+
+用户正在比较“整机渐进训练”和“子系统分别预训练后联合”两条路线。当前保留完整机器人、单个 18 关节 Actor，先完成 train100 的固定评估并定位瓶颈，不启动两套独立预训练或追加早期计划的 1000 轮。后续优先验证整机任务课程；只有具体瓶颈支持时，再引入针对性的子系统预训练。已核查可复用 Isaac Lab 内置 Go2 flat 任务训练 AS2，以及从 canonical 提取固定基座 Piper-H 的路径。`artifacts/runs/subsystem_pretraining_transfer/README.md` 的随机教师 CPU 原型验证了关节名/物理目标映射、监督更新、JIT 和原 PPO 接口；它不证明技能迁移，也不代表已确定最终采用专家蒸馏。真实组合数据仍需解决专家命令由学生可见信息推导的问题。临时参数和原正式验收边界不变。
+
 ## 正式训练与课程
 
 以下命令要求 M0 参数闭合，当前不能成功开始正式训练：

@@ -1,6 +1,6 @@
 # 验证记录 · 2026-09-09
 
-这些结果区分组合机器人模型检查与合成机器人软件检查。**尚未训练和验收 AS2 + Piper-H 的到达、连续跟踪或视觉控制策略。** M0 未闭合；M1–M4 的性能验收还没有完成。
+这些结果区分组合机器人模型检查与合成机器人软件检查。**已完成有界 PPO 学习实验，尚无通过验收的 AS2 + Piper-H 到达、连续跟踪或视觉控制策略。** M0 未闭合；M1–M4 的性能验收还没有完成。
 
 新固定组过滤前的真实组合模型 PhysX 接触读数、碰撞奖励及含接触量的 Critic 观测受到已确认的内部碰撞影响；那些有限 PPO 更新仍是软件集成证据，不能作为接触行为正确性的证据。下文保留历史结果并标出当前修正。
 
@@ -100,6 +100,34 @@ TCP 误差均值 `0.240611 m`、最大 `0.619186 m`、最后一步环境均值 `
 从重置直接输出 `actions[1]` 常量动作、没有预热阶段的 3 秒对照中，MuJoCo 终态 z **0.316291 m**、pitch **0.136383°**、J2/J3 **0.100975/-0.149681 rad**；PhysX 为 **0.313401 m**、**0.080698°**、**0.100593/-0.150002 rad**。两者状态有限、零饱和、未触发跌倒阈值。MuJoCo 全程仅足地接触且没有关节限位约束；PhysX 四足承载、没有非足部超过 1 N 的净接触力，未读取原生关节限位反力。末半秒最大关节速度分别为 **0.002720/0.003397 rad/s**。PhysX 仍有约 **0.369 mm** 的末半秒高度变化，故这支持短时主动展开和常量策略初始化，不能外推长期站立、学习效果或硬件有效性。
 
 `artifacts/runs/diagnostic_near_goal_learning_seed0/` 已据此构造与既有 `--initialize-from` 严格兼容的初始化：只将 Actor 最后线性层权重置零并写入精确常量均值，保留隐藏层及全部参数可训练。CPU eager、严格加载和 JIT 输出最大差为零，runtime 校验通过，包仍为 `trained=false`。冻结的 16 个近距离目标用于后续前后对照；此初始化检查不属于已经完成的任务学习。
+
+## 近距离 PPO 学习前后对照 · 2026-09-09
+
+`artifacts/runs/diagnostic_near_goal_learning_seed0/README.md` 的 **Executed result** 及 `paired20.json`、`paired20_summary.json` 保存已完成的真实几何学习结果。`train20/` 完成 32 环境 × 256 步 × 20 次迭代，共 163,840 transitions、80 次优化器更新；全部有限、零跌倒、零力矩饱和，runtime 独立加载导出包并确认 `trained=false`。冻结输入为 12 个静态近距离目标和 4 条线轨迹；有效顺序前测为 `eval_pre_retry/`，后测为 `eval_post20/`，没有排除较差案例。
+
+两次评估各 16 例均完成完整 20 秒，全部有限，无跌倒、动作裁剪或所有物理子步力矩饱和；50 Hz 观测未发现非足部净接触力超过 5 N，这不是接触对或每个物理子步的无接触证明。2 秒后的平均逐例 RMSE 为 **0.0630698 → 0.0624163 m**，但 **5 例改善、11 例变差，四条线轨迹全部变差**；连续至少 2 秒处于 5 cm 内的案例 **9 → 8**。这是可用的负面结果：总体均值略有改善，未显示有用的跟踪学习。相同观测下改变目标，最大动作变化从零增至 **0.00788713**，仅证明目标响应非零，不能证明策略正确跟踪目标。没有硬件有效性或 M1–M4 验收结论。
+
+首次前测 `eval_pre/` 在第二次 reset 失败：`torch.inference_mode()` 内创建的 PD target 在上下文外被原位修改。artifact 评估器改用 `torch.no_grad()` 后，`eval_pre_retry/` 完成 16 例并精确复现第一例；`evaluate_before_no_grad.py` 和原日志保留失败原因，未改生产控制器或策略数值。另仅纠正报告中的完整 canonical bundle hash，原字段保存在 `eval_pre_retry/results_before_bundle_hash_correction.json`，不重写历史。
+
+## 批量评估候选未通过 · 2026-09-09
+
+`artifacts/runs/diagnostic_batched_eval_probe/initial_two_comparison.json` 对初始化策略的首两例进行顺序/批量比较，身份、输入、动作、完整时长及预先固定的状态/误差容差通过，但两例的 `exact_continuous_5cm_hold_s` 均失败，整体 **`passed=false`**。虽然是否保持至少 2 秒的布尔结果一致，不能代替精确 hold 时长要求。未放宽标准，未进行 16 例批量评估，不声明全套等价或加速；上述学习结论来自完整顺序前后测。
+
+## 4096 环境候选与有限地面修复 · 2026-09-09
+
+原 `create_scene` 使用 200×200 m cuboid 地面，8 m 间距的实际 cloner 网格在 1024/4096 环境时延伸到 ±124/±252 m，分别有 348/3420 个原点位于旧地面外。修复只按 `8 * (ceil(sqrt(num_envs)) - 1) + 200` 设置宽度，保留原点外 100 m 余量，不改变材质、厚度、高度、prim path、机器人或环境间距。`artifacts/runs/diagnostic_4096_scale/cpu_coverage.json` 执行安装版本 cloner 函数并使用 canonical URDF FK 的实际足部球形碰撞几何：1/32/1024/4096 环境宽度为 200/240/448/704 m，重置足部最小边缘余量约 **99.753941 m**。这只验证 CPU 布局和重置几何；下述真实容量运行独立提供步进和资源证据，不能据此重构未保存的 runtime XY 原点或动态地面覆盖。
+
+候选配置和固定上游来源见 `artifacts/runs/diagnostic_4096_scale/README.md`，当前续训命令见 `docs/runbook.md`。相比已完成 train20 配置，只改为 4096 环境、24 步 rollout、5 epoch、4 minibatch；复用原 `candidate_spec.json` 的全部参数和来源，保持单个 18 关节 Actor、任务、奖励、2 ms/50 Hz、stage 0、初始学习率 `.001` 和 adaptive KL `.01` 等选项。
+
+`capacity3_summary.json` 记录真实 **4096×24×3** 容量运行正常退出，共 **294,912 transitions、60 次优化器更新**，全部有限，零跌倒，53,084,160 个子步关节样本零力矩饱和。实测约 **29.8k–32.3k 环境控制步/秒**；每 500 ms 采样的**设备级**显存峰值为 **6,652 MiB**，包含后台占用且可能漏掉瞬时峰值，不是精确进程峰值。每环境只经历 **1.44 秒**，这是容量证据，不是长回合或跟踪验收。runtime 独立加载导出包通过，仍为 `trained=false`。
+
+首三轮 KL 为 **42.72497、0.06927、0.03585**，保存的 optimizer LR 已到 **`1e-5`**。`kl_probe/README.md` 与 `result.json` 的 CPU 固定观测实验核实 Actor/Critic/std/normalizer 精确加载；原 train20 LR 约 `5.85e-5`，`--initialize-from` 按现有语义重建 fresh Adam 并从 `.001` 开始。窄 std 下 fresh Adam／高 LR 的单步敏感性明显，normalizer 变化也贡献 KL，支持低 LR 严格恢复进行有界观察。固定观测与合成优势不是首轮真实 rollout，不能把该判别当成精确因果重放；42.725 是逐 minibatch、18 动作维求和 KL 的均值，不是最终策略 KL。
+
+后续首次 `train50` 在追加 **0 次**迭代时失败，日志 `train50_console.log` 保留 `RNG state must be a torch.ByteTensor`：checkpoint 的 `map_location` 将 CUDA RNG ByteTensor 搬至 GPU，而恢复接口要求 CPU。最小生产修复 **`f114ae5`** 仅将 RNG 张量转回 CPU；5 项回归测试（含实际 CUDA）、真实 capacity checkpoint 的 CPU/CUDA 随机序列精确恢复及独立 review 均通过，未改变 Actor/Adam 的设备、学习率或配置。证据见 `kl_probe/resume_test.log`、`kl_probe/resume_actual_checkpoint.json`。
+
+修复后的 **`train100/` 已完成 97 个追加迭代**；与 capacity 合计 100 次、9,830,400 transitions、2,000 次优化器更新。它继承 Adam 与 `1e-5` 学习率，仿真回合重新开始。续训全部有限，零跌倒/饱和、8,192 次超时重置；最后十轮 KL 为 `.00844–.01579`，最终学习率自行恢复至约 `.000256289`。设备显存采样峰值 6,980 MiB；`checkpoint_000099.pt` 和 bundle 在 runtime 独立校验通过。原冻结 **16×20 秒顺序 `eval_post100` 正在运行**，尚不声明整体策略改善。
+
+已调查 AS2 与 Piper-H 分别预训练后联合的路线；用户随后重新比较它与整机训练，目前没有启动独立预训练。当前保留完整组合模型、单个 18 关节 Actor 和原验收，以 train100 固定评估定位后续课程或子系统预训练的具体需要。`artifacts/runs/subsystem_pretraining_transfer/` 用随机 12／6 动作教师验证了按关节名及物理 PD 目标映射到现有 18 动作、监督初始化、JIT 与原 PPO 接口，最大映射误差约 `9.31e-10 rad`；不可表示的目标明确失败。它仅证明接口可行，不证明技能迁移或联合效果，专家蒸馏尚不是已实施的训练主线。源码复用边界见 `docs/references.md`.
 
 ## 尚未完成的验收
 
