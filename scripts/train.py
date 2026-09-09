@@ -95,7 +95,7 @@ try:
         env.reference.rng.bit_generator.state=checkpoint["reference_rng"]
         torch.set_rng_state(checkpoint["torch_rng"].cpu())
         if args.device.startswith("cuda"):
-            torch.cuda.set_rng_state_all(checkpoint["cuda_rng"])
+            torch.cuda.set_rng_state_all([state.cpu() for state in checkpoint["cuda_rng"]])
         start_iteration=checkpoint["iteration"]+1
     optimizer_steps=[]
     if args.diagnostic:
