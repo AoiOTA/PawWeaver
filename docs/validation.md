@@ -125,9 +125,11 @@ TCP 误差均值 `0.240611 m`、最大 `0.619186 m`、最后一步环境均值 `
 
 后续首次 `train50` 在追加 **0 次**迭代时失败，日志 `train50_console.log` 保留 `RNG state must be a torch.ByteTensor`：checkpoint 的 `map_location` 将 CUDA RNG ByteTensor 搬至 GPU，而恢复接口要求 CPU。最小生产修复 **`f114ae5`** 仅将 RNG 张量转回 CPU；5 项回归测试（含实际 CUDA）、真实 capacity checkpoint 的 CPU/CUDA 随机序列精确恢复及独立 review 均通过，未改变 Actor/Adam 的设备、学习率或配置。证据见 `kl_probe/resume_test.log`、`kl_probe/resume_actual_checkpoint.json`。
 
-修复后的 **`train100/` 已完成 97 个追加迭代**；与 capacity 合计 100 次、9,830,400 transitions、2,000 次优化器更新。它继承 Adam 与 `1e-5` 学习率，仿真回合重新开始。续训全部有限，零跌倒/饱和、8,192 次超时重置；最后十轮 KL 为 `.00844–.01579`，最终学习率自行恢复至约 `.000256289`。设备显存采样峰值 6,980 MiB；`checkpoint_000099.pt` 和 bundle 在 runtime 独立校验通过。原冻结 **16×20 秒顺序 `eval_post100` 正在运行**，尚不声明整体策略改善。
+修复后的 **`train100/` 已完成 97 个追加迭代**；与 capacity 合计 100 次、9,830,400 transitions、2,000 次优化器更新。它继承 Adam 与 `1e-5` 学习率，仿真回合重新开始。续训全部有限，零跌倒/饱和、8,192 次超时重置；最后十轮 KL 为 `.00844–.01579`，最终学习率自行恢复至约 `.000256289`。设备显存采样峰值 6,980 MiB；`checkpoint_000099.pt` 和 bundle 在 runtime 独立校验通过。原冻结 **16×20 秒顺序 `eval_post100/` 已完成**，完整配对结果如下。
 
-已调查 AS2 与 Piper-H 分别预训练后联合的路线；用户随后重新比较它与整机训练，目前没有启动独立预训练。当前保留完整组合模型、单个 18 关节 Actor 和原验收，以 train100 固定评估定位后续课程或子系统预训练的具体需要。`artifacts/runs/subsystem_pretraining_transfer/` 用随机 12／6 动作教师验证了按关节名及物理 PD 目标映射到现有 18 动作、监督初始化、JIT 与原 PPO 接口，最大映射误差约 `9.31e-10 rad`；不可表示的目标明确失败。它仅证明接口可行，不证明技能迁移或联合效果，专家蒸馏尚不是已实施的训练主线。源码复用边界见 `docs/references.md`.
+`artifacts/runs/diagnostic_4096_scale/paired100_summary.json` 比较初始化、train20 与 train100，2 秒后的平均逐例 RMSE 为 **6.307 → 6.242 → 6.844 cm**。train100 相对初始化 **6 例改善、10 例变差**，相对 train20 **5 例改善、11 例变差**；四条线轨迹均退步，其平均 RMSE 为 **2.722 → 3.199 → 4.653 cm**。train100 的连续至少 2 秒处于 5 cm 内案例为 **9/16**（初始化 9/16、train20 8/16）。16 例全部完整运行 20 秒，无跌倒、50 Hz 观测的非足部净接触力超过 5 N、动作裁剪或所有子步力矩饱和；净接触观测仍不能证明每个物理子步无接触。相同观测下改变目标的最大动作变化增至 **0.0311694**，但任务指标整体退步，不能宣布学会跟踪。所有结果仍为 `trained=false` 的工程证据，无硬件有效性或原里程碑验收结论。
+
+用户已确认整机单个 18 关节 Actor 训练为主线，不启动独立 AS2／Piper-H 预训练。下一瓶颈候选见 `artifacts/runs/diagnostic_balanced_axis_learning/README.md`，准备平衡静态 **y±0.05 m** 目标；可选目标配置支持已提交 `df9a21e`，12 项 CPU 测试与独立审查通过；4096×24×100 候选已启动，尚无完成结果。它只用于整机目标条件学习判别，不替换原 16 例固定评估，不改变验收。`artifacts/runs/subsystem_pretraining_transfer/` 随机教师 CPU 原型仅验证接口并保留备用，既无独立预训练又无技能迁移证据。源码复用边界见 `docs/references.md`。
 
 ## 尚未完成的验收
 

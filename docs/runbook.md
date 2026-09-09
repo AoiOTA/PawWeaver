@@ -81,9 +81,9 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/b
 env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec artifacts/runs/diagnostic_near_goal_learning_seed0/candidate_spec.json --config artifacts/runs/diagnostic_4096_scale/candidate_training.json --resume artifacts/runs/diagnostic_4096_scale/capacity3/checkpoint_000002.pt --output artifacts/runs/diagnostic_4096_scale/train100 --seed 0 --num-envs 4096 --iterations 97 --headless
 ```
 
-4096 阶段总计 9,830,400 transitions、2,000 次优化；97 轮续训全部有限，零跌倒/饱和、8,192 次超时重置，最终学习率自行恢复至约 `.000256289`。`checkpoint_000099.pt` 及 bundle 已在 runtime 独立校验；原冻结 16×20 秒顺序 `eval_post100` 正在评估，不由训练指标宣布改善。所有 GPU 执行仍由唯一 operator 顺序完成，重复实验使用新输出路径。
+4096 阶段总计 9,830,400 transitions、2,000 次优化；97 轮续训全部有限，零跌倒/饱和、8,192 次超时重置，最终学习率自行恢复至约 `.000256289`。`checkpoint_000099.pt` 及 bundle 已在 runtime 独立校验。原冻结 16×20 秒顺序 `eval_post100/` 也已完成，配对结果见 `artifacts/runs/diagnostic_4096_scale/paired100_summary.json`：初始化／train20／train100 的 2 秒后平均逐例 RMSE 为 **6.307／6.242／6.844 cm**，四条线轨迹均退步，线轨迹平均为 **2.722／3.199／4.653 cm**。train100 相对初始化 6 好 10 差，相对 train20 5 好 11 差；连续至少 2 秒处于 5 cm 内的案例为 9/16。所有案例完整 20 秒，无跌倒、50 Hz 非足部净力超过 5 N、动作裁剪或子步力矩饱和。非零目标响应不能抵消任务指标退步，尚未学会有效跟踪；未追加 1000 次训练或改用批量评估。
 
-用户正在比较“整机渐进训练”和“子系统分别预训练后联合”两条路线。当前保留完整机器人、单个 18 关节 Actor，先完成 train100 的固定评估并定位瓶颈，不启动两套独立预训练或追加早期计划的 1000 轮。后续优先验证整机任务课程；只有具体瓶颈支持时，再引入针对性的子系统预训练。已核查可复用 Isaac Lab 内置 Go2 flat 任务训练 AS2，以及从 canonical 提取固定基座 Piper-H 的路径。`artifacts/runs/subsystem_pretraining_transfer/README.md` 的随机教师 CPU 原型验证了关节名/物理目标映射、监督更新、JIT 和原 PPO 接口；它不证明技能迁移，也不代表已确定最终采用专家蒸馏。真实组合数据仍需解决专家命令由学生可见信息推导的问题。临时参数和原正式验收边界不变。
+用户已确认**整机单个 18 关节 Actor 训练为主线，不启动独立 AS2／Piper-H 预训练**。下一步候选见 `artifacts/runs/diagnostic_balanced_axis_learning/README.md`：用平衡静态 y±0.05 m 目标判别整机目标条件学习瓶颈。目标配置支持已提交 `df9a21e`，12 项 CPU 测试及独立审查通过；4096×24×100 候选已启动，尚无完成结果；原冻结 16 例评估或验收条件不变。所有 GPU 实验仍由唯一 operator 顺序执行，重复实验使用新输出路径。`artifacts/runs/subsystem_pretraining_transfer/` 的随机教师 CPU 原型仅备用：接口检查不是独立预训练或技能迁移证据，未选定 teacher／蒸馏训练路线。临时参数和原正式验收边界不变。
 
 ## 正式训练与课程
 
