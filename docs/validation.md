@@ -24,6 +24,19 @@
 
 位置 **8例改善、0例变差**，朝向 **0例改善、8例变差**；两组各为位置4好、朝向4差。位置跟踪已显示学习改善，但不能由位置均值改善或基座位移增加宣布完整位姿任务成功。已授权朝向奖励权重对照，控制组训练已启动，候选组及评估结果待完成；不新增朝向验收阈值。
 
+<a id="pose1000-foot-motion"></a>
+
+独立 reviewer 复核 `eval_post1000_openblas1/` 已保存的50 Hz足力与观测，以足力 **>1 N** 描述采样时刻的承重接触，并从观测、世界TCP四元数恢复基座旋转和关节角后进行FK足端重建；重建TCP残差 **0.7–3.3 µm** 支持该重建路径。下表均为已完成工程轨迹的读数，1 N 是本次描述接触所用阈值，不是新增验收标准。
+
+| PhysX移动案例 | 50 Hz足力与重建足端水平运动 | 最低基座z（m） | 基座倾斜 |
+|---|---|---|---|
+| moving00 | 所有记录时刻四足接触；RL承重水平路程约13.0 cm | .291 | 最大roll 5.9° |
+| moving01 | FR约20 ms、RR/RL各约60 ms低于阈值；RR承重水平路程约12.8 cm | .263 | 最大roll 11.5° |
+| moving02 | FL约60 ms低于阈值；FL净水平位移约13.7 cm | .248 | 最大pitch 9.2° |
+| moving03 | 所有记录时刻四足接触；FL承重水平路程约13.2 cm | .272 | 最大roll 7.4° |
+
+这些记录支持下沉、倾斜和拖移，尚未证明交替迈步；球形足滚动的贡献未分离，不能把50 Hz接触记录扩展为每个物理子步的结论。MuJoCo 同批后测未保存接触，不能据此确定步态或滑移；其 moving02 最低基座z约 **.229 m**、pitch约 **−11.9°**，FK重建TCP残差最大 **.87 mm**，不依据微小足高差断言离地。
+
 对照问题是在相同追加训练预算下，`orientation_tracking=4` 相对控制组 `1` 是否改善朝向误差，同时观察位置误差与跌倒。两组均以 `checkpoint_000999.pt` 为 `--initialize-from` 输入，fresh Adam、学习率 `1e-5`、seed 0；其余数据、配置和物理参数固定，各 **250轮、24,576,000 transitions、5,000次优化器更新**。由唯一 operator 顺序完成每组训练＋PhysX test8，之后完成两组 MuJoCo test8；输出目录为 `artifacts/runs/diagnostic_pose_learning/orientation_weight_comparison/`。控制组由唯一 operator 启动；该对照尚无完成结果，不宣称朝向已改善。
 
 首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅设置 `OPENBLAS_NUM_THREADS=1` 后在 `eval_post1000_openblas1/` 重试，operator 确认退出码 **0**。失败记录不替换为成功，实际前后比较只消费重试报告。
