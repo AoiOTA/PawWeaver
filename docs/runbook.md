@@ -12,6 +12,12 @@
 
 `references/test/` 为独立的 8 项固定评估套件。引用源是 **synthetic_fk_reference**，不是实测 FastUMI；局部引用为固定根 FK，移动引用离线加约 .6 m 水平根位移后仅保存 EE pose，未证明足步动力学可执行。现有 demonstrations `.align(reset_tcp)` 只平移位置、保留世界朝向；评估直接使用冻结世界位姿。详见 [引用构造记录](../artifacts/runs/diagnostic_pose_learning/references/README.md)。`scripts/evaluate_isaac.py --num-envs 8` 可消费该套件；旧两例 exact-hold 失败仍是历史结果，不要求批量动力学逐点复制顺序轨迹才可开展新任务评价。
 
+训练及 PhysX 后测结束后，同一最终策略使用现有 MuJoCo 入口进行独立工程评估。下面命令尚未执行；输出路径已存在时另选新目录。诊断入口在模型编译前应用临时被动参数、力矩限值和 bundle 中的初始根高度，保留 `trained=false`。当前 test8 均为动态轨迹，跨引擎报告的静态到达率降幅显示 `null`，不填充为零。
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES='' /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python scripts/evaluate_mujoco.py --asset assets/generated/diagnostic --bundle artifacts/runs/diagnostic_pose_learning/train_pose1000/bundle --suite artifacts/runs/diagnostic_pose_learning/references/test --output artifacts/runs/diagnostic_pose_learning/eval_mujoco_post1000 --seed 0 --diagnostic --provisional-spec artifacts/runs/diagnostic_pose_learning/candidate_spec.json
+```
+
 以下保留资产／软件命令及旧位置任务历史复现记录；旧配置与 checkpoint 不作为本轮位姿训练入口。不启动独立 AS2／Piper-H 预训练，也不继续已取消的六轴位置候选。
 
 ## 资产与预览

@@ -14,6 +14,8 @@
 
 1000 次迭代训练已启动，使用 fresh 276-input、stage 1 现有 family 混采 8 条训练引用，独立 test8 不进入训练；腿 std .3 action＝.06 rad，臂 .01 rad，辅助模块与 DR 关闭。正在运行，尚无完成或后测结果。朝向奖励起始参数属于工程选择，正式朝向验收阈值未设定。
 
+独立 MuJoCo 入口已支持明确的诊断／临时参数模式。真实几何与本轮初始策略的 CPU 构造保持仿真时间为零，验证了编译前被动参数、力矩、初始高度和派生惯性常量，未加载 Isaac／RSL-RL／tensordict。相关 runtime 检查 27 passed、1 skipped（既有 Isaac 测试需要 tensordict）；报告接口测试替换了步进，不能证明闭环动力学。真实 MuJoCo test8 仍待本轮训练结束后执行。纯动态套件的跨引擎比较已修复缺少静态到达率时的计算错误，缺失指标保留为 `null`。
+
 KMA dogfood 持续以实际研究循环效率为目标，而非安装、角色数量或检查通过数。此次删除 bundle 内无 runtime 消费用途的重复 metadata，完整记录仍留在 checkpoint／run；同一初始化输入 manifest 从 23,820 降至 15,056 字节，减少 8,764 字节，见 `bundle_metadata_size_comparison.json`。批量评估不再受旧 exact-hold 精确重放条件阻塞，并删除新增的完整 bundle hash 比较门槛；已有加载时文件完整性／资产检查仍执行。上面的批量前测是实际结果，旧 exact-hold `passed=false` 原样保留。这些具体修正支持继续试用，不证明 KMA 在没有人工提示时一定能自然作出有效取舍。
 
 ## 已完成的历史检查

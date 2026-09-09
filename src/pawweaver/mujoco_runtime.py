@@ -1,6 +1,7 @@
-"""Independent MuJoCo policy runner; no Isaac Lab, RSL-RL, USD or training imports."""
+"""Independent MuJoCo policy runner; no Isaac Lab, RSL-RL or USD dependencies."""
 import argparse
 import json
+import xml.etree.ElementTree as ET
 from pathlib import Path
 import numpy as np
 import torch
@@ -13,18 +14,56 @@ from .observations import ObservationBuilder
 from .trajectories import Trajectory
 from .task import episode_metrics
 from .math import quat_angle_error
+from .training_inputs import training_inputs,check_training_identity
 
 class MujocoRunner:
-    def __init__(self,asset:Path,bundle:Path,*,software_fixture=False):
-        self.manifest=verify_asset(asset)
+    def __init__(self,asset:Path,bundle:Path,*,software_fixture=False,diagnostic=False,provisional_spec:Path|None=None):
+        if diagnostic != (provisional_spec is not None):
+            raise ValueError("--diagnostic requires --provisional-spec, which is diagnostic-only")
+        if software_fixture and diagnostic:
+            raise ValueError("Software fixture and diagnostic modes are mutually exclusive")
+        self.diagnostic=diagnostic
+        self.provisional=None
+        if diagnostic:
+            self.manifest,expected_spec,self.provisional=training_inputs(asset,diagnostic=True,provisional_spec=provisional_spec)
+        else:
+            self.manifest=verify_asset(asset)
         if software_fixture and self.manifest["robot"]!="synthetic_software_fixture":
             raise ValueError("Software test mode only accepts the synthetic box fixture")
-        self.policy,self.spec,self.bundle=load_bundle(bundle,self.manifest["asset_hash"],require_trained=not software_fixture)
-        self.model=mujoco.MjModel.from_xml_path(str(asset/"robot.xml"))
+        self.policy,self.spec,self.bundle=load_bundle(bundle,self.manifest["asset_hash"],require_trained=not (software_fixture or diagnostic))
+        if diagnostic:
+            check_training_identity(dict(self.bundle.get("training_metadata",{}),asset_hash=self.bundle["asset_hash"]),
+                dict(asset_hash=self.manifest["asset_hash"],diagnostic=True,provisional_spec=self.provisional))
+            if self.spec.to_dict()!=expected_spec.to_dict():
+                raise ValueError("Evaluation actuator spec differs from the policy bundle")
+            # Compile passive dynamics before MuJoCo derives inertia/constraint constants.
+            # Joint q0 is a reset pose, not a joint reference-angle offset.
+            root=ET.parse(asset/"robot.xml").getroot()
+            root.find("compiler").set("meshdir",str((asset/"meshes").resolve()))
+            height=float(self.bundle["training_config"].get("initial_base_height_m",.5))
+            if not np.isfinite(height) or height<=0:
+                raise ValueError("Initial base height must be finite and positive")
+            root.find(".//body[@name='base_link']").set("pos",f"0 0 {height}")
+            for index,name in enumerate(JOINT_NAMES):
+                joint=root.find(f".//joint[@name='{name}']")
+                for field in ("armature","damping","frictionloss"):
+                    joint.set(field,str(getattr(self.spec,field)[index]))
+                root.find(f".//motor[@name='{name}_motor']").set("ctrlrange",f"{-self.spec.effort[index]} {self.spec.effort[index]}")
+            self.model=mujoco.MjModel.from_xml_string(ET.tostring(root,encoding="unicode"))
+        else:
+            self.model=mujoco.MjModel.from_xml_path(str(asset/"robot.xml"))
         self.data=mujoco.MjData(self.model)
         self.q_indices=[self.model.joint(name).qposadr[0] for name in JOINT_NAMES]
         self.v_indices=[self.model.joint(name).dofadr[0] for name in JOINT_NAMES]
         self.motor_indices=[self.model.actuator(name+"_motor").id for name in JOINT_NAMES]
+        if diagnostic:
+            for field in ("armature","damping","frictionloss"):
+                if not np.array_equal(getattr(self.model,"dof_"+field)[self.v_indices],getattr(self.spec,field)):
+                    raise ValueError(f"Compiled MuJoCo {field} differs from provisional spec")
+            if not np.array_equal(self.model.actuator_ctrlrange[self.motor_indices],np.column_stack((-np.array(self.spec.effort),self.spec.effort))):
+                raise ValueError("Compiled MuJoCo effort differs from provisional spec")
+            if self.model.opt.timestep!=self.spec.physics_dt:
+                raise ValueError("MuJoCo timestep differs from policy actuator spec")
         self.pd=JointPD(self.spec,1)
         self.observations=ObservationBuilder(1,self.pd.default_pos)
         self.action=torch.zeros(1,18)
@@ -96,12 +135,14 @@ class MujocoRunner:
         return observation.numpy()[0],self.action.numpy()[0]
 
     def evaluate(self,trajectory:Trajectory,output:Path):
+        start_time=float(trajectory.timestamps[0])
+        steps=round((trajectory.timestamps[-1]-start_time)/.02)
+        if steps<1:
+            raise ValueError("Evaluation requires a case lasting at least one control step")
         self.reset(trajectory.positions[0],goal_quat_w=trajectory.sample_orientation(trajectory.timestamps[0]))
         rows={key:[] for key in ("times","errors","base","tcp","goal","torques","velocities","actions","observations",
             "tcp_quat_w","goal_quat_w","orientation_errors_rad")}
         fallen=False
-        start_time=float(trajectory.timestamps[0])
-        steps=round((trajectory.timestamps[-1]-start_time)/.02)
         for _ in range(steps):
             goal=trajectory.sample(start_time+self.data.time)
             obs,action=self.step(goal,goal_quat_w=trajectory.sample_orientation(start_time+self.data.time))
@@ -123,7 +164,8 @@ class MujocoRunner:
         result=episode_metrics(rows["times"],rows["errors"],rows["base"],rows["torques"],rows["velocities"],fallen,
             orientation_errors=rows["orientation_errors_rad"])
         result.update(engine="MuJoCo",trajectory=trajectory.metadata,
-            policy_sha256=self.bundle["policy_sha256"])
+            policy_sha256=self.bundle["policy_sha256"],diagnostic=self.diagnostic,
+            trained=bool(self.bundle["trained"]),elapsed_seconds=float(self.data.time))
         output.mkdir(parents=True,exist_ok=True)
         np.savez_compressed(output/"trace.npz",**{key:np.asarray(value) for key,value in rows.items()})
         (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")
@@ -135,9 +177,11 @@ def main():
     parser.add_argument("--bundle",type=Path,required=True)
     parser.add_argument("--trajectory",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--diagnostic",action="store_true",help="Provisional engineering evaluation only")
+    parser.add_argument("--provisional-spec",type=Path,help="Required sourced actuator spec for diagnostic mode")
     args=parser.parse_args()
     torch.set_num_threads(1)
-    runner=MujocoRunner(args.asset,args.bundle)
+    runner=MujocoRunner(args.asset,args.bundle,diagnostic=args.diagnostic,provisional_spec=args.provisional_spec)
     print(json.dumps(runner.evaluate(Trajectory.load(args.trajectory),args.output),indent=2))
 
 if __name__=="__main__":
