@@ -209,3 +209,24 @@ def test_mujoco_suite_cli_preserves_engineering_report(diagnostic_bundle, tmp_pa
     assert report['evaluation']['provisional_spec'] == json.loads(spec_path.read_text())
     assert 'no hardware validity' in report['evaluation']['evidence_limit']
     assert (output / 'case/trace.npz').exists()
+
+
+def test_attach_marker_preserves_diagnostic_model(diagnostic_bundle, tmp_path):
+    from pawweaver.visual_runtime import attach_marker
+    bundle, spec_path = diagnostic_bundle
+    runner = MujocoRunner(ASSET, bundle, diagnostic=True, provisional_spec=spec_path)
+    before = runner.model
+    before_qpos = runner.data.qpos.copy()
+    before_tcp = runner.data.body('tcp').xpos.copy()
+    attach_marker(runner, ASSET, {'marker_id': 7, 'marker_size_m': .16}, tmp_path)
+    for field in ('dof_armature', 'dof_damping', 'dof_frictionloss', 'dof_invweight0',
+                  'actuator_ctrlrange', 'qpos0'):
+        np.testing.assert_array_equal(getattr(runner.model, field), getattr(before, field))
+    np.testing.assert_array_equal(runner.data.qpos, before_qpos)
+    np.testing.assert_array_equal(runner.data.body('tcp').xpos, before_tcp)
+    marker = runner.model.body('vision_marker')
+    assert marker.mocapid[0] >= 0
+    geom_id = marker.geomadr[0]
+    assert runner.model.geom_contype[geom_id] == runner.model.geom_conaffinity[geom_id] == 0
+    assert runner.model.opt.timestep == before.opt.timestep
+    assert runner.data.time == 0

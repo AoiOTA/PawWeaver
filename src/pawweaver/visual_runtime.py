@@ -87,7 +87,8 @@ def attach_marker(runner,asset,scenario,output):
     marker=cv2.aruco.generateImageMarker(cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50),scenario["marker_id"],160)
     image=np.full((200,200),255,np.uint8);image[20:180,20:180]=marker
     texture=output/"marker.png";Image.fromarray(image).save(texture)
-    root=ET.parse(asset/"robot.xml").getroot()
+    # Retain the exact provisional parameters and scene pose used by the runner.
+    root=ET.fromstring(runner.diagnostic_model_xml) if runner.diagnostic else ET.parse(asset/"robot.xml").getroot()
     root.find("compiler").set("meshdir",str((asset/"meshes").resolve()))
     assets=root.find("asset")
     ET.SubElement(assets,"texture",name="vision_marker_tex",type="2d",file=str(texture.resolve()))

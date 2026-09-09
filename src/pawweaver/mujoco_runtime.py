@@ -49,7 +49,8 @@ class MujocoRunner:
                 for field in ("armature","damping","frictionloss"):
                     joint.set(field,str(getattr(self.spec,field)[index]))
                 root.find(f".//motor[@name='{name}_motor']").set("ctrlrange",f"{-self.spec.effort[index]} {self.spec.effort[index]}")
-            self.model=mujoco.MjModel.from_xml_string(ET.tostring(root,encoding="unicode"))
+            self.diagnostic_model_xml=ET.tostring(root,encoding="unicode")
+            self.model=mujoco.MjModel.from_xml_string(self.diagnostic_model_xml)
         else:
             self.model=mujoco.MjModel.from_xml_path(str(asset/"robot.xml"))
         self.data=mujoco.MjData(self.model)
