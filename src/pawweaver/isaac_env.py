@@ -45,7 +45,8 @@ class WholeBodyEnv:
         self.observations=ObservationBuilder(num_envs,self.pd.default_pos)
         self.episode_length_buf=torch.zeros(num_envs,device=device,dtype=torch.long)
         self.reference=GoalBank(num_envs,self.max_episode_length,device,seed,
-            config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()))
+            config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()),
+            static_goal_offsets_m=config.get("static_goal_offsets_m"))
         self.previous_action=torch.zeros(num_envs,18,device=device)
         self.previous_qd=torch.zeros_like(self.previous_action)
         self.previous_tcp=torch.zeros(num_envs,3,device=device)

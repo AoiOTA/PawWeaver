@@ -4,10 +4,16 @@ import torch
 from .trajectories import FAMILIES,synthetic,AdaptiveSampler,Trajectory
 
 class GoalBank:
-    def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=()):
+    def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=(),static_goal_offsets_m=None):
         self.batch,self.steps,self.device=batch,steps,device
         self.rng=np.random.default_rng(seed)
         self.stage,self.adaptive=stage,adaptive
+        self.static_goal_offsets_m=None
+        if static_goal_offsets_m is not None:
+            offsets=np.asarray(static_goal_offsets_m,dtype=np.float32)
+            if offsets.ndim!=2 or offsets.shape[0]==0 or offsets.shape[1]!=3 or not np.isfinite(offsets).all():
+                raise ValueError("Static goal offsets must be a nonempty finite [N,3] array in meters")
+            self.static_goal_offsets_m=offsets.copy()
         self.demonstrations=[Trajectory.load(path) for path in demonstrations]
         if any(t.metadata.get("split")!="train" for t in self.demonstrations):
             raise ValueError("Only pre-split training demonstrations can enter the training GoalBank")
@@ -18,6 +24,12 @@ class GoalBank:
 
     def reset(self,ids,start_w):
         starts=start_w.detach().cpu().numpy()
+        if self.static_goal_offsets_m is not None:
+            indices=ids.cpu().numpy()
+            targets=starts+self.static_goal_offsets_m[indices%len(self.static_goal_offsets_m)]
+            self.positions[ids]=torch.as_tensor(targets,device=self.device,dtype=torch.float32)[:,None,:]
+            self.family[indices]=0
+            return
         for index,start in zip(ids.cpu().tolist(),starts):
             if self.stage==0:
                 family=int(self.rng.choice([0,1]))
