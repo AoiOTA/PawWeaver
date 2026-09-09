@@ -36,6 +36,18 @@ MUJOCO_GL=egl bash scripts/check.sh
 
 合成机器人不含 AS2/Piper 几何，策略包 `trained=false`，不能用于正式验收。视觉录屏是极短的软件测试，不能作为跟踪性能演示。
 
+## 真实几何的最小工程诊断
+
+M0 未闭合时，只能显式提供带来源的临时执行器参数。复用已有组合几何/USD，不重建资产：
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec configs/diagnostic_actuators.json --config configs/diagnostic_training.json --output artifacts/runs/diagnostic_geometry_seed0 --seed 0 --num-envs 4 --iterations 1 --headless
+```
+
+该配置为 16 步、2 epoch、2 minibatch，关闭预测、速度估计、自适应采样、随机化和示范。参数文件绑定当前资产哈希，按关节名使用 canonical URDF 的位置/速度限位；增益/力矩为记录的官方候选参数，臂力矩仅是 CAN 编码范围，臂被动动力学取零未经验证。初始姿态取渲染姿态，动作尺度 0.1 rad、零延迟均为工程选择，不能声明硬件有效。
+
+`run.json` 保存完整临时参数、来源、资产/USD 标识、初始足端高度和传感器映射；`metrics.jsonl` 保存有限性检查、每个物理子步的力矩饱和、TCP 误差、跌倒/重置、吞吐和优化器实测更新。检查点禁止混合诊断/正式模式或不同临时参数/来源。导出包始终 `trained=false`，正式评估会拒绝它。此次输出已存在，复现实验请使用新的输出目录以保留记录。
+
 ## 正式训练与课程
 
 以下命令要求 M0 参数闭合，当前不能成功开始正式训练：

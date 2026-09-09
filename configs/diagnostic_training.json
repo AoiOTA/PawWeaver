@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "physics_dt": 0.002,
+  "decimation": 10,
+  "history_frames": 5,
+  "goal_history_frames": 4,
+  "future_frames": 4,
+  "episode_seconds": 20.0,
+  "num_envs": 4,
+  "actor_hidden_dims": [
+    512,
+    256,
+    128
+  ],
+  "rollout_steps": 16,
+  "learning_epochs": 2,
+  "mini_batches": 2,
+  "gamma": 0.99,
+  "lam": 0.95,
+  "learning_rate": 0.001,
+  "desired_kl": 0.01,
+  "entropy_coef": 0.01,
+  "clip_param": 0.2,
+  "velocity_estimation": false,
+  "trajectory_prediction": false,
+  "adaptive_sampling": false,
+  "domain_randomization": false,
+  "reward_weights": {
+    "tracking": 2.0,
+    "progress": 1.0,
+    "velocity_tracking": 0.25,
+    "action_rate": -0.1,
+    "normalized_torque": -0.002,
+    "joint_acceleration": -2.5e-07,
+    "joint_limit": -1.0,
+    "saturation": -0.05,
+    "foot_slip": -0.1,
+    "body_tilt": -0.1,
+    "collision": -2.0,
+    "termination": -5.0
+  },
+  "randomization": {
+    "mass_multiplier": [
+      0.9,
+      1.1
+    ],
+    "com_offset_m": 0.01,
+    "motor_strength": [
+      0.9,
+      1.1
+    ],
+    "gain_multiplier": [
+      0.9,
+      1.1
+    ],
+    "friction": [
+      0.5,
+      1.0
+    ],
+    "control_delay_physics_steps": [
+      0,
+      10
+    ],
+    "observation_noise": 0.01,
+    "push_velocity_m_s": 0.15
+  },
+  "demonstrations": []
+}

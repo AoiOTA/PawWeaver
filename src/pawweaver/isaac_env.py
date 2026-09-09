@@ -4,19 +4,19 @@ from pathlib import Path
 import numpy as np
 import torch
 from tensordict import TensorDict
-from .assets.build import verify_asset
 from .assets.model import RobotTree,numbers
-from .contracts import ActuatorSpec,RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
+from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
 from .control import JointPD
 from .observations import ObservationBuilder
 from .math import quat_apply,quat_apply_inverse
 from .task import GoalBank,reward_terms
 from .isaac_robot import create_scene
+from .training_inputs import training_inputs
 
 class WholeBodyEnv:
-    def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0):
-        self.manifest=verify_asset(asset)
-        self.spec=ActuatorSpec.load(asset/"actuators.json")
+    def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0,*,diagnostic=False,provisional_spec=None):
+        self.manifest,self.spec,_=training_inputs(asset,diagnostic=diagnostic,provisional_spec=provisional_spec)
+        self.diagnostic=diagnostic
         conversion=json.loads((asset/"usd/conversion.json").read_text())
         if conversion["source_asset_hash"]!=self.manifest["asset_hash"]:
             raise ValueError("USD was converted from a different canonical asset")
@@ -26,6 +26,11 @@ class WholeBodyEnv:
         torch.manual_seed(seed)
         self.sim,self.scene=create_scene(asset,num_envs,device,self.spec,contacts=True)
         self.robot=self.scene["robot"]
+        if diagnostic:
+            for name,sensor in self.scene.sensors.items():
+                if name.startswith("contact_"):
+                    if sensor.num_sensors!=1 or sensor.body_names!=[name.removeprefix("contact_")]:
+                        raise ValueError(f"Contact sensor maps unexpected bodies: {name} {sensor.body_names}")
         self.joint_ids=named_indices(self.robot.joint_names,JOINT_NAMES)
         self.foot_ids=named_indices(self.robot.body_names,FOOT_NAMES)
         self.gripper_id=self.robot.body_names.index("arm_gripper_base")
@@ -147,13 +152,22 @@ class WholeBodyEnv:
                 bound=self.config["randomization"]["push_velocity_m_s"]
                 velocity[:,:2]+=torch.empty(len(ids),2,device=self.device).uniform_(-bound,bound)
                 self.robot.write_root_link_velocity_to_sim_index(root_velocity=velocity,env_ids=ids)
+        saturated=0
         for _ in range(self.spec.decimation):
             data=self.robot.data
             self.torque=self.pd.torque(data.joint_pos.torch[:,self.joint_ids],data.joint_vel.torch[:,self.joint_ids])
+            if self.diagnostic:
+                if not torch.isfinite(self.torque).all() or not torch.isfinite(self.pd.raw_torque).all():
+                    raise FloatingPointError("Non-finite physics torque")
+                saturated+=int((self.pd.raw_torque.abs()>=self.pd.effort).sum().item())
             self.robot.set_joint_effort_target_index(target=self.torque.contiguous(),joint_ids=self.joint_ids)
             self.scene.write_data_to_sim()
             self.sim.step(render=False)
             self.scene.update(.002)
+            if self.diagnostic:
+                for value in vars(self.state()).values():
+                    if value is not None and not torch.isfinite(value).all():
+                        raise FloatingPointError("Non-finite physics state")
         self.episode_length_buf+=1
         state=self.state()
         goal=self.reference.current(self.episode_length_buf)
@@ -194,6 +208,11 @@ class WholeBodyEnv:
             self.reference.sampler.update(family,score)
         extras={"time_outs":timeout&~fallen,"tracking_error_m":self.previous_error.mean().item(),
                 "fall_fraction":fallen.float().mean().item()}
+        if self.diagnostic:
+            extras.update(falls=int(fallen.sum().item()),resets=len(ids) if auto_reset else 0,
+                torque_saturated=saturated,torque_samples=self.num_envs*18*self.spec.decimation,
+                tracking_error_max_m=float(error.norm(dim=-1).max()),
+                base_height_min_m=float((state.base_pos_w[:,2]-self.scene.env_origins[:,2]).min()))
         if auto_reset:
             self.reset(ids)
         return self.get_observations(),reward,done,extras
