@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "robot": "as2_edu_piper_h_dabai_dc1",
+  "robot": "as2_edu_piper_h_rgbd",
   "gripper_width_m": 0.04,
   "manual_claims": {
     "as2_with_battery_mass_kg": 20.0,
@@ -9,18 +9,61 @@
     "piper_h_mass_kg": 4.5,
     "piper_h_payload_kg": 2.0,
     "piper_h_base_hole_spacing_m": 0.07,
-    "piper_h_joint_limits_deg": [[-154,154],[0,195],[-175,0],[-127,127],[-89.5,89.5],[-170,170]],
-    "piper_h_joint_speed_deg_s": [180,195,180,225,225,225],
+    "piper_h_joint_limits_deg": [
+      [
+        -154,
+        154
+      ],
+      [
+        0,
+        195
+      ],
+      [
+        -175,
+        0
+      ],
+      [
+        -127,
+        127
+      ],
+      [
+        -89.5,
+        89.5
+      ],
+      [
+        -170,
+        170
+      ]
+    ],
+    "piper_h_joint_speed_deg_s": [
+      180,
+      195,
+      180,
+      225,
+      225,
+      225
+    ],
     "gripper_mass_kg": 0.5,
-    "gripper_width_range_m": [0.0,0.1]
+    "gripper_width_range_m": [
+      0.0,
+      0.1
+    ]
   },
   "camera": {
-    "model": "Orbbec DaBai DC1",
-    "depth_size": [640,400],
-    "color_size": [640,480],
+    "model": "RealSense D435",
+    "profile": "configs/cameras/realsense_d435.json",
+    "depth_size": [
+      640,
+      480
+    ],
+    "color_size": [
+      640,
+      480
+    ],
     "fps": 30,
-    "driver_source": "https://github.com/orbbec/ros_astra_camera/blob/210f530144314da7c70072215bacba12130d9b20/launch/dabai_dc1.launch",
-    "calibration": null
+    "driver_source": "https://github.com/realsenseai/librealsense",
+    "calibration": null,
+    "selection_reason": "User authorized an alternative RGB-D camera; AgileX provides a Piper-H + D435 mounting model."
   },
   "verified_overrides": {
     "assembly": null,

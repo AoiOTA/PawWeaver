@@ -1,0 +1,82 @@
+{
+  "model": "RealSense D435",
+  "nominal_mass_kg": 0.075,
+  "mass_tolerance_fraction": 0.1,
+  "body_size_xyz_m": [
+    0.025,
+    0.09,
+    0.025
+  ],
+  "datasheet": "https://www.realsenseai.com/download/21345/",
+  "datasheet_revision": "337029-017, Table 3-52, nominal weight includes USB cap",
+  "mount_source": "https://github.com/agilexrobotics/agx_arm_sim/blob/f8cd8b147c75d59e14f90fb0646770eefa268ed0/agx_arm_description/urdf/piper_h_gripper_d435.urdf",
+  "sdk": "RealSense SDK 2.0 (librealsense)",
+  "selected_streams": {
+    "color": [
+      1280,
+      720,
+      30
+    ],
+    "depth": [
+      1280,
+      720,
+      30
+    ]
+  },
+  "min_depth_at_selected_resolution_m": 0.28,
+  "working_range_for_marker_test_m": [
+    0.35,
+    3.0
+  ],
+  "physical_calibration": null,
+  "dynamics_status": "Reference geometry available; URDF inertia explicitly unreliable; diagnostic approximation only",
+  "simulation_calibration": {
+    "color": {
+      "width": 1280,
+      "height": 720,
+      "fx": 931.2057783503649,
+      "fy": 937.8320632897686,
+      "cx": 639.5,
+      "cy": 359.5,
+      "min_depth": 0.28,
+      "max_depth": 3.0
+    },
+    "depth": {
+      "width": 1280,
+      "height": 720,
+      "fx": 674.4192801798159,
+      "fy": 649.4571918977125,
+      "cx": 639.5,
+      "cy": 359.5,
+      "min_depth": 0.28,
+      "max_depth": 3.0
+    },
+    "depth_to_color": [
+      [
+        1,
+        0,
+        0,
+        0.015
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "provenance": "Virtual pinhole cameras from nominal FOV; 15 mm nominal extrinsic from upstream D435 xacro. NOT serial-number calibration."
+  }
+}

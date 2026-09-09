@@ -1,0 +1,7 @@
+{
+  "kind": "synthetic_software_test",
+  "hardware_validation": false,
+  "gpu_cpu_action_max_difference": 2.9802322387695312e-08,
+  "physics_steps": 200,
+  "passed": true
+}

@@ -3,6 +3,7 @@
 .cache/
 .cache-*.log
 assets/upstream/
+assets/evidence/
 assets/generated/
 artifacts/
 runs/

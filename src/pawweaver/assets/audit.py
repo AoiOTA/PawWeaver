@@ -48,7 +48,7 @@ def inspect_urdf(path: Path) -> dict:
 
 REQUIRED_EVIDENCE = {
     "assembly": "AS2 rail-to-base transform, adapter/support geometry and mass properties, wrist/TCP transforms",
-    "camera_rigid_body": "DC1 and camera bracket mass, centre of mass, inertia and collision dimensions",
+    "camera_rigid_body": "Selected RGB-D camera and bracket mass, centre of mass, inertia and collision dimensions",
     "cable_rigid_bodies": "Cable mass allocation with source; explicitly document absence if none is fitted",
     "mass_reconciliation": "Explain AS2 17.64 vs 20 kg and Piper-H 4.167 vs 4.5 kg; identify omitted components or correct model revision",
     "arm_joint_mapping": "Resolve manual/URDF limits and zero offsets by FK/CAD comparison",
@@ -111,4 +111,3 @@ def write_audit(report: dict, output: Path):
     lines += ["", "## Required evidence", ""]
     lines += [f"- **{issue['field']}**: {issue['message']}" for issue in report["issues"]]
     (output / "hardware-audit.md").write_text("\n".join(lines)+"\n")
-

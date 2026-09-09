@@ -16,7 +16,6 @@ Downloaded source files retain their source licenses. `assets/upstream/provenanc
 
 - [UMI on Legs](https://umi-on-legs.github.io/), [code](https://github.com/real-stanford/umi-on-legs): world/task-frame reference trajectories and unified arm/leg joint output. Original simulator: Isaac Gym.
 - [MLM](https://arxiv.org/html/2508.10538): causal trajectory prediction, proprioceptive velocity estimation, adaptive task sampling. The project implements the relevant methods; it does not claim to ship the authors' unpublished training code.
-- [FastUMI](https://arxiv.org/html/2409.19499), [official tools](https://github.com/zxzm-zak/FastUMI_Data): TCP trajectory data and transformations. GoPro visual observations are not interchangeable with DC1 imagery.
+- [FastUMI](https://arxiv.org/html/2409.19499), [official tools](https://github.com/zxzm-zak/FastUMI_Data): TCP trajectory data and transformations. GoPro visual observations are not interchangeable with wrist RGB-D imagery.
 - [Deep WBC](https://proceedings.mlr.press/v205/fu23a.html): unified learning and reward balancing. Its independent base commands are not used here.
 - [Multi-critic twist tracking](https://arxiv.org/html/2507.08656v2): comparison for multi-objective optimization; baseline here is single-critic PPO.
-

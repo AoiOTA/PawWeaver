@@ -1,0 +1,14 @@
+{
+  "model": "Orbbec DaBai DC1",
+  "depth_size": [
+    640,
+    400
+  ],
+  "color_size": [
+    640,
+    480
+  ],
+  "fps": 30,
+  "driver_source": "https://github.com/orbbec/ros_astra_camera/blob/210f530144314da7c70072215bacba12130d9b20/launch/dabai_dc1.launch",
+  "calibration": null
+}

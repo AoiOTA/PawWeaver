@@ -1,0 +1,17 @@
+{
+  "mode": "rendered_rgbd_with_simulated_base_odometry",
+  "policy_sha256": "f405b7fc1bafc3358cbd92aced0c2b348032e0df2487c1414e6fc39370ed35a7",
+  "asset_hash": "386afcd606e22a4dfa036f75b8108d068c671bcf3eec8cbf5136b2b2bc8c49cd",
+  "camera_hz": 30,
+  "control_hz": 50,
+  "measurement_rmse_m": 0.0016786445408499893,
+  "missed_frame_fraction": 0.2,
+  "hold_fraction": 0.5714285714285714,
+  "fallen": false,
+  "recovery_seconds": [
+    0.04000000000000008
+  ],
+  "passed": true,
+  "hardware_validation": false,
+  "kind": "synthetic_rendered_closed_loop_test"
+}

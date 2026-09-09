@@ -1,0 +1,13 @@
+{
+  "asset_hash": "1fe12b296656e1684165d60cdfb36e5c003cbb777f4d0e8525d14516d4f9176a",
+  "hardware_validation": false,
+  "samples": 25,
+  "max_position_error_m": 6.023360241392592e-07,
+  "source_mass_kg": 25.682000000000002,
+  "physx_mass_kg": 25.6820011138916,
+  "max_orientation_error_deg": 8.092405130911467e-05,
+  "gravity_max_absolute_difference_nm": 6.352286455069134e-06,
+  "gravity_tolerance": "0.005 Nm + 2% of MuJoCo gravity torque, per joint",
+  "gravity_passed": true,
+  "passed": true
+}

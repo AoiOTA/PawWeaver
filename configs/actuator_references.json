@@ -1,0 +1,129 @@
+{
+  "status": "reference_candidates_only_not_an_ActuatorSpec",
+  "piper_h": {
+    "source": "https://github.com/agilexrobotics/pyAgxArm/blob/e7aef17d54cac80cbaeb1b4110ab3d8f1337a95b/pyAgxArm/api/constants.py",
+    "mit_feedforward_command_limit_nm": [
+      32.0,
+      20.0,
+      32.0,
+      10.294112,
+      10.294112,
+      10.29408
+    ],
+    "limit_meaning": "CAN command encoding range, not certified continuous or peak motor capability",
+    "torque_k": [
+      1.18125,
+      1.65375,
+      1.18125,
+      0.9576,
+      0.9576,
+      0.9576
+    ],
+    "torque_b": [
+      4.0,
+      2.5,
+      4.0,
+      1.7,
+      1.7,
+      1.0
+    ],
+    "torque_c": [
+      1.0,
+      1.0,
+      1.0,
+      0.75692,
+      0.75692,
+      1.28676
+    ],
+    "sdk_default_kp": 10,
+    "sdk_default_kd": 0.8,
+    "sdk_joint_limits_deg": {
+      "joint1": [
+        -150.0,
+        150.0
+      ],
+      "joint2": [
+        0.0,
+        180.0
+      ],
+      "joint3": [
+        -170.0,
+        0.0
+      ],
+      "joint4": [
+        -135.0,
+        135.0
+      ],
+      "joint5": [
+        -89.5,
+        89.5
+      ],
+      "joint6": [
+        -180.0,
+        180.0
+      ]
+    },
+    "mdh": [
+      [
+        0.123,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.5707963267948966,
+        -3.0058060377846343
+      ],
+      [
+        0.0,
+        0.28502999999999995,
+        0.0,
+        -1.793849405199772
+      ],
+      [
+        0.25575,
+        -0.02198,
+        1.5707963267948966,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        -1.5707963267948966,
+        0.0
+      ],
+      [
+        0.0963,
+        0.0,
+        1.5707963267948966,
+        0.0
+      ]
+    ]
+  },
+  "as2": {
+    "source": "https://github.com/unitreerobotics/unitree_rl_mjlab/blob/1425b15f73bd4095f0df53709d7c389c3eb9e790/src/assets/robots/unitree_as2/as2_constants.py",
+    "kp_hip_thigh_calf": [
+      40,
+      40,
+      60
+    ],
+    "kd_hip_thigh_calf": [
+      2,
+      2,
+      3
+    ],
+    "effort_hip_thigh_calf_nm": [
+      50,
+      50,
+      75
+    ],
+    "armature_hip_thigh_calf": [
+      0.026,
+      0.026,
+      0.038
+    ],
+    "limit_meaning": "Official task configuration, distinct from the 60/60/90 URDF effort values"
+  }
+}

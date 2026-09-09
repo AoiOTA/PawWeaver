@@ -1,0 +1,11 @@
+{
+  "kind": "synthetic_camera_geometry_test",
+  "dc1_validation": false,
+  "position_error_m": 7.615224569527342e-05,
+  "measurement": [
+    0.06993000507354737,
+    -0.029970002174377442,
+    -0.999000072479248
+  ],
+  "passed": true
+}

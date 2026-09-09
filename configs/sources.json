@@ -18,6 +18,24 @@
       "suffixes": [".urdf", ".xacro", ".stl"],
       "license_names": ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"],
       "manual": "https://agilexsupport.yuque.com/staff-hso6mo/alxgtf/ay1awrn2hrhn1krg?singleDoc"
+    },
+    {
+      "id": "agilex_d435",
+      "repository": "agilexrobotics/agx_arm_sim",
+      "revision": "f8cd8b147c75d59e14f90fb0646770eefa268ed0",
+      "prefixes": ["agx_arm_description/urdf/piper_h_gripper_d435.urdf", "agx_arm_description/meshes/realsense_mid_stand.dae", "realsense2_description/meshes/d435.dae", "realsense2_description/urdf/_d435.urdf.xacro"],
+      "suffixes": [".urdf", ".xacro", ".dae"],
+      "license_names": ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING", "README.md"],
+      "manual": "https://www.realsenseai.com/products/stereo-depth-camera-d435/"
+    },
+    {
+      "id": "unitree_as2_dynamics",
+      "repository": "unitreerobotics/unitree_mujoco",
+      "revision": "1eb6642e3f3fdfb7fb13a9794fd6a2dd93ea0e7d",
+      "prefixes": ["unitree_robots/as2/as2.xml"],
+      "suffixes": [".xml"],
+      "license_names": ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"],
+      "manual": "https://github.com/unitreerobotics/unitree_mujoco/tree/1eb6642e3f3fdfb7fb13a9794fd6a2dd93ea0e7d/unitree_robots/as2"
     }
   ]
 }

@@ -109,15 +109,14 @@ def compose_urdf(hardware: dict, upstream: Path, output: Path, diagnostic: bool)
     notes = {}
     overrides = hardware["verified_overrides"]
     if diagnostic:
-        # A source-only assembly preview: no guessed DC1 mass or actuator calibration.
-        # Mount is deliberately above the full source base mesh; NOT a verified rail transform.
         import trimesh
-        bounds = trimesh.load(as2.parent.parent/"meshes/base_link.STL").bounds
-        mount = [0.,0.,float(bounds[1,2])+0.01]
+        from .mount import preview_mount
+        base_link=next(link for link in root.findall("link") if link.get("name")=="base_link")
+        mount,mount_notes=preview_mount(base_link,trimesh.load(as2.parent.parent/"meshes/base_link.STL"))
         root.append(fixed_joint("arm_mount","base_link","arm_base_link",mount))
         tcp = [0.,0.,0.138]  # terminal finger plane in the official fixed-width gripper geometry
-        notes = {"mode":"source_geometry_diagnostic", "omitted_unverified_components":["adapter","DC1","camera bracket","cables"],
-                 "mount_xyz_m":mount,"mount_rule":"source base mesh upper bound + 10 mm clearance; visualization only",
+        notes = {"mode":"source_geometry_diagnostic", "omitted_unverified_components":["cables"],
+                 "mount_xyz_m":mount,"mount_concept":mount_notes,
                  "tcp_rule":"official gripper finger terminal plane z=0.138 m in arm_gripper_base"}
     else:
         assembly = overrides["assembly"]["values"]
@@ -125,8 +124,8 @@ def compose_urdf(hardware: dict, upstream: Path, output: Path, diagnostic: bool)
         append_rigid_body(root,assembly["adapter"])
         tcp = assembly["tcp_xyz_m"]
         append_rigid_body(root,overrides["camera_rigid_body"]["values"])
-        if overrides["camera_rigid_body"]["values"]["name"] != "dc1_body":
-            raise ValueError("Camera rigid body must be named dc1_body")
+        if overrides["camera_rigid_body"]["values"]["name"] != "rgbd_body":
+            raise ValueError("Camera rigid body must be named rgbd_body")
         for body in overrides["cable_rigid_bodies"]["values"]:
             append_rigid_body(root,body)
         reconciled = overrides["mass_reconciliation"]["values"]
@@ -159,8 +158,8 @@ def compose_urdf(hardware: dict, upstream: Path, output: Path, diagnostic: bool)
                 joints[name].remove(old)
             ET.SubElement(joints[name],"dynamics",damping=str(spec.damping[i]),friction=str(spec.frictionloss[i]))
         (output/"actuators.json").write_text(json.dumps(spec.to_dict(),indent=2)+"\n")
-        ET.SubElement(root,"link",name="dc1_optical")
-        root.append(fixed_joint("dc1_optical_mount","dc1_body","dc1_optical",assembly["optical_xyz_m"],assembly["optical_rpy_rad"]))
+        ET.SubElement(root,"link",name="rgbd_optical")
+        root.append(fixed_joint("rgbd_optical_mount","rgbd_body","rgbd_optical",assembly["optical_xyz_m"],assembly["optical_rpy_rad"]))
     ET.SubElement(root,"link",name="tcp")
     root.append(fixed_joint("tcp_mount","arm_gripper_base","tcp",tcp))
     tree = RobotTree(root)
@@ -174,6 +173,7 @@ def compose_urdf(hardware: dict, upstream: Path, output: Path, diagnostic: bool)
 
 def generate_mjcf(tree: RobotTree, output: Path, spec: ActuatorSpec | None, calibration: dict | None = None) -> Path:
     """Translate canonical geometry and full COM inertias, without MuJoCo URDF importer defaults."""
+    import mujoco
     root = ET.Element("mujoco",model="pawweaver")
     ET.SubElement(root,"compiler",angle="radian",autolimits="true",meshdir="meshes",inertiafromgeom="false",fusestatic="false")
     ET.SubElement(root,"option",timestep="0.002",gravity="0 0 -9.81",integrator="implicitfast",cone="elliptic",iterations="100")
@@ -250,12 +250,17 @@ def generate_mjcf(tree: RobotTree, output: Path, spec: ActuatorSpec | None, cali
                 ET.SubElement(node,"geom",**attrs)
         if name == "tcp":
             ET.SubElement(node,"site",name="tcp_site",type="sphere",size="0.008",rgba="0 1 0 1")
-        if name == "dc1_optical" and calibration is not None:
-            # OpenCV +Z forward,+Y down -> MuJoCo -Z forward,+Y up.
-            fy, height = float(calibration["fy"]), int(calibration["height"])
-            if fy <= 0 or height <= 0:
-                raise ValueError("Invalid calibrated camera focal length or image height")
-            ET.SubElement(node,"camera",name="dc1",quat="0 1 0 0",fovy=str(np.degrees(2*np.arctan(height/(2*fy)))))
+        if name == "rgbd_optical" and calibration is not None:
+            from pawweaver.vision import Intrinsics
+            from pawweaver.cameras import mujoco_intrinsics
+            # Separate calibrated RGB and depth optical frames. No default depth alignment.
+            for stream in ("color","depth"):
+                intr=Intrinsics(**calibration[stream])
+                transform=np.eye(4) if stream=="color" else np.asarray(calibration["depth_to_color"],float)
+                rotation=transform[:3,:3]@np.diag([1.,-1.,-1.])
+                quat=np.zeros(4);mujoco.mju_mat2Quat(quat,rotation.flatten())
+                ET.SubElement(node,"camera",name="rgbd_"+stream,pos=format_vec(transform[:3,3]),
+                    quat=format_vec(quat),**mujoco_intrinsics(intr))
         for child_joint in tree.children[name]:
             cj = tree.joints[child_joint]
             child_name = cj.find("child").get("link")
@@ -285,11 +290,31 @@ def build_assets(hardware_path: Path, upstream: Path, output: Path, diagnostic=F
     output.mkdir(parents=True,exist_ok=True)
     write_audit(report,output)
     hardware = json.loads(hardware_path.read_text())
+    if hardware["camera"].get("profile"):
+        profile_path=hardware_path.parent.parent/hardware["camera"]["profile"]
+        hardware["camera"]["profile_values"]=json.loads(profile_path.read_text())
     tree, notes = compose_urdf(hardware,upstream,output,diagnostic)
+    if diagnostic:
+        from .dynamics import as2_dynamics
+        notes["as2_dynamics"]=as2_dynamics(tree.xml,upstream)
+    calibration=hardware["camera"].get("calibration")
+    if diagnostic and hardware["camera"]["model"]=="RealSense D435":
+        from .camera import add_d435_reference
+        profile=hardware["camera"]["profile_values"]
+        notes["camera_reference"]=add_d435_reference(tree.xml,upstream,output,profile)
+        tree=RobotTree(tree.xml)
+        ET.indent(tree.xml)
+        ET.ElementTree(tree.xml).write(output/"robot.urdf",encoding="utf-8",xml_declaration=True)
+        calibration=profile["simulation_calibration"]
+    ET.indent(tree.xml)
+    ET.ElementTree(tree.xml).write(output/"robot.urdf",encoding="utf-8",xml_declaration=True)
     spec = None if diagnostic else ActuatorSpec.from_dict(hardware["verified_overrides"]["actuators"]["values"])
-    generate_mjcf(tree,output,spec,None if diagnostic else hardware["camera"].get("calibration"))
+    generate_mjcf(tree,output,spec,calibration)
+    if calibration is not None:
+        (output/"camera.json").write_text(json.dumps(calibration,indent=2)+"\n")
     files = {str(path.relative_to(output)):hashlib.sha256(path.read_bytes()).hexdigest()
-             for path in sorted(output.rglob('*')) if path.is_file() and path.name != "manifest.json"}
+             for path in sorted(output.rglob('*')) if path.is_file() and path.name != "manifest.json"
+             and not any(part.startswith("usd") for part in path.relative_to(output).parts)}
     manifest = {"schema_version":1,"robot":hardware["robot"],"ready_for_training":not diagnostic and report["ready_for_training"],
                 "camera_calibrated":not diagnostic and report["camera_calibrated"],"mass_kg":tree.mass,
                 "hardware_hash":canonical_hash(hardware),"joint_names":list(JOINT_NAMES),"files":files,"notes":notes}

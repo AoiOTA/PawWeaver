@@ -15,4 +15,5 @@ try:
         sim.step(render=False)
     print("PAWWEAVER_PHYSX_STARTUP_OK", flush=True)
 finally:
-    launcher.app.close()
+    import sys
+    launcher.app.close(exit_code=int(sys.exc_info()[0] is not None))

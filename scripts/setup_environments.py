@@ -46,7 +46,7 @@ def setup(conda: Path, role: str, source_env: str):
     if prefix == base or prefix.name == source_env:
         raise ValueError("Refusing to modify base or source environment")
     if role == "data":
-        run([python,"-m","pip","install","-e",".[data]"])
+        run([python,"-m","pip","install","-e",".[data,cad]"])
     elif role == "runtime":
         run([python,"-m","pip","install","torch==2.11.0","--index-url","https://download.pytorch.org/whl/cpu"])
         run([python,"-m","pip","install","-e",".[control,test,vision,render]"])
@@ -68,7 +68,7 @@ def setup(conda: Path, role: str, source_env: str):
         command.extend(["--extra-index-url","https://pypi.nvidia.com"])
         run(command)
     run([python,"-m","pip","check"])
-    record = ROOT/"artifacts/environments"
+    record = ROOT/"environments/locks"
     record.mkdir(parents=True,exist_ok=True)
     with (record/f"{name}.freeze.txt").open("w") as stream:
         run([python,"-m","pip","freeze"],stdout=stream)

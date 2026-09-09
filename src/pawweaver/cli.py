@@ -21,7 +21,7 @@ def main():
     build.add_argument("--hardware", type=Path, default=root/"configs/hardware.json")
     build.add_argument("--upstream", type=Path, default=root/"assets/upstream")
     build.add_argument("--output", type=Path)
-    build.add_argument("--diagnostic", action="store_true", help="Source-only geometry preview; omits unresolved DC1/adapter/cables; cannot train")
+    build.add_argument("--diagnostic", action="store_true", help="Reference assembly and provisional camera dynamics; omits cables; cannot train")
     args = parser.parse_args()
     if args.command == "fetch-assets":
         from .assets.fetch import fetch_sources

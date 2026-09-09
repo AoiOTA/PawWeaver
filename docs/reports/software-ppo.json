@@ -1,0 +1,15 @@
+{
+  "kind": "synthetic_software_test",
+  "environments": 4,
+  "rollout_steps": 16,
+  "losses": {
+    "value": 0.018672057194635272,
+    "surrogate": -0.021027572453022003,
+    "entropy": -3.474264681339264,
+    "auxiliary": 0.062397101894021034,
+    "kl": 0.064742561429739
+  },
+  "randomization": true,
+  "hardware_validation": false,
+  "passed": true
+}

@@ -1,0 +1,35 @@
+{
+  "source_page": "https://agilexsupport.yuque.com/staff-hso6mo/alxgtf/glzd7a853owrmsk0?singleDoc",
+  "attachment_path": "/attachments/yuque/0/2026/tar/29291030/1769335599868-b7b30f4f-a08a-4714-967c-e383b09f5d32.tar",
+  "filename": "PIPER-H外发.STEP",
+  "sha256": "515da614c836cc718db86352ef836fd99df628034efbc8c569a6c99897dbfbd8",
+  "bytes": 65039830,
+  "export_timestamp": "2025-12-26T02:37:12",
+  "products": [
+    "PIPER-H�ⷢ",
+    "2",
+    "PIPER-H�ⷢģ��.STEP",
+    "J6.STEP"
+  ],
+  "reader_length_unit": "mm (OpenCascade default STEP target unit)",
+  "bounds_mm": [
+    -123.93387237346316,
+    -1.974853941016112,
+    -67.84747434301097,
+    47.776428933122176,
+    246.1121209382616,
+    321.4967898597482
+  ],
+  "extent_mm": [
+    171.71030130658534,
+    248.0869748792777,
+    389.3442642027592
+  ],
+  "solid_count": 21,
+  "shell_count": 235,
+  "signed_volume_mm3": 888593.5005374966,
+  "mass_records": 0,
+  "resolved_mass_kg": null,
+  "resolved_inertia_kg_m2": null,
+  "conclusion": "CAD geometry is available. Volume is not mass; no density assumptions or mass redistribution applied."
+}

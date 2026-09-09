@@ -6,7 +6,7 @@
 |---|---|
 | `pawweaver-train` | 从已有 `isaacsim` 克隆，增加锁定版本的 Isaac Lab、RSL-RL 和本项目 |
 | `pawweaver-runtime` | 全新 Python 3.12 环境；CPU PyTorch、MuJoCo 与视觉工具；不安装 Isaac Sim/Isaac Lab |
-| `pawweaver-data` | 全新 Python 3.12 环境；NumPy、HDF5、SciPy；不安装 PyTorch 或仿真器 |
+| `pawweaver-data` | 全新 Python 3.12 环境；NumPy、HDF5、SciPy、OpenCascade CAD 检查；不安装 PyTorch 或仿真器 |
 
 ```bash
 python scripts/setup_environments.py --role all --isaac-env isaacsim
@@ -29,4 +29,4 @@ pawweaver audit
 
 测试禁用第三方 pytest 插件自动加载，并清除继承的 ROS `PYTHONPATH`；这不修改用户 shell 或 ROS 安装。
 
-依赖解析记录输出到 `artifacts/environments/`。本地功能提交使用 `codex/` 分支，保留 `main` 初始基线；不配置远程仓库、不推送。大模型和日志通过忽略规则排除，但下载版本与校验算法保存在 Git 中。
+依赖解析记录输出到 `environments/locks/` 并纳入 Git；这是本机环境快照，跨机器先用安装脚本重建，不直接照搬包含本地 editable 路径的 freeze 文件。本地功能提交使用 `codex/` 分支，保留 `main` 初始基线；不配置远程仓库、不推送。大模型和日志通过忽略规则排除，但下载版本与校验算法保存在 Git 中。

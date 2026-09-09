@@ -15,6 +15,7 @@ class ObservationSpec:
     joint_velocity_scale: float = 0.05
     angular_velocity_scale: float = 0.25
     max_goal_age: float = 0.5
+    control_dt: float = 0.02
 
     @property
     def size(self) -> int:
@@ -58,6 +59,8 @@ class ObservationBuilder:
         ids = torch.arange(self.batch, device=self.device) if ids is None else ids
         self.proprio[ids, :-1] = self.proprio[ids, 1:].clone()
         self.proprio[ids, -1] = self._proprio(state)[ids]
+        # Histories are sampled at 50 Hz even when camera samples arrive at 30 Hz.
+        self.goals_w[ids, :-1] = self.goals_w[ids, 1:].clone()
 
     def push_goal(self, position_w: torch.Tensor, timestamp: torch.Tensor,
                   valid: torch.Tensor, confidence: torch.Tensor):
@@ -65,7 +68,6 @@ class ObservationBuilder:
         newer = timestamp > self.stamp
         accepted = finite & valid & newer & (confidence > 0)
         ids = accepted.nonzero(as_tuple=False).flatten()
-        self.goals_w[ids, :-1] = self.goals_w[ids, 1:].clone()
         self.goals_w[ids, -1] = position_w[ids]
         self.stamp[ids] = timestamp[ids]
         self.confidence[ids] = confidence[ids].clamp(0, 1)
