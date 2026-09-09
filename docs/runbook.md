@@ -18,6 +18,10 @@ PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的
 
 对照输出见 `artifacts/runs/diagnostic_pose_learning/orientation_weight_comparison/README.md` 和逐例报告。PhysX 控制→候选平均位置 RMSE **.035426 → .056234 m**，朝向 **.168073 → .119565 rad**，8例朝向全改善、位置全退步。MuJoCo 为位置 **.062277 → .060091 m**（4好4差）、朝向 **.227390 → .137394 rad**（8好）；四批评估均完整8×20秒、零跌倒。控制组本身也优于1000轮 PhysX后测，不能把继续学习的收益全部归给新权重。结果支持朝向改善可迁移，但尚未同时保住PhysX位置精度，不能宣布完整位姿成功；朝向验收阈值未新增，所有bundle仍为 `trained=false`。
 
+腿部初始std对照的两组250轮及双引擎test8已完成，均退出0：共同起点为coupled250最终checkpoint，fresh Adam／初始LR `1e-5`／seed0，仅候选初始12腿std×3，臂和其他状态不变，std继续可训练。每组 **24,576,000 transitions／5,000次更新**、全部有限；控制／候选训练 **852.32／861.51秒**、跌倒 **567／736**、重置 **24,624／24,655**、饱和 **134,135／283,597**（分母各 **4,423,680,000**）。PhysX位置RMSE **.032482→.033158 m**（4好4差）、朝向 **.131306→.117076 rad**（6好2差）；MuJoCo位置 **.032019→.038960 m**（2好6差）、朝向 **.128080→.149437 rad**（8例全差）。四批均完整8×20秒、零跌倒，但朝向收益未跨引擎保留，当前不支持采用std×3。详细配置及逐例证据见 [leg_std_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/leg_std_comparison/README.md) 和同目录两份训练summary、`paired_*_control_candidate.json`。
+
+扩展远目标 `far_return60/mujoco_coupled250/` 已完成，进程退出0但任务在 **22.94／60秒** 因倾斜跌倒终止；截至终止的RMSE为 **.396744 m／.298468 rad**，不能视为完整60秒指标。std两组的far对照仍由operator推进，尚不写作全完成。[sustained_learning_next](../artifacts/runs/diagnostic_pose_learning/sustained_learning_next/README.md) 仅完成CPU准备，拟同时改变stage1→2及回合20→60秒、其余固定，尚未训练；它检验更长、更广目标暴露，未隔离时长与距离效应。纯位姿学习稳定前暂缓视觉扩展，没有新增60秒视觉结果。
+
 真实组合几何的固定目标图像闭环已完成：权重1控制组bundle通过腕部渲染RGB-D→ArUco／深度测量→延迟队列→单18关节策略，在MuJoCo运行 **20秒**，退出码0、墙钟 **27.38秒**。601帧全部检出，600个独立测量送入控制，**999/1000**控制步使用有效测量；仅首步等待初始图像，此后无失跟／保持、未触发跌倒。2秒后真实TCP位置／朝向RMSE为 **.018855 m／.085240 rad**，图像目标测量RMSE为 **.038886 m／.066913 rad**。世界相机定位使用仿真里程计，控制目标仅来自图像；这是固定目标、无注入遮挡的工程闭环，未验证移动目标、真实相机或60秒视觉任务。详细场景、输入哈希、20秒腕视角视频和 `run.py probe/run` 复现命令见 [图像闭环README](../artifacts/runs/diagnostic_pose_visual_control/README.md)，复现按该入口使用新输出目录。
 
 此前建议的CPU配对回放已完成（退出码0）：复用 `orientation_weight_comparison/` 两组bundle及 `eval_control/`、`eval_candidate/` 原始trace，`clip(raw)` 与保存action最大差 **1.55e-6**。在两组moving4的 `t >= 2 s` 保存状态上，腿raw动作越界比例 **90.28% → 90.87%**，臂 **4.79% → 3.59%**，臂均仅J5越界；基座倾斜变化混合，未见权重4新增普遍裁剪。两组都存在腿动作顶边，不能据此把位置代价单独归因于候选新增裁剪；足路径仅报未接触门控的FK运动，不新增承重／步态结论。这是保存状态关联证据，不是奖励或探索的动态因果证明。
@@ -164,6 +168,8 @@ python -m pawweaver.evaluation compare artifacts/evaluation/physx_seed0/report.j
 用户已手动下载原FastUMI `close_ricecooker.tar.gz`：**3,437,750,379字节**与固定官方列表大小一致，完整gzip CRC／tar目录检查通过，本地SHA256已记录；官方SHA在既有元数据中被遮蔽，未声称官方哈希匹配。包内为20个HDF5、无CSV或config／标定侧文件。按归档顺序选取并仅解出首个 `episode_17.hdf5`，实查qpos/action均为 **120×7**、有限且完全相同，图像为 **120×1080×1920×3**。见 [本地样本检查](../artifacts/data/fastumi_original_sample/LOCAL_SAMPLE.md) 及同目录 `local_archive_integrity.json`、`episode_inspection.json`、`local_sample_result.json`。
 
 该episode缺少原始逐帧时间、frame／原点、单位及适用标定，不能从120行推定原时长，也不能仅凭七列和四元数范数确认sensor或已处理TCP身份；官方producer约定支持XYZW，但未绑定本文件处理状态。正式转换仍需该episode对应的时间与语义／刚体变换，不套用通用Xarm6示例。此前读取的 [FastUMI Pro文本样例](https://huggingface.co/datasets/LumosRobotics-FastUMIPro/example_data_fastumi_pro_raw/resolve/c3e3d1c4ca25ea32cc19e50635d0d13af2ccef6b/task2/session_001/Merged_Trajectory/merged_trajectory.txt) 是另一来源，不能替代原FastUMI的标定或时间；两者均未作为正式TCP示范导入训练。
+
+原episode17另已派生20秒schema-2工程命令，CPU构造／加载检查及coupled250 MuJoCo评估均退出0；完整20秒、无跌倒，2秒后位置／朝向RMSE **.049607 m／.155485 rad**。使用人为 `20*i/119` 重定时、米制XYZW工程假设和一次固定 `G*T0^-1*Ti` 对齐；未知sensor→TCP外参仍未消除，不是原始时序或正式TCP示范转换，未加入当前训练或冻结test8。见 [派生命令](../artifacts/data/fastumi_original_sample/derived_command20/README.md) 与 [实际MuJoCo结果](../artifacts/data/fastumi_original_sample/derived_command20/mujoco_coupled250/README.md)；此新例尚无同例PhysX或视觉闭环证据。
 
 早期 **HTTP 401／GatedRepo**、正常配置token文件缺失，以及授权后Chrome CDN跳转的 `ERR_BLOCKED_BY_CLIENT` 保留在 [访问记录](../artifacts/data/fastumi_original_sample/README.md) 和对应JSON中；它们是历史获取失败，已由上述本地下载事实更新，不再代表当前没有文件。
 

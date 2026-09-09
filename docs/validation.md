@@ -66,6 +66,12 @@ PhysX控制→联合奖励位置RMSE **.035426 → .038529 m**（2好6差）、�
 
 新候选8份PhysX trace实际保存30个Unicode `contact_body_names`，与30列足／身体净接触力对齐，`allow_pickle=False`可读，见 `coupled_pose_comparison/contact_names_check.json`。列名直接来自本次runtime；这验证了实际保存路径，不能追认旧trace的body顺序，也不证明接触对动力学或步态。
 
+腿部初始std对照的两组250轮及双引擎test8已完成，均退出0：共同起点为coupled250最终checkpoint，fresh Adam／初始LR `1e-5`／seed0，仅候选初始12腿std×3，臂和其他状态不变，std继续可训练。每组 **24,576,000 transitions／5,000次更新**、全部有限；控制／候选训练 **852.32／861.51秒**、跌倒 **567／736**、重置 **24,624／24,655**、饱和 **134,135／283,597**（分母各 **4,423,680,000**）。PhysX位置RMSE **.032482→.033158 m**（4好4差）、朝向 **.131306→.117076 rad**（6好2差）；MuJoCo位置 **.032019→.038960 m**（2好6差）、朝向 **.128080→.149437 rad**（8例全差）。四批均完整8×20秒、零跌倒，但朝向收益未跨引擎保留，当前不支持采用std×3。详细配置及逐例证据见 [leg_std_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/leg_std_comparison/README.md) 和同目录两份训练summary、`paired_*_control_candidate.json`。
+
+扩展远目标 `far_return60/mujoco_coupled250/` 已完成，进程退出0但任务在 **22.94／60秒** 因倾斜跌倒终止；截至终止的RMSE为 **.396744 m／.298468 rad**，不能视为完整60秒指标。std两组的far对照仍由operator推进，尚不写作全完成。[sustained_learning_next](../artifacts/runs/diagnostic_pose_learning/sustained_learning_next/README.md) 仅完成CPU准备，拟同时改变stage1→2及回合20→60秒、其余固定，尚未训练；它检验更长、更广目标暴露，未隔离时长与距离效应。纯位姿学习稳定前暂缓视觉扩展，没有新增60秒视觉结果。
+
+原episode17另已派生20秒schema-2工程命令，CPU构造／加载检查及coupled250 MuJoCo评估均退出0；完整20秒、无跌倒，2秒后位置／朝向RMSE **.049607 m／.155485 rad**。使用人为 `20*i/119` 重定时、米制XYZW工程假设和一次固定 `G*T0^-1*Ti` 对齐；未知sensor→TCP外参仍未消除，不是原始时序或正式TCP示范转换，未加入当前训练或冻结test8。见 [派生命令](../artifacts/data/fastumi_original_sample/derived_command20/README.md) 与 [实际MuJoCo结果](../artifacts/data/fastumi_original_sample/derived_command20/mujoco_coupled250/README.md)；此新例尚无同例PhysX或视觉闭环证据。
+
 固定世界TCP位姿的真实渲染图像闭环见 [diagnostic_pose_visual_control/README.md](../artifacts/runs/diagnostic_pose_visual_control/README.md) 和 `closed_loop20/summary.json`：复用权重1控制组bundle，经30 Hz腕部RGB-D、ArUco／深度测量、10 ms延迟队列驱动50 Hz单18关节策略，MuJoCo完整 **20秒／1000控制步**，退出码0、墙钟 **27.38秒**。固定marker到目标的变换在运行前冻结；仿真里程计提供世界相机定位，目标真值只用于场景和评分，控制器消费图像测量。
 
 601次采集均成功测量，600个独立测量送达控制（终点帧晚于末次控制）；**999/1000步**输入有效，唯一保持发生在首步等待延迟图像，最大使用测量年龄 **40 ms**。此后无漏检、失跟或保持，采样观测和qpos/qvel全部有限，现有跌倒检测未触发。全程TCP位置／朝向RMSE为 **.018896 m／.085253 rad**，2秒后 **.018855 m／.085240 rad**，终点 **.023087 m／.061185 rad**；图像推导目标的测量RMSE为 **.038886 m／.066913 rad**。固定marker到TCP偏移可能放大朝向误差的位置贡献，本次未隔离原因。
