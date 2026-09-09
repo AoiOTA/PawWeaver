@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "as2-piper-loco-manipulation"
+version = "0.1.0"
+description = "Goal-driven whole-body control for AS2 EDU and Piper-H; Isaac Lab to independent MuJoCo"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2,<3", "torch>=2.10,<2.12", "mujoco==3.8.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+data = ["h5py>=3.16", "scipy>=1.15"]
+vision = ["opencv-python-headless>=4.10,<5"]
+train = ["rsl-rl-lib==5.0.1", "gymnasium>=1.2,<2", "tensorboard>=2.18"]
+
+[project.scripts]
+loco = "loco_manipulation.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+

@@ -1,0 +1,16 @@
+.deps/
+.venv*/
+.cache/
+assets/upstream/
+assets/generated/
+artifacts/
+runs/
+data/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+

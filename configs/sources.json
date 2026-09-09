@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "unitree_as2",
+      "repository": "unitreerobotics/unitree_ros",
+      "revision": "7d6075f7f58588b189b940130e3edab3c839b2df",
+      "prefixes": ["robots/as2_description/"],
+      "suffixes": [".urdf", ".xml", ".stl"],
+      "license_names": ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"],
+      "manual": "https://support.unitree.com/home/zh/AS2_SDK_Development_Guide/about_as2"
+    },
+    {
+      "id": "agilex_piper_h",
+      "repository": "agilexrobotics/agx_arm_urdf",
+      "revision": "f6642ce0d7872c686f29c99e9e10cd23d1d49313",
+      "prefixes": ["piper_h/"],
+      "suffixes": [".urdf", ".xacro", ".stl"],
+      "license_names": ["LICENSE", "LICENSE.md", "LICENSE.txt", "COPYING"],
+      "manual": "https://agilexsupport.yuque.com/staff-hso6mo/alxgtf/ay1awrn2hrhn1krg?singleDoc"
+    }
+  ]
+}
