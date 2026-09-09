@@ -87,6 +87,8 @@ class GoalBank:
 def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velocity,action,previous_action,
                  torque,effort,q,qd,previous_qd,lower,upper,gravity_b,foot_velocity,foot_contact,
                  collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5):
+    if not np.isfinite(tracking_width) or tracking_width<=0:
+        raise ValueError("Position reward width must be finite and positive")
     if not np.isfinite(orientation_tracking_width_rad) or orientation_tracking_width_rad<=0:
         raise ValueError("Orientation reward width must be finite and positive")
     error_norm=error.norm(dim=-1)

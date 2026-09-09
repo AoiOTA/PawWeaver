@@ -201,6 +201,7 @@ class WholeBodyEnv:
         error=goal-state.tcp_pos_w
         orientation_error=quat_angle_error(state.tcp_quat_w,self.reference.current_orientation(self.episode_length_buf))
         terms=reward_terms(error=error,orientation_error=orientation_error,previous_error=self.previous_error,
+            tracking_width=self.config.get("tracking_width_m",.15),
             orientation_tracking_width_rad=self.config.get("orientation_tracking_width_rad",.5),
             tcp_velocity=(state.tcp_pos_w-self.previous_tcp)/.02,goal_velocity=(goal-last_goal)/.02,
             action=self.pd.last_action,previous_action=self.previous_action,torque=self.torque,
