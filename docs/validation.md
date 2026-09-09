@@ -88,7 +88,9 @@ far控制两引擎均完整60秒，候选PhysX **26.62秒**、MuJoCo **33.62秒�
 
 同配置经`--resume`追加 **750轮至累计1000轮** 及四项后测均已实际退出0，追加训练全部有限；这比较的是progress250→1000的额外学习预算，原progress1控制仅作不同预算背景。test8两引擎均八例完整20秒无跌倒；同例共同窗PhysX位置 **.030710→.018504 m**（8例全好），朝向 **.110703→.121581 rad**（3好5差）；MuJoCo位置 **.027206→.026832 m**（4好4差）、朝向 **.127383→.183435 rad**（1好7差），两引擎local4朝向均全退步。far跌倒时间 **PhysX26.62→10.90秒、MuJoCo33.62→12.70秒**；共同窗位置／朝向RMSE分别 **.011726→.062589 m／.080835→.129644 rad**（2–10.90秒）、**.036550→.096589 m／.079253→.276799 rad**（2–12.70秒），均变差，**不采用1000轮策略**。不能把更早终止后的短程均值当作全程改善，完整证据仍见上述progress对照记录。
 
-[失稳过程回读](../artifacts/runs/diagnostic_pose_learning/progress_weight_comparison/continuation_failure_analysis/README.md) 依据实际跌倒标志、高度和原终止判据识别倾斜触发；终止时刻的精确倾斜值未保存。PhysX后足力下降出现在快速倾倒前，但此顺序是观察证据，不能归因于奖励系数；MuJoCo未保存接触力。下一项短时冻结策略真实训练信号采集仅在准备，**尚未启动**；默认参数、原验收与`trained=false`保持不变。纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
+[失稳过程回读](../artifacts/runs/diagnostic_pose_learning/progress_weight_comparison/continuation_failure_analysis/README.md) 依据实际跌倒标志、高度和原终止判据识别倾斜触发；终止时刻的精确倾斜值未保存。PhysX后足力下降出现在快速倾倒前，但此顺序是观察证据，不能归因于奖励系数；MuJoCo未保存接触力。[短时冻结采集与回读](../artifacts/runs/diagnostic_pose_learning/progress_weight_comparison/continuation_failure_analysis/early_training_signal_capture_preparation/readout/README.md) 已完成：2.4秒、64环境、7,680条记录、零更新，实际退出0并通过冻结检查；记录12次早期自然跌倒，均发生于0.84–1.86秒，属于startup/reset训练分布，不能当作far失稳重现。
+
+已实际启动 [termination−5→−50对照](../artifacts/runs/diagnostic_pose_learning/termination_weight_comparison/README.md) 的唯一250轮候选训练，其余保持原progress10配置，经`--initialize-from`使用同一`leg_std_comparison/control/checkpoint_000249.pt`与fresh Adam；原progress250为同起点、同预算控制，不重跑。四项候选后测尚未运行，结果齐备前不采用或追加预算；默认参数、原验收与`trained=false`保持不变。纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
 
 原episode17另已派生20秒schema-2工程命令，CPU构造／加载检查及coupled250 MuJoCo评估均退出0；完整20秒、无跌倒，2秒后位置／朝向RMSE **.049607 m／.155485 rad**。使用人为 `20*i/119` 重定时、米制XYZW工程假设和一次固定 `G*T0^-1*Ti` 对齐；未知sensor→TCP外参仍未消除，不是原始时序或正式TCP示范转换，未加入当前训练或冻结test8。见 [派生命令](../artifacts/data/fastumi_original_sample/derived_command20/README.md) 与 [实际MuJoCo结果](../artifacts/data/fastumi_original_sample/derived_command20/mujoco_coupled250/README.md)；此新例尚无同例PhysX或视觉闭环证据。
 
