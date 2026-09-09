@@ -104,6 +104,15 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
         "body_tilt":gravity_b[:,:2].square().sum(-1),
         "collision":collision.float(),"termination":fallen.float()}
 
+def sum_reward_terms(terms,weights,*,coupled_pose=False):
+    """Combine control-rate rewards; termination remains a separate event cost."""
+    if not coupled_pose:
+        return sum(weights[name]*value for name,value in terms.items() if name!="termination")
+    pose=(weights["tracking"]+weights["orientation_tracking"])*terms["tracking"]*terms["orientation_tracking"]
+    return pose+sum(weights[name]*value for name,value in terms.items()
+                    if name not in ("tracking","orientation_tracking","termination"))
+
+
 def episode_metrics(times,errors,base_positions,torques,velocities,fallen,transient_s=2.,*,orientation_errors):
     times,errors=np.asarray(times),np.asarray(errors)
     orientation_errors=np.asarray(orientation_errors,dtype=float)

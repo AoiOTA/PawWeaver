@@ -9,7 +9,7 @@ from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
 from .control import JointPD
 from .observations import ObservationBuilder
 from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_quat
-from .task import GoalBank,reward_terms
+from .task import GoalBank,reward_terms,sum_reward_terms
 from .training_inputs import training_inputs
 
 class WholeBodyEnv:
@@ -208,7 +208,8 @@ class WholeBodyEnv:
             lower=self.pd.lower,upper=self.pd.upper,gravity_b=gravity,
             foot_velocity=self.robot.data.body_link_lin_vel_w.torch[:,self.foot_ids],
             foot_contact=self.contacts[:,self.foot_ids]>1.,collision=collision,fallen=fallen)
-        reward=sum(self.config["reward_weights"][name]*value for name,value in terms.items() if name!="termination")*.02
+        reward=sum_reward_terms(terms,self.config["reward_weights"],
+            coupled_pose=self.config.get("coupled_pose_reward",False))*.02
         reward+=self.config["reward_weights"]["termination"]*fallen
         timeout=self.episode_length_buf>=self.max_episode_length
         done=fallen|timeout
