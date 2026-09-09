@@ -155,6 +155,8 @@ python -m pawweaver.evaluation compare artifacts/evaluation/physx_seed0/report.j
 
 在 `pawweaver-data` 中运行 `python -m pawweaver.data --help`。输入需要 pose、逐帧时间戳、稳定 source ID，以及单位、sensor→TCP、source→task、速度/加速度、工作区边界的配置。转换器组合完整 source→task、输入 pose、sensor→TCP 刚体变换；位置和 WXYZ 朝向使用相同时间缩放，朝向以 SLERP 重采样。转换器不下载视频，增强前按 source ID 划分数据。当前没有下载实测 FastUMI 示范集，训练引用为上文合成 FK 数据。
 
+公开数据预查找到一条可单独读取的 [FastUMI Pro 后续样例](https://huggingface.co/datasets/LumosRobotics-FastUMIPro/example_data_fastumi_pro_raw/resolve/c3e3d1c4ca25ea32cc19e50635d0d13af2ccef6b/task2/session_001/Merged_Trajectory/merged_trajectory.txt)：165,871字节、1042行 `timestamp x y z qx qy qz qw`，跨度10.410024秒、采样约100 Hz，维护者注明米制。它不是原FastUMI论文数据；公开说明尚未确定本条pose的物理原点或sensor→TCP标定。样本时间从2622秒开始，与README所称Unix epoch不符，但现有转换器减去首时间戳，只需秒制相对间隔，不需要确认绝对epoch。尚未将样本写入训练输入或按TCP导入。后续先确认pose原点及所需刚体变换，再适配现有HDF5 `observations/qpos` 与独立时间数组入口；不把原FastUMI的T265偏移套用于Pro。原论文[官方库](https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data/tree/main)当前最小完整压缩包约3.44 GB，初次预查只读取了上述Pro文本。
+
 在 `pawweaver-runtime` 中运行 `python -m pawweaver.visual_runtime --help`。需要有效资产、策略包、轨迹与 scenario JSON。scenario 定义 `marker_id`、`marker_size_m`、`marker_to_goal`（标记系平移）、`marker_to_goal_quat_wxyz`（显式标记到目标朝向标定），可加入延迟、遮挡、深度缺失、位置噪声和随机种子；`--record` 输出腕部视频。
 
 相机在 2 ms 物理时钟上调度约 30 Hz 图像，50 Hz 控制器消费到达的测量。真值仅用于场景生成和评分。持续失跟后暂停参考推进、保持有界关节目标；这种保持的整机稳定性仍需训练策略验证。基座定位来自仿真状态，不包含真机自主定位。
