@@ -31,12 +31,15 @@ if manifest["robot"]!="as2_edu_piper_h_rgbd":
 config=json.loads(args.config.read_text())
 import torch
 from pawweaver.observations import ObservationSpec
+from pawweaver.learning import validate_leg_mean_config
 checkpoint=None
 checkpoint_path=args.resume or args.initialize_from
 if checkpoint_path:
     checkpoint=torch.load(checkpoint_path,map_location="cpu",weights_only=False)
     if checkpoint["metadata"].get("observation")!=ObservationSpec().to_dict():
         raise ValueError("Checkpoint observation contract differs: pose-only training requires 276 inputs; legacy position-only checkpoints cannot be padded or loaded")
+leg_mean_transform=validate_leg_mean_config(config,
+    checkpoint["metadata"]["config"] if checkpoint else None, resume=bool(args.resume))
 launcher=AppLauncher(args)
 try:
     import torch
@@ -57,6 +60,7 @@ try:
     groups={"actor":["policy"],"critic":["critic"]}
     actor=WholeBodyActor(obs,groups,"actor",18,hidden_dims=config["actor_hidden_dims"],
         obs_normalization=True,prediction=config["trajectory_prediction"],velocity=config["velocity_estimation"],
+        leg_mean_transform=leg_mean_transform,
         distribution_cfg={"class_name":"rsl_rl.modules.distribution:GaussianDistribution","init_std":.5})
     critic=MLPModel(obs,groups,"critic",1,hidden_dims=[512,256,128],obs_normalization=True)
     storage=RolloutStorage("rl",args.num_envs,config["rollout_steps"],obs,[18],args.device)

@@ -3,6 +3,12 @@ import copy
 import torch
 from torch import nn
 
+class LegSoftsignMean(nn.Module):
+    """Bound only the twelve leg means; Gaussian samples remain unbounded."""
+    def forward(self, logits: torch.Tensor) -> torch.Tensor:
+        legs = logits[:, :12]
+        return torch.cat((legs / (1. + legs.abs()), logits[:, 12:]), dim=-1)
+
 def mlp(in_dim,out_dim,hidden):
     layers = []
     for width in hidden:

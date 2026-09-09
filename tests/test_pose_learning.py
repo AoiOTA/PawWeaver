@@ -18,9 +18,9 @@ def observations():
         'velocity_label':torch.randn(8,3),'future_label':torch.randn(8,12),'future_valid':torch.ones(8,12)},[8])
 
 
-def actor_for(obs):
+def actor_for(obs,leg_mean_transform="identity"):
     return WholeBodyActor(obs,{'actor':['policy']},'actor',18,hidden_dims=[32,16],obs_normalization=True,
-        prediction=True,velocity=True,distribution_cfg={
+        prediction=True,velocity=True,leg_mean_transform=leg_mean_transform,distribution_cfg={
             'class_name':'rsl_rl.modules.distribution:GaussianDistribution','init_std':.1})
 
 
@@ -57,14 +57,16 @@ def test_pose_actor_causal_features_jit_and_original_ppo():
     assert not torch.equal(before,actor.mlp[0].weight)
 
 
-def test_pose_bundle_version_is_separate_from_asset_version(tmp_path):
-    actor=actor_for(observations())
+@pytest.mark.parametrize("mode",["identity","softsign"])
+def test_pose_bundle_version_is_separate_from_asset_version(tmp_path,mode):
+    actor=actor_for(observations(),mode)
     spec=ActuatorSpec(JOINT_NAMES,(0.,)*18,(.2,)*18,(10.,)*18,(1.,)*18,
         (-2.,)*18,(2.,)*18,(5.,)*18,(4.,)*18,(0.,)*18,(0.,)*18,(0.,)*18,(0,)*18)
     asset={'schema_version':1,'asset_hash':'software-pose-fixture','ready_for_training':False}
     metadata={'seed':17,'diagnostic':True,'provisional_spec':{'source':'software fixture'},
               'asset_hash':asset['asset_hash'],'large_diagnostic_field':['not runtime state']*1000}
-    manifest=export_bundle(actor,spec,asset,{},tmp_path,trained=False,metadata=metadata)
+    config={"leg_mean_transform":mode}
+    manifest=export_bundle(actor,spec,asset,config,tmp_path,trained=False,metadata=metadata)
     assert manifest['schema_version']==2 and manifest['observation']==ObservationSpec().to_dict()
     assert manifest['training_metadata']=={key:metadata[key] for key in ('seed','diagnostic','provisional_spec')}
     assert 'large_diagnostic_field' in metadata  # Export does not mutate the producer's full record.
@@ -73,6 +75,11 @@ def test_pose_bundle_version_is_separate_from_asset_version(tmp_path):
     assert loaded_spec==spec
     raw=torch.randn(2,276)
     torch.testing.assert_close(loaded(raw),actor.as_jit()(raw),atol=1e-6,rtol=1e-6)
+    torch.testing.assert_close(loaded(raw),actor(TensorDict({'policy':raw},[2])),atol=1e-6,rtol=1e-6)
+    assert loaded_manifest['training_config']==config
+    logits=actor.mlp(actor.get_latent(TensorDict({'policy':raw},[2])))
+    expected=logits if mode=='identity' else torch.cat((logits[:,:12]/(1+logits[:,:12].abs()),logits[:,12:]),-1)
+    torch.testing.assert_close(loaded(raw),expected,atol=1e-6,rtol=1e-6)
     manifest.pop('bundle_hash');manifest['schema_version']=1
     manifest['bundle_hash']=canonical_hash(manifest)
     (tmp_path/'manifest.json').write_text(json.dumps(manifest))

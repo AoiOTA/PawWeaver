@@ -47,11 +47,11 @@ def test_causality_export_and_auxiliary_ppo():
     assert storage.step==0
 
 
-def ppo_for_update(algorithm_type=AuxiliaryPPO,**kwargs):
+def ppo_for_update(algorithm_type=AuxiliaryPPO,leg_mean_transform="identity",**kwargs):
     torch.manual_seed(511)
     obs=observations()
     actor=WholeBodyActor(obs,{"actor":["policy"]},"actor",18,prediction=False,velocity=False,
-        hidden_dims=[16],obs_normalization=True,
+        hidden_dims=[16],obs_normalization=True,leg_mean_transform=leg_mean_transform,
         distribution_cfg={"class_name":"rsl_rl.modules.distribution:GaussianDistribution","init_std":.5})
     critic=MLPModel(obs,{"critic":["critic"]},"critic",1,hidden_dims=[16])
     algorithm=algorithm_type(actor,critic,RolloutStorage("rl",8,4,obs,[18],"cpu"),
@@ -130,3 +130,73 @@ def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch):
         assert torch.all(actor.mlp[-1].bias[[0,4,7]].abs()<bias[[0,4,7]].abs())
         assert torch.count_nonzero(actor.mlp[-1].weight)>0
     assert algorithm.storage.step==0
+
+
+def test_softsign_mean_distribution_and_derivative():
+    from pawweaver.learning import LegSoftsignGaussianDistribution
+    from pawweaver.policy import LegSoftsignMean
+    logits=torch.tensor([[-100.,-2.,-1.,-.5,0.,.5,1.,2.,100.,-.1,.1,3.]+[2.]*6],requires_grad=True)
+    mapped=LegSoftsignMean()(logits)
+    assert torch.equal(mapped[:,12:],logits[:,12:])
+    assert (mapped[:,:12].abs()<1).all()
+    mapped.sum().backward()
+    torch.testing.assert_close(logits.grad[:,:12],1/(1+logits.detach()[:,:12].abs()).square())
+    assert torch.equal(logits.grad[:,12:],torch.ones(1,6))
+    distribution=LegSoftsignGaussianDistribution(18,init_std=.5)
+    distribution.update(logits)
+    sample=distribution.sample()
+    expected=torch.distributions.Normal(mapped,torch.full_like(mapped,.5))
+    torch.testing.assert_close(distribution.log_prob(sample),expected.log_prob(sample).sum(-1))
+    torch.testing.assert_close(distribution.entropy,expected.entropy().sum(-1))
+    torch.testing.assert_close(distribution.params[0],mapped)
+    torch.testing.assert_close(distribution.deterministic_output(logits),mapped)
+
+
+def test_softsign_real_ppo_update_and_identity_default():
+    import copy
+    original=ppo_for_update()
+    identity=ppo_for_update(leg_mean_transform="identity")
+    assert all(torch.equal(v,identity.actor.state_dict()[k]) for k,v in original.actor.state_dict().items())
+    torch.manual_seed(72);left=original.update()
+    torch.manual_seed(72);right=identity.update()
+    assert left==right
+    assert all(torch.equal(v,identity.actor.state_dict()[k]) for k,v in original.actor.state_dict().items())
+    algorithm=ppo_for_update(leg_mean_transform="softsign")
+    algorithm.num_learning_epochs=algorithm.num_mini_batches=1
+    before=algorithm.actor.mlp[0].weight.detach().clone()
+    steps=[]
+    algorithm.optimizer.register_step_post_hook(lambda *unused:steps.append(1))
+    losses=algorithm.update()
+    assert len(steps)==1 and all(torch.isfinite(torch.tensor(v)) for v in losses.values())
+    assert not torch.equal(before,algorithm.actor.mlp[0].weight)
+    restored=ppo_for_update(leg_mean_transform="softsign")
+    restored.load(copy.deepcopy(algorithm.save()),None,True)
+    restored.learning_rate=restored.optimizer.param_groups[0]['lr']
+    assert restored.learning_rate==algorithm.learning_rate
+    assert all(torch.equal(v,restored.actor.state_dict()[k]) for k,v in algorithm.actor.state_dict().items())
+    for key,state in algorithm.optimizer.state_dict()['state'].items():
+        for name,value in state.items():
+            actual=restored.optimizer.state_dict()['state'][key][name]
+            assert torch.equal(value,actual) if isinstance(value,torch.Tensor) else value==actual
+
+
+def test_mean_config_initialization_and_resume():
+    from pawweaver.learning import validate_leg_mean_config
+    raw={"actor_hidden_dims":[16]}
+    soft=dict(raw,leg_mean_transform="softsign")
+    assert validate_leg_mean_config(raw)=="identity"
+    assert validate_leg_mean_config(soft,raw)=="softsign"
+    assert validate_leg_mean_config(soft,soft,resume=True)=="softsign"
+    with pytest.raises(ValueError,match="Resume config differs"):
+        validate_leg_mean_config(soft,raw,resume=True)
+    with pytest.raises(ValueError,match="softsign-to-identity"):
+        validate_leg_mean_config(raw,soft)
+    with pytest.raises(ValueError,match="Unsupported leg_mean_transform"):
+        validate_leg_mean_config({"leg_mean_transform":"tanh"})
+    # Transform adds no state keys: existing learned tensors load strictly.
+    raw_ppo=ppo_for_update()
+    soft_ppo=ppo_for_update(leg_mean_transform="softsign")
+    soft_ppo.actor.load_state_dict(raw_ppo.actor.state_dict(),strict=True)
+    broken=dict(raw_ppo.actor.state_dict());broken.pop("mlp.0.weight")
+    with pytest.raises(RuntimeError,match="Missing key"):
+        soft_ppo.actor.load_state_dict(broken,strict=True)

@@ -4,12 +4,48 @@ import torch
 from torch import nn
 from rsl_rl.models import MLPModel
 from rsl_rl.algorithms import PPO
-from .policy import CausalFeatures, ExportedPolicy
+from rsl_rl.modules.distribution import GaussianDistribution
+from .policy import CausalFeatures, ExportedPolicy, LegSoftsignMean
+
+def validate_leg_mean_config(config, previous=None, *, resume=False):
+    """Validate the configured mean mapping before construction or checkpoint loading."""
+    mode = config.get("leg_mean_transform", "identity")
+    if mode not in ("identity", "softsign"):
+        raise ValueError(f"Unsupported leg_mean_transform: {mode!r}")
+    if previous is not None:
+        source_mode = validate_leg_mean_config(previous)
+        if resume and previous != config:
+            raise ValueError("Resume config differs from checkpoint")
+        if source_mode == "softsign" and mode == "identity":
+            raise ValueError("Unsupported softsign-to-identity initialization")
+    return mode
+
+class LegSoftsignGaussianDistribution(GaussianDistribution):
+    def __init__(self, output_dim, **kwargs):
+        if output_dim != 18:
+            raise ValueError("Leg softsign requires 18 whole-body outputs")
+        super().__init__(output_dim, **kwargs)
+        self.mean_transform = LegSoftsignMean()
+
+    def update(self, mlp_output):
+        super().update(self.mean_transform(mlp_output))
+
+    def deterministic_output(self, mlp_output):
+        return self.mean_transform(mlp_output)
+
+    def as_deterministic_output_module(self):
+        return self.mean_transform
 
 class WholeBodyActor(MLPModel):
-    def __init__(self,*args,prediction=False,velocity=True,**kwargs):
+    def __init__(self,*args,prediction=False,velocity=True,leg_mean_transform="identity",**kwargs):
         # Flags are plain booleans and may be initialized before nn.Module.
         self.prediction,self.velocity = prediction,velocity
+        mode = validate_leg_mean_config({"leg_mean_transform": leg_mean_transform})
+        if mode == "softsign":
+            cfg = kwargs.get("distribution_cfg")
+            if cfg is None or cfg.get("class_name") != "rsl_rl.modules.distribution:GaussianDistribution":
+                raise ValueError("Leg softsign requires the existing Gaussian distribution config")
+            kwargs["distribution_cfg"] = dict(cfg, class_name="pawweaver.learning:LegSoftsignGaussianDistribution")
         super().__init__(*args,**kwargs)
         if self.obs_dim != 276 or self.obs_groups != ["policy"]:
             raise ValueError("Actor requires the 276-dimensional causal pose policy group; 246 position-only observations are incompatible")
