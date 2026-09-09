@@ -8,6 +8,7 @@ from PIL import Image,ImageDraw
 import imageio.v2 as imageio
 from pawweaver.assets.build import verify_asset
 from pawweaver.contracts import JOINT_NAMES,FOOT_NAMES
+from pawweaver.training_inputs import training_inputs
 
 parser=argparse.ArgumentParser(description=__doc__)
 parser.add_argument("asset",type=Path)
@@ -21,7 +22,10 @@ model.vis.headlight.ambient[:]=.5
 model.vis.headlight.diffuse[:]=.8
 model.vis.headlight.specular[:]=.2
 data=mujoco.MjData(model)
-pose=([0.,.85,-1.65]*4)+[0.,1.,-1.2,0.,.4,0.]
+diagnostic=not manifest["ready_for_training"]
+_,spec,_=training_inputs(args.asset,diagnostic=diagnostic,
+    provisional_spec=Path(__file__).resolve().parents[1]/"configs/diagnostic_actuators.json" if diagnostic else None)
+pose=spec.default_pos
 for name,q in zip(JOINT_NAMES,pose):
     data.qpos[model.joint(name).qposadr[0]]=q
 mujoco.mj_forward(model,data)
@@ -31,7 +35,7 @@ renderer=mujoco.Renderer(model,height=720,width=1280)
 camera=mujoco.MjvCamera()
 camera.lookat[:]=[.1,0,.5];camera.distance=2.1;camera.elevation=-18;camera.azimuth=135
 options=mujoco.MjvOption();options.geomgroup[3]=0
-label="PawWeaver | AS2 + Piper-H + D435 | mounting / dynamics reference only | cables not yet modeled"
+label="PawWeaver | AS2 + Piper-H + D435 | SDK zero reference, enabled-control target | provisional; not settled/hardware-verified"
 def frame(angle):
     camera.azimuth=angle
     renderer.update_scene(data,camera=camera,scene_option=options)

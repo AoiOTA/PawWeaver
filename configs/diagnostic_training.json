@@ -64,5 +64,17 @@
     "observation_noise": 0.01,
     "push_velocity_m_s": 0.15
   },
-  "demonstrations": []
+  "demonstrations": [],
+  "initial_base_height_m": 0.31762150697067526,
+  "initial_base_height_source": {
+    "experiment": "artifacts/runs/diagnostic_settling_seed0/result.json",
+    "asset_hash": "1fe12b296656e1684165d60cdfb36e5c003cbb777f4d0e8525d14516d4f9176a",
+    "q0_source": "configs/diagnostic_actuators.json",
+    "foot_collision_sphere_radius_m": 0.028,
+    "measured_clearance_at_base_0_5_m": 0.18337849302932477,
+    "initial_air_gap_m": 0.001,
+    "derivation": "0.5 - 0.18337849302932477 + 0.001",
+    "evidence_limit": "Reduces initial free fall; not a validated stance or controller.",
+    "q0_note": "Leg q0 unchanged for SDK zero arm reference; foot sphere geometry and 1 mm clearance rechecked in artifacts/preview/initial_pose_candidates/result.json zero_fold"
+  }
 }

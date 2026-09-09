@@ -11,7 +11,7 @@ from isaaclab_physx.physics import PhysxCfg
 from .contracts import JOINT_NAMES
 from .assets.model import RobotTree
 
-def create_scene(asset:Path,num_envs:int,device="cuda:0",spec=None,contacts=False,fixed_base=False):
+def create_scene(asset:Path,num_envs:int,device="cuda:0",spec=None,contacts=False,fixed_base=False,initial_base_height_m=.5):
     usd_dir=asset/("usd-fixed" if fixed_base else "usd")
     conversion = json.loads((usd_dir/"conversion.json").read_text())
     usd = usd_dir/conversion.get("entrypoint","robot/robot.usda")
@@ -42,7 +42,7 @@ def create_scene(asset:Path,num_envs:int,device="cuda:0",spec=None,contacts=Fals
                 rigid_props=sim_utils.RigidBodyPropertiesCfg(disable_gravity=False,max_depenetration_velocity=1.),
                 articulation_props=sim_utils.ArticulationRootPropertiesCfg(enabled_self_collisions=True,
                     solver_position_iteration_count=8,solver_velocity_iteration_count=2)),
-            init_state=ArticulationCfg.InitialStateCfg(pos=(0.,0.,2. if fixed_base else .5),joint_pos=vector("default_pos",midpoint)),
+            init_state=ArticulationCfg.InitialStateCfg(pos=(0.,0.,2. if fixed_base else initial_base_height_m),joint_pos=vector("default_pos",midpoint)),
             actuators={"effort":IdealPDActuatorCfg(joint_names_expr=[".*"],stiffness=0.,damping=0.,
                 effort_limit=1.e9,effort_limit_sim=1.e9,velocity_limit_sim=1.e6,
                 armature=vector("armature",0.),friction=vector("frictionloss",0.),

@@ -24,7 +24,8 @@ class WholeBodyEnv:
         self.num_actions=18
         self.max_episode_length=round(config["episode_seconds"]/.02)
         torch.manual_seed(seed)
-        self.sim,self.scene=create_scene(asset,num_envs,device,self.spec,contacts=True)
+        self.sim,self.scene=create_scene(asset,num_envs,device,self.spec,contacts=True,
+            initial_base_height_m=config.get("initial_base_height_m",.5))
         self.robot=self.scene["robot"]
         if diagnostic:
             for name,sensor in self.scene.sensors.items():

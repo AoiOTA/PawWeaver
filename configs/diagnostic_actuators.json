@@ -56,7 +56,14 @@
       "status": "Local official simulation reference, not verified EDU hardware."
     },
     "arm_passive_dynamics": "Zero armature, damping, frictionloss are unverified assumptions.",
-    "initial_pose": "scripts/render_asset.py render pose, not validated stance; unchanged scene reset base z=0.5 m.",
+    "initial_pose": {
+      "leg_pose": "[0,0.85,-1.65] repeated FR,FL,RR,RL from render reference; not validated stable standing",
+      "arm_pose": "Six-zero pinned SDK reference with controls enabled; not a verified firmware factory-home target or powered-off pose",
+      "source": "https://github.com/agilexrobotics/pyAgxArm/blob/e7aef17d54cac80cbaeb1b4110ab3d8f1337a95b/pyAgxArm/demos/piper_h/test1.py#L104",
+      "source_detail": "Piper-H demo lines 104 and 127 command robot.move_j([0.0]*robot.joint_nums). Driver converts radians to millidegrees without joint offsets; MDH frame offsets are already in canonical URDF joint origins.",
+      "geometry_check": "artifacts/preview/initial_pose_candidates/result.json zero_fold: static canonical MuJoCo joint limits valid and no nonadjacent contacts. Not dynamic or hardware clearance validation.",
+      "control_note": "Existing enabled JointPD holds this reference; no disabled-motor initialization, gravity compensation or torque retuning."
+    },
     "action_and_delay": "0.1 rad action scales and zero delay are deliberate engineering choices."
   },
   "actuators": {
@@ -94,10 +101,10 @@
       0.85,
       -1.65,
       0,
-      1,
-      -1.2,
       0,
-      0.4,
+      0,
+      0,
+      0,
       0
     ],
     "action_scale": [
