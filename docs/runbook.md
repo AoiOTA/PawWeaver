@@ -159,9 +159,13 @@ python -m pawweaver.evaluation compare artifacts/evaluation/physx_seed0/report.j
 
 ## FastUMI 与视觉
 
-在 `pawweaver-data` 中运行 `python -m pawweaver.data --help`。输入需要 pose、逐帧时间戳、稳定 source ID，以及单位、sensor→TCP、source→task、速度/加速度、工作区边界的配置。转换器组合完整 source→task、输入 pose、sensor→TCP 刚体变换；位置和 WXYZ 朝向使用相同时间缩放，朝向以 SLERP 重采样。转换器不下载视频，增强前按 source ID 划分数据。当前没有下载实测 FastUMI 示范集，训练引用为上文合成 FK 数据。
+在 `pawweaver-data` 中运行 `python -m pawweaver.data --help`。输入需要 pose、逐帧时间戳、稳定 source ID，以及单位、sensor→TCP、source→task、速度/加速度、工作区边界的配置。转换器组合完整 source→task、输入 pose、sensor→TCP 刚体变换；位置和 WXYZ 朝向使用相同时间缩放，朝向以 SLERP 重采样。转换器不下载视频，增强前按 source ID 划分数据。原FastUMI本地样本已取得并检查，正式世界TCP示范转换尚未完成，当前训练仍使用上文合成FK引用。
 
-公开数据预查找到一条可单独读取的 [FastUMI Pro 后续样例](https://huggingface.co/datasets/LumosRobotics-FastUMIPro/example_data_fastumi_pro_raw/resolve/c3e3d1c4ca25ea32cc19e50635d0d13af2ccef6b/task2/session_001/Merged_Trajectory/merged_trajectory.txt)：165,871字节、1042行 `timestamp x y z qx qy qz qw`，跨度10.410024秒、采样约100 Hz，维护者注明米制。它不是原FastUMI论文数据；公开说明尚未确定本条pose的物理原点或sensor→TCP标定。样本时间从2622秒开始，与README所称Unix epoch不符，但现有转换器减去首时间戳，只需秒制相对间隔，不需要确认绝对epoch。尚未将样本写入训练输入或按TCP导入。后续先确认pose原点及所需刚体变换，再适配现有HDF5 `observations/qpos` 与独立时间数组入口；不把原FastUMI的T265偏移套用于Pro。原论文[官方库](https://huggingface.co/datasets/IPEC-COMMUNITY/FastUMI-Data/tree/main)当前最小完整压缩包约3.44 GB，初次预查只读取了上述Pro文本。 随后对原FastUMI固定revision的最小完整压缩包进行流式样本读取，实际收到 **HTTP 401／GatedRepo**，在读取压缩包前停止；当时检查的正常配置HF token路径没有文件，未获得原数据集样本、解包或导入。用户随后授权分享email和username并下载，Chrome中原数据页已显示访问获准；但3.44 GB `close_ricecooker.tar.gz` 的CDN跳转被Chrome客户端拦截（`ERR_BLOCKED_BY_CLIENT`）。普通Downloads中未发现目标文件或任何 `.crdownload`，文件未落盘，尚未解包或导入；需用户手动完成下载。见 [original sample访问记录](../artifacts/data/fastumi_original_sample/README.md)、`access_result.json` 和 `configured_token_file_check.json`。这是访问前提失败，不能判断原示范质量；上述Pro样例仍不等同原FastUMI。
+用户已手动下载原FastUMI `close_ricecooker.tar.gz`：**3,437,750,379字节**与固定官方列表大小一致，完整gzip CRC／tar目录检查通过，本地SHA256已记录；官方SHA在既有元数据中被遮蔽，未声称官方哈希匹配。包内为20个HDF5、无CSV或config／标定侧文件。按归档顺序选取并仅解出首个 `episode_17.hdf5`，实查qpos/action均为 **120×7**、有限且完全相同，图像为 **120×1080×1920×3**。见 [本地样本检查](../artifacts/data/fastumi_original_sample/LOCAL_SAMPLE.md) 及同目录 `local_archive_integrity.json`、`episode_inspection.json`、`local_sample_result.json`。
+
+该episode缺少原始逐帧时间、frame／原点、单位及适用标定，不能从120行推定原时长，也不能仅凭七列和四元数范数确认sensor或已处理TCP身份；官方producer约定支持XYZW，但未绑定本文件处理状态。正式转换仍需该episode对应的时间与语义／刚体变换，不套用通用Xarm6示例。此前读取的 [FastUMI Pro文本样例](https://huggingface.co/datasets/LumosRobotics-FastUMIPro/example_data_fastumi_pro_raw/resolve/c3e3d1c4ca25ea32cc19e50635d0d13af2ccef6b/task2/session_001/Merged_Trajectory/merged_trajectory.txt) 是另一来源，不能替代原FastUMI的标定或时间；两者均未作为正式TCP示范导入训练。
+
+早期 **HTTP 401／GatedRepo**、正常配置token文件缺失，以及授权后Chrome CDN跳转的 `ERR_BLOCKED_BY_CLIENT` 保留在 [访问记录](../artifacts/data/fastumi_original_sample/README.md) 和对应JSON中；它们是历史获取失败，已由上述本地下载事实更新，不再代表当前没有文件。
 
 在 `pawweaver-runtime` 中运行 `python -m pawweaver.visual_runtime --help`。需要有效资产、策略包、轨迹与 scenario JSON。scenario 定义 `marker_id`、`marker_size_m`、`marker_to_goal`（标记系平移）、`marker_to_goal_quat_wxyz`（显式标记到目标朝向标定），可加入延迟、遮挡、深度缺失、位置噪声和随机种子；`--record` 输出腕部视频。
 
