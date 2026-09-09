@@ -1,6 +1,7 @@
 """Isaac Lab 3 PhysX scene creation. Import only after AppLauncher."""
 import json
 import hashlib
+import math
 from pathlib import Path
 import isaaclab.sim as sim_utils
 from isaaclab.assets import ArticulationCfg, AssetBaseCfg
@@ -31,10 +32,12 @@ def create_scene(asset:Path,num_envs:int,device="cuda:0",spec=None,contacts=Fals
                     float(tree.joints[name].find("limit").get("upper")))/2 for name in JOINT_NAMES}
     def vector(name,default):
         return dict(zip(JOINT_NAMES,getattr(spec,name))) if spec else default
+    # Match the cloner's centered grid and retain 100 m beyond its outer origins.
+    ground_width=8.*(math.ceil(math.sqrt(num_envs))-1)+200.
     @configclass
     class SceneCfg(InteractiveSceneCfg):
         ground = AssetBaseCfg(prim_path="/World/Ground",spawn=sim_utils.CuboidCfg(
-            size=(200.,200.,.1),collision_props=sim_utils.CollisionPropertiesCfg(),
+            size=(ground_width,ground_width,.1),collision_props=sim_utils.CollisionPropertiesCfg(),
             physics_material=sim_utils.RigidBodyMaterialCfg(static_friction=.8,dynamic_friction=.8,restitution=0.)),
             init_state=AssetBaseCfg.InitialStateCfg(pos=(0.,0.,-.05)))
         robot = ArticulationCfg(prim_path="{ENV_REGEX_NS}/Robot",
