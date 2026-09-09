@@ -50,14 +50,14 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/b
 
 `run.json` 保存完整临时参数、来源、资产/USD 标识、初始足端高度和传感器映射，并按关节名记录从 PhysX 直接读取且核对的实际 armature；`metrics.jsonl` 保存有限性检查、每个物理子步的力矩饱和、TCP 误差、跌倒/重置、吞吐和优化器实测更新。检查点禁止混合诊断/正式模式或不同临时参数/来源。导出包始终 `trained=false`，正式评估会拒绝它。此次输出已存在，复现实验请使用新的输出目录以保留记录。
 
-目前的保持证据仍不是稳定工作初态：10 秒 MuJoCo 最后两秒运动很小，但基座俯仰约 -14.16°、后大腿碰撞几何接地；2 秒 PhysX 则约 -1.12°。新 USD 已移除固定链内的臂法兰/相机支架虚假接触，但姿态基本不变，不能把两引擎站姿差异归给该接触。真实被动响应等价性仍未闭合；`.2` 腿动作尺度的常量动作站立试验仅在 artifacts 中，诊断默认仍为 `.1`。
+当前正确编译被动参数后的保持证据见 `artifacts/runs/diagnostic_mujoco_constants_revalidation/`：默认 `.1` 零动作 10 秒 MuJoCo 终态俯仰约 -13.355°，两个后大腿接地，不能称为稳定站立；精确重放 `.2` 腿动作尺度的常量动作候选终态约 +0.304°、全程仅四足接地，但 J2/J3 限位反力仍持续存在，不是主动臂策略或硬件验收。旧 -14.16° 等编译后改 armature 的 artifact 数值已被此重验替代。新 USD 已移除固定链内的臂法兰/相机支架虚假接触，不能把两引擎站姿差异归给该接触。相同默认输入在 0.02–2.00 秒的重叠记录仍有最大基座高度差 7.615 mm；真实被动响应等价性未闭合。候选仅在 artifacts 中，诊断默认仍为 `.1`。
 
 可在新的 artifact 目录复用有界保持脚本（保持默认 PD/50 Hz/2 ms 不变）：
 
 ```bash
-mkdir -p artifacts/runs/reproduce_armature_hold10s
-cp artifacts/runs/diagnostic_sdk_zero_armature_settling10s/probe.py artifacts/runs/reproduce_armature_hold10s/probe.py
-env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python artifacts/runs/reproduce_armature_hold10s/probe.py
+mkdir artifacts/runs/reproduce_constants_hold10s
+cp artifacts/runs/diagnostic_mujoco_constants_revalidation/holds.py artifacts/runs/reproduce_constants_hold10s/holds.py
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python artifacts/runs/reproduce_constants_hold10s/holds.py
 mkdir -p artifacts/runs/reproduce_physx_hold2s
 cp artifacts/runs/diagnostic_physx_sdk_zero_armature_hold2s/probe.py artifacts/runs/reproduce_physx_hold2s/probe.py
 env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python artifacts/runs/reproduce_physx_hold2s/probe.py --headless
