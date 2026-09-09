@@ -10,7 +10,9 @@
 
 fresh 276-input、single-18 Actor 的 **1000 次迭代训练已完成，退出码 0**：`train_pose_config.json` 使用 4096 环境、24 步、5 epoch、4 minibatch、stage 1；现有 family 采样混入 `references/train/` 的 8 条 EE pose 引用。`train_initial_checkpoint.pt` 的腿 action std 为 .3（.2 rad scale 下等于 .06 rad），臂目标角 std 为 .01 rad；辅助预测／速度估计、自适应采样和 DR 均关闭。`train_pose1000_summary.json` 记录 98,304,000 transitions、20,000 次优化器更新，训练循环 3434.39 秒，有限性检查全部通过；累计 **1,780 次跌倒、98,519 次重置、29,739／17,694,720,000 个子步关节样本力矩饱和**，不能用后测零跌倒覆盖这些训练事件。训练入口沿用 `scripts/train.py --initialize-from`；已完成输出由唯一 GPU operator 管理，勿重复启动。
 
-PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的比较见 `paired_pose1000.json`：前后均完整 **8×20 秒、零跌倒**，墙钟分别 49.73／50.07 秒。局部4例位置 RMSE 均值 **.02013 → .01557 m**、朝向 **.08539 → .15053 rad**；移动4例位置 **.38503 → .06573 m**、朝向 **.09385 → .28847 rad**。全部8例位置改善、全部8例朝向退步；总体位置 **.20258 → .04065 m**、朝向 **.08962 → .21950 rad**。局部／移动平均基座平面位移由 **.00469／.00452 m** 增至 **.05426／.11932 m**；位移增加本身不是成功标准。结果支持位置跟踪改善，不能宣布完整位姿跟踪成功。当前正依据朝向退步分析原因，尚未确定新实验方案。
+PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的比较见 `paired_pose1000.json`：前后均完整 **8×20 秒、零跌倒**，墙钟分别 49.73／50.07 秒。局部4例位置 RMSE 均值 **.02013 → .01557 m**、朝向 **.08539 → .15053 rad**；移动4例位置 **.38503 → .06573 m**、朝向 **.09385 → .28847 rad**。全部8例位置改善、全部8例朝向退步；总体位置 **.20258 → .04065 m**、朝向 **.08962 → .21950 rad**。局部／移动平均基座平面位移由 **.00469／.00452 m** 增至 **.05426／.11932 m**；位移增加本身不是成功标准。结果支持位置跟踪改善，不能宣布完整位姿跟踪成功。已授权朝向奖励权重对照，控制组训练已启动，候选组及评估结果待完成。
+
+本轮对照检验：相同追加训练预算下，将 `orientation_tracking` 从控制组 **1** 提高至 **4**，能否改善朝向误差，以及位置误差和跌倒如何变化。两组均从 `checkpoint_000999.pt` 使用 `--initialize-from`、fresh Adam、学习率 `1e-5`、seed 0 开始，各训练 **250轮＝24,576,000 transitions／5,000次优化器更新**；其余数据、配置和物理参数固定。唯一 operator 顺序执行每组训练及 PhysX test8，再进行两组 MuJoCo test8；输出位于 `artifacts/runs/diagnostic_pose_learning/orientation_weight_comparison/`。尚无该对照结果，不新增朝向验收阈值。
 
 首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅增加 `OPENBLAS_NUM_THREADS=1` 后在新目录 `eval_post1000_openblas1/` 重试，退出码 **0**。复算实际前后比较需显式选择该后测：`python artifacts/runs/diagnostic_pose_learning/compare_pose8.py --after artifacts/runs/diagnostic_pose_learning/eval_post1000_openblas1/report.json`（使用 `pawweaver-runtime`）。
 
