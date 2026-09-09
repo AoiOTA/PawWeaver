@@ -6,7 +6,7 @@
 
 世界末端位姿接口已实现：**276 维观测、单个 18 输出 Actor、schema-2 位姿轨迹与策略包**，贯通数据转换、因果位姿历史、Isaac/MuJoCo和视觉测量。1000轮工程训练已完成，独立测试显示位置改善、朝向退步；后续联合位姿奖励250轮及双引擎评估也已完成，平均位置／朝向RMSE为PhysX **3.85 cm／.129 rad**、MuJoCo **3.73 cm／.160 rad**。这仍不代表完整位姿任务或正式硬件验收成功，包为 `trained=false`，原验收数值保留，朝向验收阈值尚未确定。
 
-腿部初始std×3与控制组的等预算250轮及双引擎test8均已完成：PhysX朝向均值改善，但MuJoCo八例朝向全退步，当前不支持采用std×3，见 [对照记录](artifacts/runs/diagnostic_pose_learning/leg_std_comparison/README.md)。原coupled250的MuJoCo远目标60秒测试在22.94秒跌倒；std两组远目标对照仍由operator推进，stage2＋60秒学习候选仅准备、未训练。纯位姿学习稳定前暂缓视觉扩展；其余证据见 [运行手册](docs/runbook.md)，旧246维位置结果保留历史身份。
+腿部初始std×3与控制组的等预算250轮及双引擎test8均已完成：PhysX朝向均值改善，但MuJoCo八例朝向全退步，当前不支持采用std×3，见 [对照记录](artifacts/runs/diagnostic_pose_learning/leg_std_comparison/README.md)。原coupled250的MuJoCo远目标60秒测试在22.94秒跌倒；std远目标补测及后续stage2＋60秒训练250轮和四项后测均已完成。新策略两引擎远目标均存活60秒，但位置RMSE仍约62.1 cm，尚未学会远目标跟踪；已选位置奖励宽度单变量候选，正在实现与验证，尚未新增训练。纯位姿学习稳定前暂缓视觉扩展；其余证据见 [运行手册](docs/runbook.md)，旧246维位置结果保留历史身份。
 
 项目持续以真实 PawWeaver 工作 dogfood `/home/lyb/kiss-my-agent-dogfood`：以减少无用设计、避免阻塞和缩短研究循环为目标。已移除无消费用途的 bundle 重复 metadata，并让批量评估继续推进，不把旧精确重放或新增完整 bundle hash 比较变成任务门槛；实际变化及其证据限制见 [验证记录](docs/validation.md)。
 
