@@ -143,13 +143,15 @@ python scripts/train.py --asset assets/generated/verified --output artifacts/run
 
 ## 固定测试集与双引擎评估
 
+旧 `artifacts/evaluation/suite` 的100例均缺朝向，当前pose `load_suite`拒绝，尚未实跑。当前CLI生成schema-2位姿套件；新增朝向采样改变随机数消耗，相同seed不证明位置数组等同旧套件。新生成必须另选未使用目录，保留旧文件；下例 `suite_pose_new` 仅作新目录示例。
+
 ```bash
 conda activate pawweaver-data
-python -m pawweaver.evaluation create artifacts/evaluation/suite
+python -m pawweaver.evaluation create artifacts/evaluation/suite_pose_new
 conda activate pawweaver-train
-python scripts/evaluate_isaac.py --asset assets/generated/verified --bundle artifacts/runs/baseline_seed0/bundle --suite artifacts/evaluation/suite --seed 0 --output artifacts/evaluation/physx_seed0 --headless
+python scripts/evaluate_isaac.py --asset assets/generated/verified --bundle artifacts/runs/baseline_seed0/bundle --suite artifacts/evaluation/suite_pose_new --seed 0 --output artifacts/evaluation/physx_seed0 --headless
 conda activate pawweaver-runtime
-python scripts/evaluate_mujoco.py --asset assets/generated/verified --bundle artifacts/runs/baseline_seed0/bundle --suite artifacts/evaluation/suite --seed 0 --output artifacts/evaluation/mujoco_seed0
+python scripts/evaluate_mujoco.py --asset assets/generated/verified --bundle artifacts/runs/baseline_seed0/bundle --suite artifacts/evaluation/suite_pose_new --seed 0 --output artifacts/evaluation/mujoco_seed0
 python -m pawweaver.evaluation compare artifacts/evaluation/physx_seed0/report.json artifacts/evaluation/mujoco_seed0/report.json --output artifacts/evaluation/comparison_seed0.json
 ```
 
