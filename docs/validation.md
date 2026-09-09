@@ -72,7 +72,11 @@ PhysX控制→联合奖励位置RMSE **.035426 → .038529 m**（2好6差）、�
 
 新策略far两引擎均完整60秒、无跌倒，但PhysX／MuJoCo位置RMSE仍 **.621440／.621054 m**，基座最大水平偏移仅 **.178279／.155302 m**，不能把存活延长称为远目标跟踪成功。与所选std控制组的共同时间窗比较，PhysX位置 **.157260→.161315 m**（2–17.38秒）、朝向 **.162577→.076339 rad**；MuJoCo位置 **.516660→.582251 m**（2–28.18秒）、朝向 **.586344→.176258 rad**。位置没有改善，朝向改善；不直接比较不同时长的全程RMSE。
 
-固定test8仍各8×20秒、零跌倒：PhysX位置 **.032482→.035531 m**（local4全好、moving4全差），MuJoCo **.032019→.045159 m**（8例全差）；朝向分别 **.131306→.094178 rad／.128080→.099021 rad**，两引擎均8例全好。依据为同目录 `train250_summary.json`、`execution_status.json`、`paired_far60.json`、`paired_physx_test8.json`、`paired_mujoco_test8.json`。已选位置奖励宽度单变量候选（.15→.45 m），正在实现与验证，尚未新增训练；纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
+固定test8仍各8×20秒、零跌倒：PhysX位置 **.032482→.035531 m**（local4全好、moving4全差），MuJoCo **.032019→.045159 m**（8例全差）；朝向分别 **.131306→.094178 rad／.128080→.099021 rad**，两引擎均8例全好。依据为同目录 `train250_summary.json`、`execution_status.json`、`paired_far60.json`、`paired_physx_test8.json`、`paired_mujoco_test8.json`。
+
+位置奖励宽度 **.15→.45 m** 对照已完成，复用原stage2控制组；候选250轮 **24,576,000 transitions／5,000次更新／827.20秒**，退出0、全部有限。训练 **1,422跌倒／8,471重置／4,053,721÷4,423,680,000子步关节样本饱和**，其中 **7,049次非跌倒60秒超时**。test8两引擎均完整8×20秒、零跌倒：PhysX位置 **.035531→.063010 m**（8例全差）、朝向 **.094178→.076464 rad**（6好2差）；MuJoCo位置 **.045159→.069698 m**（1好7差）、朝向 **.099021→.090498 rad**（6好2差）。
+
+PhysX far两组均60秒无跌倒，位置 **.621440→.634521 m**变差、朝向 **.269527→.169957 rad**改善；MuJoCo候选在 **8.24秒跌倒**，控制组完整60秒。共同 **2–8.24秒** 窗口的位置 **.023773→.151065 m**、朝向 **.074446→.246053 rad**均退步，不能用候选短程均值与控制完整60秒均值比较。依据见 [position_width_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/position_width_comparison/README.md) 及同目录 `train_candidate_summary.json`、`paired_far60.json`、两份 `paired_*_test8.json`。**不采用.45，默认.15未改**；width透传参数保留用于已完成实验复现。当前仅做保存状态goal-response／裁剪局部回放，尚无新仿真；纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
 
 原episode17另已派生20秒schema-2工程命令，CPU构造／加载检查及coupled250 MuJoCo评估均退出0；完整20秒、无跌倒，2秒后位置／朝向RMSE **.049607 m／.155485 rad**。使用人为 `20*i/119` 重定时、米制XYZW工程假设和一次固定 `G*T0^-1*Ti` 对齐；未知sensor→TCP外参仍未消除，不是原始时序或正式TCP示范转换，未加入当前训练或冻结test8。见 [派生命令](../artifacts/data/fastumi_original_sample/derived_command20/README.md) 与 [实际MuJoCo结果](../artifacts/data/fastumi_original_sample/derived_command20/mujoco_coupled250/README.md)；此新例尚无同例PhysX或视觉闭环证据。
 
