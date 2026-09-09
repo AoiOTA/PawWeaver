@@ -1,6 +1,7 @@
 """A canonical URDF tree and independent NumPy forward kinematics."""
 from __future__ import annotations
 from copy import deepcopy
+from itertools import combinations
 from pathlib import Path
 import xml.etree.ElementTree as ET
 
@@ -69,6 +70,31 @@ class RobotTree:
                 poses[child] = poses[parent] @ origin(joint) @ motion
                 pending.append(child)
         return poses
+
+    def fixed_collision_pairs(self) -> list[tuple[str, str]]:
+        """Collision-bearing links welded through any number of fixed, possibly massless frames."""
+        neighbors = {name: [] for name in self.links}
+        for joint in self.joints.values():
+            if joint.get("type") == "fixed":
+                parent = joint.find("parent").get("link")
+                child = joint.find("child").get("link")
+                neighbors[parent].append(child)
+                neighbors[child].append(parent)
+        remaining = set(self.links)
+        pairs = []
+        while remaining:
+            pending = [min(remaining)]
+            component = set()
+            while pending:
+                name = pending.pop()
+                if name in component:
+                    continue
+                component.add(name)
+                pending.extend(neighbors[name])
+            remaining.difference_update(component)
+            collision_links = sorted(name for name in component if self.links[name].find("collision") is not None)
+            pairs.extend(combinations(collision_links, 2))
+        return sorted(pairs)
 
     @property
     def mass(self) -> float:

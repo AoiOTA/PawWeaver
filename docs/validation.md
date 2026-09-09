@@ -2,6 +2,8 @@
 
 这些结果区分组合机器人模型检查与合成机器人软件检查。**尚未训练和验收 AS2 + Piper-H 的到达、连续跟踪或视觉控制策略。** M0 未闭合；M1–M4 的性能验收还没有完成。
 
+新固定组过滤前的真实组合模型 PhysX 接触读数、碰撞奖励及含接触量的 Critic 观测受到已确认的内部碰撞影响；那些有限 PPO 更新仍是软件集成证据，不能作为接触行为正确性的证据。下文保留历史结果并标出当前修正。
+
 ## 已完成
 
 | 检查 | 对象 | 结果 |
@@ -70,6 +72,16 @@ TCP 误差均值 `0.240611 m`、最大 `0.619186 m`、最后一步环境均值 `
 `diagnostic_physx_sdk_zero_armature_hold2s/` 通过现有 WholeBodyEnv 运行 2 秒零动作：实际六臂 armature 为 .005，最终基座 0.28106 m、俯仰 -1.12°，末半秒最大关节速度 0.00741 rad/s，四足有力、零饱和/跌倒且全部有限。对应 MuJoCo 2 秒为 0.25708 m/-5.95°；PhysX 还曾记录 `arm_flange_link`/`rgbd_stand` 大于 1 N 的接触力，MuJoCo 臂/相机接触列表为空。未辨认该 PhysX 接触对，不声称双引擎加载行为一致；这是当前具体未解问题。
 
 `diagnostic_geometry_sdk_zero_armature_seed0/` 完成现有 4×16 PhysX PPO：4 次优化器更新、Actor 最大变化 0.00160793、有限损失/状态/梯度，零饱和/跌倒；约 68.85 环境步/秒，TCP 误差均值 0.09842 m。`run.json` 保存 PhysX 按名直接读取的六臂 .005、源代码/配置/资产身份；runtime 已校验导出包和相同 metadata，仍为 `trained=false`。这些工程结果既不闭合硬件参数，也不替代原任务性能验收。
+
+## 当前 USD：固定连接组碰撞过滤 · 2026-09-09
+
+报告过滤先确认 `arm_flange_link ↔ rgbd_stand` 内部接触力峰值约 45,014 N；单对运行时排除使两端力归零，而最大基座坐标差仅 1.16 μm。这证明内部碰撞伪影存在，**但它不能解释当前两引擎的明显站姿分歧**。历史接触/碰撞奖励/Critic 接触观测受此影响，不因有限 PPO 更新而升级为有效物理行为证据。
+
+持久修正在 USD producer：`RobotTree.fixed_collision_pairs()` 只枚举由固定关节连通的 collision-bearing link 对，可穿过无质量固定 frame，绝不跨 revolute/continuous/prismatic。`convert_usd.py` 唯一解析对应刚体，保留已有关系并添加 `FilteredPairsAPI`；缺失/重名会失败，不合并刚体、不改惯性、frame、sensor 或 MJCF。新入口为 `usd/fixed_groups_20260909/robot/robot.usda`，26 对及 producer 哈希已记录；旧 `robot_3/robot.usda` 等历史 USD 文件校验保持不变。26 对是拓扑规则推导，并不声称每一对都观察到碰撞。
+
+`artifacts/runs/diagnostic_physx_persistent_fixed_groups/` 独立加载新旧 USD：30 个刚体名称/路径、29 个 joint frame、质量/惯性完全一致，world transform 最大差为零，26 个关系确已落盘。随后同一 2 秒零动作报告检查不再修改运行时物理：法兰↔支架过滤力及 net force 均为零，其他非足端没有超过 1 N，四足最终约 50/50/77/76 N。原生按名读回的腿 friction 三列为 `[1,1,.2]`、`[1,1,.2]`、`[2,2,.5]` 重复四次，臂为零；native stiffness/damping 为零，max force/velocity 为 `1e9/1e6`，与既有显式 PD 路径预期一致。此读回消除了加载参数不明的问题，不能证明双引擎被动响应相等。
+
+`diagnostic_geometry_fixed_groups_seed0/` 完成现有 4×16 PPO：4 次更新、Actor 最大变化 0.00160773，状态/损失/梯度全部有限，零饱和/跌倒；约 71.41 环境步/秒。runtime 包校验通过，`trained=false`，run metadata 与新 USD locator、26 个关系及当前 producer/source 哈希一致。4 项固定拓扑边界测试通过。站立尺度 `.2` 的常量动作候选继续只保存在 `diagnostic_standing_authority_seed0/`，未改变默认 `.1/.005` 诊断配置或原性能验收。
 
 ## 尚未完成的验收
 

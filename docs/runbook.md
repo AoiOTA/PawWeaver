@@ -10,11 +10,11 @@ pawweaver fetch-assets
 pawweaver build-assets --diagnostic
 MUJOCO_GL=egl python scripts/render_asset.py assets/generated/diagnostic --video
 conda activate pawweaver-train
-python scripts/convert_usd.py assets/generated/diagnostic --diagnostic --headless
+python scripts/convert_usd.py assets/generated/diagnostic --diagnostic --output-subdir fixed_groups_20260909 --headless
 python scripts/check_isaac_robot.py assets/generated/diagnostic --contacts --headless
 ```
 
-运行器从 `usd/conversion.json` 读取实际 USD 入口及校验值，不依赖导入器生成的目录编号。`--fixed-base` 单独输出 `usd-fixed/`，用于执行器响应检查。
+运行器从 `usd/conversion.json` 读取实际 USD 入口及校验值，不依赖导入器生成的目录编号。`--output-subdir` 必须指定新的子目录（上例已存在，复现请换新名称）；转换、固定组关系验证和哈希全部成功后才原子替换该 locator，旧 USD 文件保持不变。转换器只为 canonical 固定连接分量内的碰撞 link 添加显式 pair filter，穿过无质量固定中间 frame，不跨可动关节、不合并 link；实际 link/prim 对及 producer 哈希记录在 conversion metadata。`--fixed-base` 单独输出 `usd-fixed/`，用于执行器响应检查。
 
 ## 软件集成测试
 
@@ -41,7 +41,7 @@ MUJOCO_GL=egl bash scripts/check.sh
 M0 未闭合时，只能显式提供带来源的临时执行器参数。复用已有组合几何/USD，不重建资产：
 
 ```bash
-env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec configs/diagnostic_actuators.json --config configs/diagnostic_training.json --output artifacts/runs/diagnostic_geometry_sdk_zero_armature_seed0 --seed 0 --num-envs 4 --iterations 1 --headless
+env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec configs/diagnostic_actuators.json --config configs/diagnostic_training.json --output artifacts/runs/diagnostic_geometry_fixed_groups_seed0 --seed 0 --num-envs 4 --iterations 1 --headless
 ```
 
 该配置为 16 步、2 epoch、2 minibatch，关闭预测、速度估计、自适应采样、随机化和示范。参数文件绑定当前资产哈希，按关节名使用 canonical URDF 的位置/速度限位；增益/力矩为记录的官方候选参数，臂力矩仅是 CAN 编码范围，六个臂关节的 armature 现取 0.005 kg·m²，来自固定版本标准 Piper 厂商仿真并临时迁移至 Piper-H，不是 Piper-H 实测电机反射惯量；仅此参数替代零假设，臂 damping/frictionloss 仍为零且未经验证。腿部初始姿态仍取参考姿态；臂使用固定版本 SDK 的六零参考 `[0,0,0,0,0,0]`，控制器保持启用。来源为 `pyAgxArm@e7aef17d54cac80cbaeb1b4110ab3d8f1337a95b` 的 Piper-H demo `test1.py` 第 104/127 行 `move_j([0.0]*robot.joint_nums)`；这不是已验证的 GUI/固件厂家 home 数值或断电姿态。动作尺度 0.1 rad、零延迟均为工程选择，不能声明硬件有效。
@@ -50,7 +50,7 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/b
 
 `run.json` 保存完整临时参数、来源、资产/USD 标识、初始足端高度和传感器映射，并按关节名记录从 PhysX 直接读取且核对的实际 armature；`metrics.jsonl` 保存有限性检查、每个物理子步的力矩饱和、TCP 误差、跌倒/重置、吞吐和优化器实测更新。检查点禁止混合诊断/正式模式或不同临时参数/来源。导出包始终 `trained=false`，正式评估会拒绝它。此次输出已存在，复现实验请使用新的输出目录以保留记录。
 
-目前的保持证据仍不是稳定工作初态：10 秒 MuJoCo 最后两秒运动很小，但基座俯仰约 -14.16°、后大腿碰撞几何接地；2 秒 PhysX 则约 -1.12°，还出现臂法兰/相机支架接触力。两引擎的加载/接触差异尚未闭合。
+目前的保持证据仍不是稳定工作初态：10 秒 MuJoCo 最后两秒运动很小，但基座俯仰约 -14.16°、后大腿碰撞几何接地；2 秒 PhysX 则约 -1.12°。新 USD 已移除固定链内的臂法兰/相机支架虚假接触，但姿态基本不变，不能把两引擎站姿差异归给该接触。真实被动响应等价性仍未闭合；`.2` 腿动作尺度的常量动作站立试验仅在 artifacts 中，诊断默认仍为 `.1`。
 
 可在新的 artifact 目录复用有界保持脚本（保持默认 PD/50 Hz/2 ms 不变）：
 
