@@ -8,11 +8,15 @@
 
 当前工作目录为 `artifacts/runs/diagnostic_pose_learning/`。`eval_initial8/operator_summary.json` 记录 fresh 初始化策略的 **8×20 秒 PhysX 批量前测，墙钟 49.73 秒**；全部完成且无跌倒，移动引用仍有约 38.5 cm 平均位置 RMSE。这是工程前测，不是学习结果或硬件有效性证明。
 
-当前已启动 fresh 276-input、single-18 Actor 的 **1000 次迭代训练**：`train_pose_config.json` 使用 4096 环境、24 步、5 epoch、4 minibatch、stage 1；现有 family 采样混入 `references/train/` 的 8 条 EE pose 引用。`train_initial_checkpoint.pt` 的腿 action std 为 .3（.2 rad scale 下等于 .06 rad），臂目标角 std 为 .01 rad；辅助预测／速度估计、自适应采样和 DR 均关闭。训练正在运行，尚无完成或后测结果；不把初始常量动作当成学到的协调策略。训练入口沿用 `scripts/train.py --initialize-from`；实际执行状态与输出目录由唯一 GPU operator 管理，勿重复启动。
+fresh 276-input、single-18 Actor 的 **1000 次迭代训练已完成，退出码 0**：`train_pose_config.json` 使用 4096 环境、24 步、5 epoch、4 minibatch、stage 1；现有 family 采样混入 `references/train/` 的 8 条 EE pose 引用。`train_initial_checkpoint.pt` 的腿 action std 为 .3（.2 rad scale 下等于 .06 rad），臂目标角 std 为 .01 rad；辅助预测／速度估计、自适应采样和 DR 均关闭。`train_pose1000_summary.json` 记录 98,304,000 transitions、20,000 次优化器更新，训练循环 3434.39 秒，有限性检查全部通过；累计 **1,780 次跌倒、98,519 次重置、29,739／17,694,720,000 个子步关节样本力矩饱和**，不能用后测零跌倒覆盖这些训练事件。训练入口沿用 `scripts/train.py --initialize-from`；已完成输出由唯一 GPU operator 管理，勿重复启动。
+
+PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的比较见 `paired_pose1000.json`：前后均完整 **8×20 秒、零跌倒**，墙钟分别 49.73／50.07 秒。局部4例位置 RMSE 均值 **.02013 → .01557 m**、朝向 **.08539 → .15053 rad**；移动4例位置 **.38503 → .06573 m**、朝向 **.09385 → .28847 rad**。全部8例位置改善、全部8例朝向退步；总体位置 **.20258 → .04065 m**、朝向 **.08962 → .21950 rad**。局部／移动平均基座平面位移由 **.00469／.00452 m** 增至 **.05426／.11932 m**；位移增加本身不是成功标准。结果支持位置跟踪改善，不能宣布完整位姿跟踪成功。当前正依据朝向退步分析原因，尚未确定新实验方案。
+
+首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅增加 `OPENBLAS_NUM_THREADS=1` 后在新目录 `eval_post1000_openblas1/` 重试，退出码 **0**。复算实际前后比较需显式选择该后测：`python artifacts/runs/diagnostic_pose_learning/compare_pose8.py --after artifacts/runs/diagnostic_pose_learning/eval_post1000_openblas1/report.json`（使用 `pawweaver-runtime`）。
 
 `references/test/` 为独立的 8 项固定评估套件。引用源是 **synthetic_fk_reference**，不是实测 FastUMI；局部引用为固定根 FK，移动引用离线加约 .6 m 水平根位移后仅保存 EE pose，未证明足步动力学可执行。现有 demonstrations `.align(reset_tcp)` 只平移位置、保留世界朝向；评估直接使用冻结世界位姿。详见 [引用构造记录](../artifacts/runs/diagnostic_pose_learning/references/README.md)。`scripts/evaluate_isaac.py --num-envs 8` 可消费该套件；旧两例 exact-hold 失败仍是历史结果，不要求批量动力学逐点复制顺序轨迹才可开展新任务评价。
 
-训练及 PhysX 后测结束后，同一最终策略使用现有 MuJoCo 入口进行独立工程评估。下面命令尚未执行；输出路径已存在时另选新目录。诊断入口在模型编译前应用临时被动参数、力矩限值和 bundle 中的初始根高度，保留 `trained=false`。当前 test8 均为动态轨迹，跨引擎报告的静态到达率降幅显示 `null`，不填充为零。
+同一最终策略的 MuJoCo 独立工程评估已完成，退出码 **0**，结果为 `eval_mujoco_post1000/report.json`：8例均完整20秒、零跌倒，平均位置 RMSE **.05230 m**、朝向 **.21391 rad**。`cross_engine_post1000.json` 比较命令退出码 **0**，PhysX／MuJoCo 现有仅位置 tracking pass rate 为 **6/8／5/8**；这不是完整位姿验收。下面保留已执行的 MuJoCo 命令；复现时另选新目录。诊断入口在模型编译前应用临时被动参数、力矩限值和 bundle 中的初始根高度，保留 `trained=false`。当前 test8 均为动态轨迹，跨引擎报告的静态到达率降幅与其是否达标均为 `null`，不填充为零；临时参数、少量合成引用和单种子结果不建立硬件有效性或正式验收。
 
 ```bash
 env -u PYTHONPATH PYTHONNOUSERSITE=1 CUDA_VISIBLE_DEVICES='' /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python scripts/evaluate_mujoco.py --asset assets/generated/diagnostic --bundle artifacts/runs/diagnostic_pose_learning/train_pose1000/bundle --suite artifacts/runs/diagnostic_pose_learning/references/test --output artifacts/runs/diagnostic_pose_learning/eval_mujoco_post1000 --seed 0 --diagnostic --provisional-spec artifacts/runs/diagnostic_pose_learning/candidate_spec.json
