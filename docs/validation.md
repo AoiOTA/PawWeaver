@@ -26,7 +26,7 @@
 
 <a id="pose1000-foot-motion"></a>
 
-独立 reviewer 复核 `eval_post1000_openblas1/` 已保存的50 Hz足力与观测，以足力 **>1 N** 描述采样时刻的承重接触，并从观测、世界TCP四元数恢复基座旋转和关节角后进行FK足端重建；重建TCP残差 **0.7–3.3 µm** 支持该重建路径。下表均为已完成工程轨迹的读数，1 N 是本次描述接触所用阈值，不是新增验收标准。
+独立 reviewer 复核 `eval_post1000_openblas1/` 已保存的50 Hz足力与观测，以足力 **>1 N** 描述采样时刻的承重接触，并从观测、世界TCP四元数恢复基座旋转和关节角后进行FK足端重建；重建TCP残差 **0.7–3.3 µm** 支持该重建路径。下表保留原数值；复核确认其足力分类复用了历史 `initialization_verification.json` 的body_names顺序（FR／FL／RR／RL列为17／16／19／18），该批trace未记录实际runtime顺序。因此承重／接触标签依赖这一历史顺序假设；FK足位置和基座位姿结论独立。1 N仅为描述阈值，不是验收标准。
 
 | PhysX移动案例 | 50 Hz足力与重建足端水平运动 | 最低基座z（m） | 基座倾斜 |
 |---|---|---|---|
@@ -35,7 +35,7 @@
 | moving02 | FL约60 ms低于阈值；FL净水平位移约13.7 cm | .248 | 最大pitch 9.2° |
 | moving03 | 所有记录时刻四足接触；FL承重水平路程约13.2 cm | .272 | 最大roll 7.4° |
 
-这些记录支持下沉、倾斜和拖移，尚未证明交替迈步；球形足滚动的贡献未分离，不能把50 Hz接触记录扩展为每个物理子步的结论。MuJoCo 同批后测未保存接触，不能据此确定步态或滑移；其 moving02 最低基座z约 **.229 m**、pitch约 **−11.9°**，FK重建TCP残差最大 **.87 mm**，不依据微小足高差断言离地。
+这些记录独立支持下沉、倾斜和足端移动；承重拖移的解释受上述标签假设限制，尚未证明交替迈步；球形足滚动的贡献未分离，不能把50 Hz接触记录扩展为每个物理子步的结论。MuJoCo 同批后测未保存接触，不能据此确定步态或滑移；其 moving02 最低基座z约 **.229 m**、pitch约 **−11.9°**，FK重建TCP残差最大 **.87 mm**，不依据微小足高差断言离地。
 
 后续已成功执行的CPU判别复用既有 `candidate_spec.json`、`diagnostic_active_arm_unfold/plan.json` 的 `actions[1]`、保存的trace观测和 `checkpoint_000999.pt`。在现有腿部 `q0 ± .2 rad` 范围内，每腿11³网格找到抬脚见证：FR/RR为 **[-.2, .65, -1.85] rad**，FL/RL为 **[+.2, .65, -1.85] rad**，足link相对q0升高 **68.36 mm**、相对initial hold约 **100–102 mm**。这仅是固定基座FK，未经碰撞筛选、不是全局极值，也不证明动态抬脚。用train1000 bundle回放8例保存观测，`clip(raw_action)` 与保存action最大差 **1.32e-6**；moving00–03在 `t >= 2 s` 的已裁剪腿动作样本处于边界的比例分别 **81.44／80.85／88.83／91.71%**，各例原始动作绝对值中位数为 **2.00–2.44**、最大值分别 **3.76／4.99／3.52／3.57**。
 
@@ -58,13 +58,15 @@ checkpoint实际腿部标准差为 **.331–.855**；对4个moving案例的 **3,
 
 直接PhysX比较见 `paired_control_candidate.json`，相对原1000轮比较见 `paired_before_control.json`／`paired_before_candidate.json`，两组跨引擎比较见 `cross_engine_control.json`／`cross_engine_candidate.json`；MuJoCo组间数值按两份原始 `eval_mujoco_*/report.json` 的同名案例复算。将PhysX专用 `compare_pose8.py` 用于MuJoCo组间报告曾被“expected world_tcp_pose PhysX report”拒绝，空输出保留为 `paired_mujoco_control_candidate.failed_empty.json`，不作为有效比较报告，未改脚本绕过边界。
 
-下一步优先建议复用两组最终checkpoint和PhysX保存trace，CPU配对重放原始／裁剪腿臂动作、基座姿态与FK足端运动，沿用 `t >= 2 s` 窗口并验证动作重放一致，判断新的位姿权衡是否仍伴随动作顶边和承重拖移。1000轮的81–92%腿动作边界比例不能直接替代两组新策略证据；新结果可帮助决定先改奖励还是针对有效探索作单变量闭环检验。此步骤尚未执行，只作保存状态关联分析，不把FK或50 Hz足力升级为动态抬脚、逐子步接触或因果证明；MuJoCo缺失接触需有明确问题时另行采集。保持单个18关节Actor和世界系EE位姿目标，不添加底盘命令或验收阈值。
+此前建议的CPU配对回放已完成（退出码0）：复用 `orientation_weight_comparison/` 两组bundle及 `eval_control/`、`eval_candidate/` 原始trace，`clip(raw)` 与保存action最大差 **1.55e-6**。在两组moving4的 `t >= 2 s` 保存状态上，腿raw动作越界比例 **90.28% → 90.87%**，臂 **4.79% → 3.59%**，臂均仅J5越界；基座倾斜变化混合，未见权重4新增普遍裁剪。两组都存在腿动作顶边，不能据此把位置代价单独归因于候选新增裁剪；观测与步后状态按一帧偏移对齐，TCP位置重建残差小于 **.281 µm**；足路径仅报未接触门控的FK运动，不新增承重／步态结论。这是保存状态关联证据，不是奖励或探索的动态因果证明。 后续trace的接触列名补充由评估器owner处理，旧文件不补造，也不将该记录缺口设为新训练门槛。
+
+**当前联合位姿奖励候选已启动，结果待完成**：将 `2*rpos+rrot` 改为 `3*rpos*rrot`，位置／朝向宽度仍为 `.15 m／.5 rad`，峰值均为3，但梯度不同；检验同时降低两类误差是否优于分项奖励。源代码 `d26b514` 已独立review且12项CPU测试通过。候选从原 `checkpoint_000999.pt` 经fresh Adam、初始LR `1e-5`、seed0训练250轮，其余配置固定；复用已完成w1控制组，随后进行PhysX8和MuJoCo8。operator已确认实际启动，输出和复现命令见 [coupled_pose_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/coupled_pose_comparison/README.md)，当前无任务效果结论。
 
 固定世界TCP位姿的真实渲染图像闭环见 [diagnostic_pose_visual_control/README.md](../artifacts/runs/diagnostic_pose_visual_control/README.md) 和 `closed_loop20/summary.json`：复用权重1控制组bundle，经30 Hz腕部RGB-D、ArUco／深度测量、10 ms延迟队列驱动50 Hz单18关节策略，MuJoCo完整 **20秒／1000控制步**，退出码0、墙钟 **27.38秒**。固定marker到目标的变换在运行前冻结；仿真里程计提供世界相机定位，目标真值只用于场景和评分，控制器消费图像测量。
 
 601次采集均成功测量，600个独立测量送达控制（终点帧晚于末次控制）；**999/1000步**输入有效，唯一保持发生在首步等待延迟图像，最大使用测量年龄 **40 ms**。此后无漏检、失跟或保持，采样观测和qpos/qvel全部有限，现有跌倒检测未触发。全程TCP位置／朝向RMSE为 **.018896 m／.085253 rad**，2秒后 **.018855 m／.085240 rad**，终点 **.023087 m／.061185 rad**；图像推导目标的测量RMSE为 **.038886 m／.066913 rad**。固定marker到TCP偏移可能放大朝向误差的位置贡献，本次未隔离原因。
 
-该固定目标场景没有注入遮挡、噪声或深度缺失；最低采样基座高 **.246403 m**，未记录非足接触和逐子步力矩饱和，不能据无跌倒宣称稳定站立。结果属于临时参数和名义D435标定下的图像→测量→控制工程证据，尚不覆盖移动目标、遮挡恢复、真机精度或60秒视觉验收。README包含复现入口，`closed_loop20/wrist-view.mp4` 是20秒实际腕部输入视角；CPU配对重放仍为上述未执行的研究建议。
+该固定目标场景没有注入遮挡、噪声或深度缺失；最低采样基座高 **.246403 m**，未记录非足接触和逐子步力矩饱和，不能据无跌倒宣称稳定站立。结果属于临时参数和名义D435标定下的图像→测量→控制工程证据，尚不覆盖移动目标、遮挡恢复、真机精度或60秒视觉验收。README包含复现入口，`closed_loop20/wrist-view.mp4` 是20秒实际腕部输入视角。
 
 首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅设置 `OPENBLAS_NUM_THREADS=1` 后在 `eval_post1000_openblas1/` 重试，operator 确认退出码 **0**。失败记录不替换为成功，实际前后比较只消费重试报告。
 

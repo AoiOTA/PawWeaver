@@ -12,7 +12,7 @@ fresh 276-input、single-18 Actor 的 **1000 次迭代训练已完成，退出�
 
 PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的比较见 `paired_pose1000.json`：前后均完整 **8×20 秒、零跌倒**，墙钟分别 49.73／50.07 秒。局部4例位置 RMSE 均值 **.02013 → .01557 m**、朝向 **.08539 → .15053 rad**；移动4例位置 **.38503 → .06573 m**、朝向 **.09385 → .28847 rad**。全部8例位置改善、全部8例朝向退步；总体位置 **.20258 → .04065 m**、朝向 **.08962 → .21950 rad**。局部／移动平均基座平面位移由 **.00469／.00452 m** 增至 **.05426／.11932 m**；位移增加本身不是成功标准。结果支持位置跟踪改善，不能宣布完整位姿跟踪成功。朝向奖励权重对照及两组双引擎后测现已完成，结果见下。
 
-独立复核同批已保存的50 Hz足力与观测/FK轨迹，支持移动案例伴有下沉、倾斜和承重足端拖移，尚未证明交替迈步；球形足滚动贡献未分离，MuJoCo 未保存接触，详见[验证记录中的足端重建证据](validation.md#pose1000-foot-motion)。
+独立复核同批已保存的50 Hz观测/FK轨迹，支持移动案例伴有下沉、倾斜和足端移动；此前承重标签依赖历史body顺序假设，该批未记录实际runtime顺序，不能据此确认承重拖移或交替迈步。球形足滚动贡献未分离，MuJoCo旧trace未保存接触，详见[验证记录中的足端重建证据](validation.md#pose1000-foot-motion)。
 
 本轮 `orientation_tracking=1` 控制组与 `4` 候选组均已完成：同一 `checkpoint_000999.pt` 经 `--initialize-from`、fresh Adam、初始学习率 `1e-5`、seed 0，各 **250轮＝24,576,000 transitions／5,000次优化器更新**。实际配置仅朝向权重不同，run 中 source 哈希、输入、资产和临时参数一致；Git commit/dirty 描述不同。两组所有有限性检查通过，训练循环 **842.79／840.75秒**，训练跌倒 **217／240次**、重置均 **24,581次**，力矩饱和 **88,745／276,114** 个样本（每组分母 **4,423,680,000**）；评估零跌倒不覆盖这些事件。唯一 operator 已顺序完成训练、PhysX 与 MuJoCo test8，README 记录各运行退出码0；本次两组训练／评估已结束。
 
@@ -20,7 +20,9 @@ PhysX 后测有效结果为 `eval_post1000_openblas1/report.json`，与前测的
 
 真实组合几何的固定目标图像闭环已完成：权重1控制组bundle通过腕部渲染RGB-D→ArUco／深度测量→延迟队列→单18关节策略，在MuJoCo运行 **20秒**，退出码0、墙钟 **27.38秒**。601帧全部检出，600个独立测量送入控制，**999/1000**控制步使用有效测量；仅首步等待初始图像，此后无失跟／保持、未触发跌倒。2秒后真实TCP位置／朝向RMSE为 **.018855 m／.085240 rad**，图像目标测量RMSE为 **.038886 m／.066913 rad**。世界相机定位使用仿真里程计，控制目标仅来自图像；这是固定目标、无注入遮挡的工程闭环，未验证移动目标、真实相机或60秒视觉任务。详细场景、输入哈希、20秒腕视角视频和 `run.py probe/run` 复现命令见 [图像闭环README](../artifacts/runs/diagnostic_pose_visual_control/README.md)，复现按该入口使用新输出目录。
 
-**下一步建议（尚未执行）**：先复用两组最终 `checkpoint_000249.pt`、`eval_control/` 与 `eval_candidate/` 保存的观测／动作／足力trace，做一次CPU动作裁剪与足端运动配对重放。问题是权重4的位置损失是否仍伴随腿动作长期顶边、基座倾斜／承重足端拖移，以及朝向改善主要伴随哪些臂／基座变化。复用已有FK和 `t >= 2 s` 统计窗口，按腿／臂分开比较原始动作、实际裁剪动作、TCP两类误差和足力，不改训练参数或扩大动作范围；先核对重放动作与trace一致。1000轮已有高裁剪率和拖移证据，但不能直接外推到这两组。该低成本判别可帮助选择后续奖励或有效探索干预；只能建立保存状态上的关联，动态因果仍需单变量闭环实验，缺失的MuJoCo接触不能靠重放补造。
+此前建议的CPU配对回放已完成（退出码0）：复用 `orientation_weight_comparison/` 两组bundle及 `eval_control/`、`eval_candidate/` 原始trace，`clip(raw)` 与保存action最大差 **1.55e-6**。在两组moving4的 `t >= 2 s` 保存状态上，腿raw动作越界比例 **90.28% → 90.87%**，臂 **4.79% → 3.59%**，臂均仅J5越界；基座倾斜变化混合，未见权重4新增普遍裁剪。两组都存在腿动作顶边，不能据此把位置代价单独归因于候选新增裁剪；足路径仅报未接触门控的FK运动，不新增承重／步态结论。这是保存状态关联证据，不是奖励或探索的动态因果证明。
+
+**当前联合位姿奖励候选已启动，结果待完成**：将 `2*rpos+rrot` 改为 `3*rpos*rrot`，位置／朝向宽度仍为 `.15 m／.5 rad`，峰值均为3，但梯度不同；检验同时降低两类误差是否优于分项奖励。源代码 `d26b514` 已独立review且12项CPU测试通过。候选从原 `checkpoint_000999.pt` 经fresh Adam、初始LR `1e-5`、seed0训练250轮，其余配置固定；复用已完成w1控制组，随后进行PhysX8和MuJoCo8。operator已确认实际启动，输出和复现命令见 [coupled_pose_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/coupled_pose_comparison/README.md)，当前无任务效果结论。
 
 首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅增加 `OPENBLAS_NUM_THREADS=1` 后在新目录 `eval_post1000_openblas1/` 重试，退出码 **0**。复算实际前后比较需显式选择该后测：`python artifacts/runs/diagnostic_pose_learning/compare_pose8.py --after artifacts/runs/diagnostic_pose_learning/eval_post1000_openblas1/report.json`（使用 `pawweaver-runtime`）。
 
