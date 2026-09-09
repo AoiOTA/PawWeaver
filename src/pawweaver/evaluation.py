@@ -82,10 +82,11 @@ def compare(physx:Path,mujoco:Path):
     task_a=a.get("task_kind","position_only")
     if task_a!=b.get("task_kind","position_only"):
         raise ValueError("Paired evaluations differ in task_kind")
-    drop=a["summary"]["reach_success_rate"]-b["summary"]["reach_success_rate"]
+    reach_a=a["summary"]["reach_success_rate"];reach_b=b["summary"]["reach_success_rate"]
+    drop=None if reach_a is None or reach_b is None else reach_a-reach_b
     eligible=a["reachability_screened"] and b["reachability_screened"] and len(a["case_ids"])>=100 and not a.get("diagnostic",False) and not b.get("diagnostic",False)
-    return {"seed":a["seed"],"reach_success_drop_percentage_points":100*drop,
-            "transfer_drop_within_target":drop<=.1,"position_criteria_eligible":bool(eligible),
+    return {"seed":a["seed"],"reach_success_drop_percentage_points":None if drop is None else 100*drop,
+            "transfer_drop_within_target":None if drop is None else drop<=.1,"position_criteria_eligible":bool(eligible),
             "task_kind":task_a,"eligible_for_acceptance":False,"pose_acceptance_passed":None,
             "acceptance_note":"Position transfer target is unchanged; full pose acceptance is unset pending orientation thresholds.",
             "physx":a["summary"],"mujoco":b["summary"],

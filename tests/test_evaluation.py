@@ -104,3 +104,31 @@ def test_pairing_ignores_unconsumed_bundle_metadata_hash(tmp_path):
     a.write_text(json.dumps(dict(common,engine="PhysX",bundle_hash="config_a")))
     b.write_text(json.dumps(dict(common,engine="MuJoCo",bundle_hash="config_b")))
     assert compare(a,b)["reach_success_drop_percentage_points"]==0.
+
+
+@pytest.mark.parametrize("reach_rates,reach_count,expected_drop,within",[
+    ((None,None),0,None,None),
+    ((.9,.7),2,20.,False),
+])
+def test_pairing_dynamic_only_and_mixed_suites(tmp_path,reach_rates,reach_count,expected_drop,within):
+    common=dict(suite_sha256="suite",asset_hash="asset",seed=0,case_ids=list(range(8)),
+                policy_sha256="policy",reachability_screened=False,task_kind="world_tcp_pose")
+    summaries=[dict(reach_episodes=reach_count,tracking_episodes=8-reach_count,
+                    reach_success_rate=rate,mean_rmse_m=.04+index*.01,
+                    mean_orientation_rmse_rad=.2+index*.1)
+               for index,rate in enumerate(reach_rates)]
+    a=tmp_path/"a.json";b=tmp_path/"b.json"
+    a.write_text(json.dumps(dict(common,engine="PhysX",summary=summaries[0])))
+    b.write_text(json.dumps(dict(common,engine="MuJoCo",summary=summaries[1])))
+    result=compare(a,b)
+    if expected_drop is None:
+        assert result["reach_success_drop_percentage_points"] is None
+    else:
+        assert result["reach_success_drop_percentage_points"]==pytest.approx(expected_drop)
+    assert result["transfer_drop_within_target"] is within
+    assert result["physx"]==summaries[0]
+    assert result["mujoco"]==summaries[1]
+    del summaries[1]["reach_success_rate"]
+    b.write_text(json.dumps(dict(common,engine="MuJoCo",summary=summaries[1])))
+    with pytest.raises(KeyError,match="reach_success_rate"):
+        compare(a,b)
