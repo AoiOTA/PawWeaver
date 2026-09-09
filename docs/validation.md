@@ -37,6 +37,10 @@
 
 这些记录支持下沉、倾斜和拖移，尚未证明交替迈步；球形足滚动的贡献未分离，不能把50 Hz接触记录扩展为每个物理子步的结论。MuJoCo 同批后测未保存接触，不能据此确定步态或滑移；其 moving02 最低基座z约 **.229 m**、pitch约 **−11.9°**，FK重建TCP残差最大 **.87 mm**，不依据微小足高差断言离地。
 
+后续已成功执行的CPU判别复用既有 `candidate_spec.json`、`diagnostic_active_arm_unfold/plan.json` 的 `actions[1]`、保存的trace观测和 `checkpoint_000999.pt`。在现有腿部 `q0 ± .2 rad` 范围内，每腿11³网格找到抬脚见证：FR/RR为 **[-.2, .65, -1.85] rad**，FL/RL为 **[+.2, .65, -1.85] rad**，足link相对q0升高 **68.36 mm**、相对initial hold约 **100–102 mm**。这仅是固定基座FK，未经碰撞筛选、不是全局极值，也不证明动态抬脚。用train1000 bundle回放8例保存观测，`clip(raw_action)` 与保存action最大差 **1.32e-6**；moving00–03在 `t >= 2 s` 的已裁剪腿动作样本处于边界的比例分别 **81.44／80.85／88.83／91.71%**，各例原始动作绝对值中位数为 **2.00–2.44**、最大值分别 **3.76／4.99／3.52／3.57**。
+
+checkpoint实际腿部标准差为 **.331–.855**；对4个moving案例的 **3,604个保存状态×12腿维**，按各维Normal分布计算 `P(-1<a<1) = Φ((1−μ)/σ) − Φ((-1−μ)/σ)`，边际概率均值 **16.66%**、中位数 **2.211%**。仅在数学上将σ乘3的反事实，均值为 **24.29%**、中位数 **20.49%**；这不是联合动作进入区间的动态频率，也不证明学习收益。现有动作范围并非几何上绝对禁止抬脚，均值越界及有效探索值得后续检验；尚未据此选定新实验，当前权重对照保持不变。
+
 对照问题是在相同追加训练预算下，`orientation_tracking=4` 相对控制组 `1` 是否改善朝向误差，同时观察位置误差与跌倒。两组均以 `checkpoint_000999.pt` 为 `--initialize-from` 输入，fresh Adam、学习率 `1e-5`、seed 0；其余数据、配置和物理参数固定，各 **250轮、24,576,000 transitions、5,000次优化器更新**。由唯一 operator 顺序完成每组训练＋PhysX test8，之后完成两组 MuJoCo test8；输出目录为 `artifacts/runs/diagnostic_pose_learning/orientation_weight_comparison/`。控制组由唯一 operator 启动；该对照尚无完成结果，不宣称朝向已改善。
 
 首次 PhysX 后测退出码 **139**，`eval_post1000_console.log` 保留 OpenBLAS shutdown／fork 原生崩溃；仅设置 `OPENBLAS_NUM_THREADS=1` 后在 `eval_post1000_openblas1/` 重试，operator 确认退出码 **0**。失败记录不替换为成功，实际前后比较只消费重试报告。
