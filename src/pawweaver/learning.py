@@ -1,4 +1,5 @@
 """RSL-RL 5 integration: single actor/critic PPO with simultaneous supervised auxiliary losses."""
+import math
 import torch
 from torch import nn
 from rsl_rl.models import MLPModel
@@ -46,14 +47,17 @@ class WholeBodyActor(MLPModel):
 
 class AuxiliaryPPO(PPO):
     """Feed-forward, single-GPU PPO. Auxiliary labels stay in rollout storage, outside actor input."""
-    def __init__(self,*args,auxiliary_coef=1.,**kwargs):
+    def __init__(self,*args,auxiliary_coef=1.,leg_mean_bound_coef=0.,**kwargs):
+        if not math.isfinite(leg_mean_bound_coef) or leg_mean_bound_coef<0:
+            raise ValueError("Leg mean-bound coefficient must be finite and nonnegative")
         super().__init__(*args,**kwargs)
         self.auxiliary_coef = auxiliary_coef
+        self.leg_mean_bound_coef = leg_mean_bound_coef
         if self.is_multi_gpu or self.symmetry or self.rnd or self.actor.is_recurrent or self.critic.is_recurrent:
             raise ValueError("PawWeaver v1 supports feed-forward single-GPU PPO without RND/symmetry")
 
     def update(self):
-        totals = {key:0. for key in ("value","surrogate","entropy","auxiliary","kl")}
+        totals = {key:0. for key in ("value","surrogate","entropy","auxiliary","kl","leg_mean_bound")}
         count = 0
         for batch in self.storage.mini_batch_generator(self.num_mini_batches,self.num_learning_epochs):
             obs = batch.observations
@@ -82,6 +86,9 @@ class AuxiliaryPPO(PPO):
             value_loss = value_error.mean()
             auxiliary = self.actor.auxiliary_loss(obs)
             loss = surrogate+self.value_loss_coef*value_loss-self.entropy_coef*entropy+self.auxiliary_coef*auxiliary
+            if self.leg_mean_bound_coef>0:
+                leg_mean_bound = self.leg_mean_bound_coef*(self.actor.output_mean[:,:12].abs()-1).clamp_min(0).square().mean()
+                loss = loss+leg_mean_bound
             if not torch.isfinite(loss):
                 raise FloatingPointError("Non-finite PPO loss")
             self.optimizer.zero_grad()
@@ -91,6 +98,8 @@ class AuxiliaryPPO(PPO):
             self.optimizer.step()
             for key,value in zip(totals,(value_loss,surrogate,entropy,auxiliary,kl)):
                 totals[key] += value.item()
+            if self.leg_mean_bound_coef>0:
+                totals["leg_mean_bound"] += leg_mean_bound.item()
             count += 1
         self.storage.clear()
         return {key:value/max(count,1) for key,value in totals.items()}

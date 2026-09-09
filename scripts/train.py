@@ -63,7 +63,7 @@ try:
     algorithm=AuxiliaryPPO(actor,critic,storage,device=args.device,num_learning_epochs=config["learning_epochs"],
         num_mini_batches=config["mini_batches"],gamma=config["gamma"],lam=config["lam"],
         learning_rate=config["learning_rate"],desired_kl=config["desired_kl"],entropy_coef=config["entropy_coef"],
-        clip_param=config["clip_param"])
+        clip_param=config["clip_param"],leg_mean_bound_coef=config.get("leg_mean_bound_coef",0.))
     args.output.mkdir(parents=True,exist_ok=True)
     metadata={"config":config,"seed":args.seed,"asset_hash":manifest["asset_hash"],"num_envs":args.num_envs,
               "engine":"PhysX","torch":torch.__version__,
