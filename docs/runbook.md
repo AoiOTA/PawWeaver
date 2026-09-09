@@ -32,7 +32,11 @@ PhysX far两组均60秒无跌倒，位置 **.621440→.634521 m**变差、朝向
 
 腿均值越界正则 **.001** 候选已完成250轮及双引擎test8／far60四项后测，复用原stage2控制组，五个仿真进程均退出0。训练 **24,576,000 transitions／5,000次更新／831.81秒**，全部有限；实际加权正则在250轮均非零。test8均完整8×20秒无跌倒，结果混合：PhysX位置／朝向RMSE **.035531→.036887 m／.094178→.088722 rad**，MuJoCo **.045159→.041206 m／.099021→.104356 rad**。far两组两引擎均完整60秒无跌倒，共同2–60秒位置／朝向RMSE为PhysX **.621440→.677840 m／.269527→.302050 rad**、MuJoCo **.621054→.644799 m／.173467→.183270 rad**，均退步。**不采用.001，默认系数0及位置奖励宽度.15未改**。完整命令、退出码、逐例结果及原始失败记录见 [leg_mean_bound_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/README.md)。
 
-[冻结状态CPU回放](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/response_probe/README.md) 对两策略使用相同状态及沿TCP到目标方向的±5 cm历史平移，经过实际JointPD映射：四个远状态库的均值越界幅度均降低，但两策略四个髋关节均无实际响应，后腿未恢复持续响应。此结论限于该方向、该远状态子集，是条件响应证据，不证明动态因果或更大系数有效。下一项CPU方案仍在调查；纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
+[冻结状态CPU回放](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/response_probe/README.md) 对两策略使用相同状态及沿TCP到目标方向的±5 cm历史平移，经过实际JointPD映射：四个远状态库的均值越界幅度均降低，但两策略四个髋关节均无实际响应，后腿未恢复持续响应。此结论限于该方向、该远状态子集，是条件响应证据，不证明动态因果或更大系数有效。
+
+progress权重 **1→10** 的同起点250轮及四项后测已完成，复用stage2/60秒控制，五个仿真进程均退出0。训练 **24,576,000 transitions／5,000次更新／835.42秒**，全部有限，累计 **1,933次跌倒／8,674次重置**。test8按每例共同窗口比较：PhysX位置／朝向RMSE **.035265→.030710 m／.093109→.110703 rad**，位置7好1差、朝向2好6差；`test_moving_01`在 **16.44秒跌倒**，其余七例完成20秒。MuJoCo八例均完整20秒无跌倒，位置 **.045159→.027206 m**（8例全好），朝向 **.099021→.127383 rad**（2好6差）。两引擎local4朝向均全退步。
+
+far控制两引擎均完整60秒，候选PhysX **26.62秒**、MuJoCo **33.62秒跌倒**。共同窗口分别为2–26.62秒／2–33.62秒，位置／朝向RMSE为PhysX **.521746→.503429 m／.214749→.135174 rad**、MuJoCo **.701016→.657175 m／.196216→.124050 rad**；两类误差虽均改善，却失去60秒存活，**当前候选不采用**。不能用候选短程和控制全程均值或改权重后的训练reward宣称进步。逐例、P95、共同窗及失败记录见 [progress_weight_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/progress_weight_comparison/README.md)。默认 **progress1、bound0、width.15** 未改；原验收及`trained=false`边界保留。已选择保持progress10配置，从`candidate/checkpoint_000249.pt`经`--resume`追加750轮至该配置累计1000轮；`continuation_preparation/`正在准备／复核，**尚未启动**。纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
 
 真实组合几何的固定目标图像闭环已完成：权重1控制组bundle通过腕部渲染RGB-D→ArUco／深度测量→延迟队列→单18关节策略，在MuJoCo运行 **20秒**，退出码0、墙钟 **27.38秒**。601帧全部检出，600个独立测量送入控制，**999/1000**控制步使用有效测量；仅首步等待初始图像，此后无失跟／保持、未触发跌倒。2秒后真实TCP位置／朝向RMSE为 **.018855 m／.085240 rad**，图像目标测量RMSE为 **.038886 m／.066913 rad**。世界相机定位使用仿真里程计，控制目标仅来自图像；这是固定目标、无注入遮挡的工程闭环，未验证移动目标、真实相机或60秒视觉任务。详细场景、输入哈希、20秒腕视角视频和 `run.py probe/run` 复现命令见 [图像闭环README](../artifacts/runs/diagnostic_pose_visual_control/README.md)，复现按该入口使用新输出目录。
 

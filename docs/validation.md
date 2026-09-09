@@ -80,7 +80,11 @@ PhysX far两组均60秒无跌倒，位置 **.621440→.634521 m**变差、朝向
 
 腿均值越界正则 **.001** 候选已完成250轮及双引擎test8／far60四项后测，复用原stage2控制组，五个仿真进程均退出0。训练 **24,576,000 transitions／5,000次更新／831.81秒**，全部有限；实际加权正则在250轮均非零。test8均完整8×20秒无跌倒，结果混合：PhysX位置／朝向RMSE **.035531→.036887 m／.094178→.088722 rad**，MuJoCo **.045159→.041206 m／.099021→.104356 rad**。far两组两引擎均完整60秒无跌倒，共同2–60秒位置／朝向RMSE为PhysX **.621440→.677840 m／.269527→.302050 rad**、MuJoCo **.621054→.644799 m／.173467→.183270 rad**，均退步。**不采用.001，默认系数0及位置奖励宽度.15未改**。完整命令、退出码、逐例结果及原始失败记录见 [leg_mean_bound_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/README.md)。
 
-[冻结状态CPU回放](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/response_probe/README.md) 对两策略使用相同状态及沿TCP到目标方向的±5 cm历史平移，经过实际JointPD映射：四个远状态库的均值越界幅度均降低，但两策略四个髋关节均无实际响应，后腿未恢复持续响应。此结论限于该方向、该远状态子集，是条件响应证据，不证明动态因果或更大系数有效。下一项CPU方案仍在调查；纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
+[冻结状态CPU回放](../artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/response_probe/README.md) 对两策略使用相同状态及沿TCP到目标方向的±5 cm历史平移，经过实际JointPD映射：四个远状态库的均值越界幅度均降低，但两策略四个髋关节均无实际响应，后腿未恢复持续响应。此结论限于该方向、该远状态子集，是条件响应证据，不证明动态因果或更大系数有效。
+
+progress权重 **1→10** 的同起点250轮及四项后测已完成，复用stage2/60秒控制，五个仿真进程均退出0。训练 **24,576,000 transitions／5,000次更新／835.42秒**，全部有限，累计 **1,933次跌倒／8,674次重置**。test8按每例共同窗口比较：PhysX位置／朝向RMSE **.035265→.030710 m／.093109→.110703 rad**，位置7好1差、朝向2好6差；`test_moving_01`在 **16.44秒跌倒**，其余七例完成20秒。MuJoCo八例均完整20秒无跌倒，位置 **.045159→.027206 m**（8例全好），朝向 **.099021→.127383 rad**（2好6差）。两引擎local4朝向均全退步。
+
+far控制两引擎均完整60秒，候选PhysX **26.62秒**、MuJoCo **33.62秒跌倒**。共同窗口分别为2–26.62秒／2–33.62秒，位置／朝向RMSE为PhysX **.521746→.503429 m／.214749→.135174 rad**、MuJoCo **.701016→.657175 m／.196216→.124050 rad**；两类误差虽均改善，却失去60秒存活，**当前候选不采用**。不能用候选短程和控制全程均值或改权重后的训练reward宣称进步。逐例、P95、共同窗及失败记录见 [progress_weight_comparison/README.md](../artifacts/runs/diagnostic_pose_learning/progress_weight_comparison/README.md)。默认 **progress1、bound0、width.15** 未改；原验收及`trained=false`边界保留。已选择保持progress10配置，从`candidate/checkpoint_000249.pt`经`--resume`追加750轮至该配置累计1000轮；`continuation_preparation/`正在准备／复核，**尚未启动**。纯位姿学习稳定前继续暂缓视觉扩展，没有新增60秒视觉结果。
 
 原episode17另已派生20秒schema-2工程命令，CPU构造／加载检查及coupled250 MuJoCo评估均退出0；完整20秒、无跌倒，2秒后位置／朝向RMSE **.049607 m／.155485 rad**。使用人为 `20*i/119` 重定时、米制XYZW工程假设和一次固定 `G*T0^-1*Ti` 对齐；未知sensor→TCP外参仍未消除，不是原始时序或正式TCP示范转换，未加入当前训练或冻结test8。见 [派生命令](../artifacts/data/fastumi_original_sample/derived_command20/README.md) 与 [实际MuJoCo结果](../artifacts/data/fastumi_original_sample/derived_command20/mujoco_coupled250/README.md)；此新例尚无同例PhysX或视觉闭环证据。
 
