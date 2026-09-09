@@ -28,6 +28,12 @@ def append_batch_step(rows, lengths, fallen, step, values, step_fallen):
     return all(fallen[slot] or step>=lengths[slot] for slot in range(len(rows)))
 
 
+def save_trace(path, record, contact_body_names):
+    """Keep the actual simulator body order beside its contact columns."""
+    np.savez_compressed(path,contact_body_names=np.asarray(contact_body_names,dtype=str),
+                        **{key:np.asarray(value) for key,value in record.items()})
+
+
 def main():
     from isaaclab.app import AppLauncher
     from pawweaver.training_inputs import training_inputs,check_training_identity
@@ -113,7 +119,7 @@ def main():
                 result.update(engine="PhysX",trajectory=trajectory.metadata,policy_sha256=bundle["policy_sha256"],
                               diagnostic=args.diagnostic,elapsed_seconds=record["times"][-1],batch_index=len(layout)-1,env_index=slot)
                 output=args.output/trajectory.metadata["case_id"];output.mkdir(parents=True,exist_ok=True)
-                np.savez_compressed(output/"trace.npz",**{key:np.asarray(value) for key,value in record.items()})
+                save_trace(output/"trace.npz",record,env.robot.body_names)
                 (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")
                 results.append(result)
                 print(json.dumps(result),flush=True)

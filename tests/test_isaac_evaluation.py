@@ -42,3 +42,21 @@ def test_early_fall_and_short_case_stop_archiving_while_batch_continues():
     assert [len(r["goal"]) for r in rows]==[1,2,4]
     np.testing.assert_array_equal(rows[0]["goal"][0],[1.,0.,0.])
     np.testing.assert_array_equal(rows[2]["goal"][-1],[4.,2.,0.])
+
+
+def test_saved_contact_columns_keep_actual_body_order_without_pickle(tmp_path):
+    names=["RL_foot","base_link","FR_foot"]
+    rows=[{"times":[],"contacts":[]}]
+    fallen=np.zeros(1,dtype=bool)
+    for step in (1,2):
+        evaluator.append_batch_step(rows,[2],fallen,step,
+            {"contacts":np.array([[10.*step,0.,30.*step]])},[False])
+    path=tmp_path/"trace.npz"
+    evaluator.save_trace(path,rows[0],names)
+    with np.load(path,allow_pickle=False) as trace:
+        assert trace["contact_body_names"].dtype.kind=="U"
+        assert trace["contact_body_names"].tolist()==names
+        assert trace["contacts"].shape[1]==len(trace["contact_body_names"])
+        column=trace["contact_body_names"].tolist().index("FR_foot")
+        np.testing.assert_array_equal(trace["contacts"][:,column],[30.,60.])
+        np.testing.assert_array_equal(trace["times"],[.02,.04])
