@@ -29,6 +29,14 @@ manifest,spec,provisional=training_inputs(args.asset,diagnostic=args.diagnostic,
 if manifest["robot"]!="as2_edu_piper_h_rgbd":
     raise ValueError("Formal training requires the verified AS2 EDU + Piper-H + selected RGB-D asset")
 config=json.loads(args.config.read_text())
+import torch
+from pawweaver.observations import ObservationSpec
+checkpoint=None
+checkpoint_path=args.resume or args.initialize_from
+if checkpoint_path:
+    checkpoint=torch.load(checkpoint_path,map_location="cpu",weights_only=False)
+    if checkpoint["metadata"].get("observation")!=ObservationSpec().to_dict():
+        raise ValueError("Checkpoint observation contract differs: pose-only training requires 276 inputs; legacy position-only checkpoints cannot be padded or loaded")
 launcher=AppLauncher(args)
 try:
     import torch
@@ -62,7 +70,8 @@ try:
               "git_commit":subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip(),
               "git_dirty":bool(subprocess.check_output(["git","status","--porcelain"],text=True).strip()),
               "versions":{name:importlib.metadata.version(name) for name in ("isaaclab","rsl-rl-lib","mujoco")},
-              "initialize_from":str(args.initialize_from) if args.initialize_from else None}
+              "initialize_from":str(args.initialize_from) if args.initialize_from else None,
+              "observation":ObservationSpec().to_dict()}
     metadata.update(diagnostic=args.diagnostic,provisional_spec=provisional)
     if args.diagnostic:
         metadata.update(asset_manifest=manifest,
@@ -78,14 +87,12 @@ try:
     (args.output/"run.json").write_text(json.dumps(metadata,indent=2)+"\n")
     start_iteration=0
     if args.initialize_from:
-        checkpoint=torch.load(args.initialize_from,map_location=args.device,weights_only=False)
         check_training_identity(checkpoint["metadata"],metadata)
         for key in ("trajectory_prediction","velocity_estimation","actor_hidden_dims"):
             if checkpoint["metadata"]["config"][key]!=config[key]:
                 raise ValueError(f"Curriculum transfer architecture differs: {key}")
         algorithm.load(checkpoint["algorithm"],{"actor":True,"critic":True,"optimizer":False},True)
     if args.resume:
-        checkpoint=torch.load(args.resume,map_location=args.device,weights_only=False)
         check_training_identity(checkpoint["metadata"],metadata)
         if checkpoint["metadata"]["config"]!=config:
             raise ValueError("Resume asset/config differs from checkpoint")
@@ -119,7 +126,8 @@ try:
             before=[p.detach().clone() for p in actor.parameters()]
             steps_before=len(optimizer_steps)
             probe={"falls":0,"resets":0,"torque_saturated":0,"torque_samples":0,
-                   "tracking_error_sum_m":0.,"tracking_error_max_m":0.,"base_height_min_m":float("inf"),
+                   "tracking_error_sum_m":0.,"tracking_error_max_m":0.,"orientation_error_sum_rad":0.,
+                   "orientation_error_max_rad":0.,"base_height_min_m":float("inf"),
                    "reward_min":float("inf"),"reward_max":float("-inf"),"action_abs_max":0.}
         with torch.inference_mode():
             for _ in range(config["rollout_steps"]):
@@ -132,7 +140,8 @@ try:
                     for key in ("falls","resets","torque_saturated","torque_samples"):
                         probe[key]+=extras[key]
                     probe["tracking_error_sum_m"]+=extras["tracking_error_m"]
-                    for key in ("tracking_error_max_m",):
+                    probe["orientation_error_sum_rad"]+=extras["orientation_error_rad"]
+                    for key in ("tracking_error_max_m","orientation_error_max_rad"):
                         probe[key]=max(probe[key],extras[key])
                     probe["base_height_min_m"]=min(probe["base_height_min_m"],extras["base_height_min_m"])
                     probe["reward_min"]=min(probe["reward_min"],float(reward.min()))
@@ -150,10 +159,12 @@ try:
                 raise RuntimeError("Diagnostic PPO did not complete expected parameter updates")
             probe.update(actor_parameter_max_abs_change=delta,optimizer_steps=completed,
                 tracking_error_mean_m=probe.pop("tracking_error_sum_m")/config["rollout_steps"],
+                orientation_error_mean_rad=probe.pop("orientation_error_sum_rad")/config["rollout_steps"],
                 saturation_fraction=probe["torque_saturated"]/probe["torque_samples"],finite_checks_passed=True)
         seconds=time.perf_counter()-begin
         stats=dict(losses,iteration=iteration,steps_per_second=args.num_envs*config["rollout_steps"]/seconds,
-            tracking_error_m=extras["tracking_error_m"],fall_fraction=extras["fall_fraction"])
+            tracking_error_m=extras["tracking_error_m"],orientation_error_rad=extras["orientation_error_rad"],
+            fall_fraction=extras["fall_fraction"])
         if args.diagnostic:
             stats.update(probe)
         with (args.output/"metrics.jsonl").open("a") as stream:

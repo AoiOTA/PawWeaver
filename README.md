@@ -1,10 +1,14 @@
 # PawWeaver · 四足机械臂全身协同
 
-世界系末端目标 → 单一 18 关节 Actor → 显式 PD。Isaac Lab/PhysX 训练，独立 MuJoCo 验证。当前选用 **RealSense D435** 和松灵 Piper-H 腕部支架；原 DC1 配置保留在 `configs/cameras/dabai_dc1.json`。
+目标：世界系末端位姿轨迹（位置和朝向）→ 单一 18 关节强化学习 Actor → 12 腿＋6 臂统一关节位置目标 → 显式 PD。不输入底盘速度指令，策略自主协调腿、臂和底盘运动；参考 MLM，使用因果目标历史及可选的预测未来目标，面向后续手持 UMI 遥控。Isaac Lab/PhysX 训练，独立 MuJoCo 验证。当前选用 **RealSense D435** 和松灵 Piper-H 腕部支架；原 DC1 配置保留在 `configs/cameras/dabai_dc1.json`。
 
 ## 当前状态
 
-已实现资产生成、全身任务、PPO、速度估计/轨迹预测、自适应采样、FastUMI TCP 转换、策略导出、固定测试集、独立推理和视觉运行器。**还没有经过任务验收的 AS2 + Piper-H 策略，正式硬件组合训练尚未开始。** 合成机器人用于软件链路测试；真实组合几何已完成有界 PPO 学习和 4096 环境容量实验，策略包仍为 `trained=false`，尚未证明有效跟踪。
+世界末端位姿接口已实现：**276 维观测、单个 18 输出 Actor、schema-2 位姿轨迹与策略包**，贯通 FastUMI 转换、因果位姿历史、Isaac/MuJoCo 和视觉测量。CPU 检查及独立 runtime 加载已通过；新初始化策略的 8×20 秒 PhysX 批量前测已完成，墙钟约 49.73 秒。移动目标的平均位置 RMSE 仍约 38.5 cm，尚未学会跟踪，包为 `trained=false`。原验收数值保留，新增朝向验收阈值尚未确定。
+
+fresh 276-input 策略的 1000 次迭代训练已启动，使用 stage 1 现有混合采样和 8 条合成 FK 末端位姿引用；另有独立 8 条测试引用，尚无完成或后测结果。旧 246 维 position-only 的 near-goal、4096 容量和 balanced-y 结果保持历史证据身份，不作为新位姿任务结论。当前配置、证据边界和运行入口见 [运行手册](docs/runbook.md)。
+
+项目持续以真实 PawWeaver 工作 dogfood `/home/lyb/kiss-my-agent-dogfood`：以减少无用设计、避免阻塞和缩短研究循环为目标。已移除无消费用途的 bundle 重复 metadata，并让批量评估继续推进，不把旧精确重放或新增完整 bundle hash 比较变成任务门槛；实际变化及其证据限制见 [验证记录](docs/validation.md)。
 
 组合机器人已有 URDF、USD 和 MJCF；机械臂贴合转接板，D435 与支架已装在腕部。AS2 按名称和坐标系核对后使用官方 MuJoCo 惯性参数，组合参考质量约 25.682 kg；转接板、导轨支撑和线缆尚未计入有效动力学，相机惯量属于诊断近似。详细证据及剩余事项见 [验证记录](docs/validation.md) 和 [硬件参数](docs/hardware.md)。
 
@@ -28,7 +32,7 @@ pawweaver audit
 ## 设计边界
 
 - AS2 EDU 12 腿关节 + Piper-H 6 臂关节，固定 40 mm 夹爪开度。
-- 任务坐标系在 episode 初始化时固定；无外部底盘速度命令。
+- 仅以世界系末端位置与朝向轨迹为任务命令，由同一个 Actor 自主协调全身；无外部底盘速度命令。基座速度仅作估计量或 Critic／训练标签。
 - 策略周期 20 ms，物理步长 2 ms。
 - 关节顺序：FR、FL、RR、RL 各 hip/thigh/calf，然后 arm_joint1…6。
 - 四元数统一 WXYZ，所有长度和动力学量使用 SI 单位。

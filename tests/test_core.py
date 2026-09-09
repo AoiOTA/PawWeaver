@@ -17,9 +17,10 @@ def fixture_spec(delay=0):
 
 
 def fixture_state(batch=2):
-    return RobotState(torch.zeros(batch,18), torch.zeros(batch,18), torch.zeros(batch,3),
-                      torch.tensor([[1.,0.,0.,0.]]).repeat(batch,1), torch.zeros(batch,3),
-                      torch.tensor([[0.3,0.,0.5]]).repeat(batch,1), torch.zeros(batch,3))
+    return RobotState(joint_pos=torch.zeros(batch,18),joint_vel=torch.zeros(batch,18),base_pos_w=torch.zeros(batch,3),
+                      base_quat_w=torch.tensor([[1.,0.,0.,0.]]).repeat(batch,1),base_ang_vel_b=torch.zeros(batch,3),
+                      tcp_pos_w=torch.tensor([[0.3,0.,0.5]]).repeat(batch,1),
+                      tcp_quat_w=torch.tensor([[1.,0.,0.,0.]]).repeat(batch,1),base_lin_vel_b=torch.zeros(batch,3))
 
 
 class TestCore(unittest.TestCase):
@@ -46,7 +47,7 @@ class TestCore(unittest.TestCase):
         state = fixture_state()
         goal = torch.tensor([[1.,2.,0.6],[2.,1.,0.8]])
         b1 = ObservationBuilder(2,torch.zeros(18))
-        b1.reset(torch.arange(2),state,goal,torch.zeros(2))
+        b1.reset(torch.arange(2),state,goal,torch.zeros(2),goal_quat_w=state.tcp_quat_w)
         first = b1.build(state,torch.zeros(2,18),torch.zeros(2))
         rot = torch.tensor(rpy_quat((0,0,1.2)),dtype=torch.float32).repeat(2,1)
         shift = torch.tensor([[30.,-10.,2.],[60.,10.,5.]])
@@ -54,8 +55,9 @@ class TestCore(unittest.TestCase):
         moved.base_quat_w = rot
         moved.base_pos_w = shift
         moved.tcp_pos_w = quat_apply(rot,state.tcp_pos_w)+shift
+        moved.tcp_quat_w = rot
         b2 = ObservationBuilder(2,torch.zeros(18))
-        b2.reset(torch.arange(2),moved,quat_apply(rot,goal)+shift,torch.zeros(2))
+        b2.reset(torch.arange(2),moved,quat_apply(rot,goal)+shift,torch.zeros(2),goal_quat_w=rot)
         second = b2.build(moved,torch.zeros(2,18),torch.zeros(2))
         torch.testing.assert_close(first,second,atol=6e-6,rtol=1e-5)
 
@@ -63,24 +65,24 @@ class TestCore(unittest.TestCase):
         state = fixture_state()
         builder = ObservationBuilder(2,torch.zeros(18))
         goal = torch.ones(2,3)
-        builder.reset(torch.arange(2),state,goal,torch.zeros(2))
+        builder.reset(torch.arange(2),state,goal,torch.zeros(2),goal_quat_w=state.tcp_quat_w)
         original = builder.goals_w.clone()
         state.base_pos_w[:,0] += 0.5
         obs = builder.build(state,torch.zeros(2,18),torch.zeros(2))
         self.assertTrue(torch.equal(builder.goals_w,original))
         start = 5*42+18+3
         torch.testing.assert_close(obs[:,start:start+3],torch.tensor([[.5,1.,1.]]).repeat(2,1))
-        builder.reset(torch.tensor([0]),state,goal*2,torch.ones(2))
+        builder.reset(torch.tensor([0]),state,goal*2,torch.ones(2),goal_quat_w=state.tcp_quat_w)
         torch.testing.assert_close(builder.goals_w[1],original[1])
 
     def test_bad_or_stale_measurements_do_not_poison_history(self):
         builder = ObservationBuilder(2,torch.zeros(18))
         state=fixture_state()
-        builder.reset(torch.arange(2),state,torch.ones(2,3),torch.ones(2))
-        builder.push_goal(torch.full((2,3),float('nan')),torch.zeros(2),torch.ones(2,dtype=torch.bool),torch.ones(2))
+        builder.reset(torch.arange(2),state,torch.ones(2,3),torch.ones(2),goal_quat_w=state.tcp_quat_w)
+        builder.push_goal(torch.full((2,3),float('nan')),torch.zeros(2),torch.ones(2,dtype=torch.bool),torch.ones(2),orientation_wxyz=state.tcp_quat_w)
         obs=builder.build(state,torch.zeros(2,18),torch.ones(2)*2)
         self.assertTrue(torch.isfinite(obs).all())
-        self.assertTrue(torch.equal(obs[:,-3],torch.zeros(2)))
+        self.assertTrue(torch.equal(obs[:,243],torch.zeros(2)))
         self.assertEqual(obs.shape,(2,ObservationSpec().size))
 
 

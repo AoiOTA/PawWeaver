@@ -15,10 +15,12 @@ try:
     from pawweaver.isaac_env import WholeBodyEnv
     from pawweaver.learning import WholeBodyActor,AuxiliaryPPO
     from pawweaver.bundle import export_bundle
+    from pawweaver.observations import ObservationSpec
     config=json.loads(Path("configs/training.json").read_text())
     config.update(episode_seconds=.24,trajectory_prediction=True,domain_randomization=args.randomize)
     env=WholeBodyEnv(Path("artifacts/software-fixture"),config,4,args.device,7)
     obs=env.get_observations()
+    assert obs["policy"].shape==(4,ObservationSpec().size)
     actor=WholeBodyActor(obs,{"actor":["policy"]},"actor",18,hidden_dims=[64,32],prediction=True,
         distribution_cfg={"class_name":"rsl_rl.modules.distribution:GaussianDistribution","init_std":.2})
     critic=MLPModel(obs,{"critic":["critic"]},"critic",1,hidden_dims=[32])
@@ -37,6 +39,7 @@ try:
         np.savez("artifacts/software-fixture/bundle/golden.npz",observation=obs["policy"].cpu().numpy(),
                  action=actor(obs).cpu().numpy())
     result={"kind":"synthetic_software_test","environments":4,"rollout_steps":16,"losses":losses,"randomization":args.randomize,
+            "observation":ObservationSpec().to_dict(),"orientation_error_rad":extras["orientation_error_rad"],
             "hardware_validation":False,"passed":all(torch.isfinite(torch.tensor(v)) for v in losses.values())}
     Path("artifacts/software-fixture/ppo-report.json").write_text(json.dumps(result,indent=2)+"\n")
     print("PAWWEAVER_PPO_PIPELINE_OK",json.dumps(result),flush=True)

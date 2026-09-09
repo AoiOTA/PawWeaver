@@ -15,7 +15,8 @@ golden=np.load(root/"bundle/golden.npz",allow_pickle=False)
 with torch.inference_mode():
     error=float(np.max(np.abs(runner.policy(torch.from_numpy(golden["observation"])).numpy()-golden["action"])))
 assert error<1e-5,error
-trajectory=synthetic("line",7,duration=.4).align(runner.state().tcp_pos_w.numpy()[0])
+state=runner.state()
+trajectory=synthetic("line",7,duration=.4,orientation_wxyz=state.tcp_quat_w.numpy()[0]).align(state.tcp_pos_w.numpy()[0])
 result=runner.evaluate(trajectory,root/"runtime")
 report={"kind":"synthetic_software_test","hardware_validation":False,"gpu_cpu_action_max_difference":error,
         "physics_steps":round(runner.data.time/.002),"passed":True}

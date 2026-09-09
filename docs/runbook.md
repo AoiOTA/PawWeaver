@@ -2,6 +2,18 @@
 
 从 `/home/lyb/pawweaver` 运行。若 shell 继承 ROS 的 `PYTHONPATH`，在 Python 命令前加 `env -u PYTHONPATH PYTHONNOUSERSITE=1`；测试脚本已处理这一点。
 
+## 当前目标与运行边界
+
+单个强化学习 Actor **仅跟踪世界系末端位姿轨迹（位置＋朝向）**，统一输出 12 腿＋6 臂关节位置目标，自主决定全身运动。无外部底盘速度命令；参考 MLM 的因果目标历史与可选预测，后续面向手持 UMI。基座速度仅作估计量或 Critic／训练标签。276 维位姿观测、schema-2 轨迹／bundle、Isaac/MuJoCo 和视觉 IO 已实现并完成 CPU 检查；旧 246 维位置策略不能加载为新位姿策略。原位置验收数值不变，朝向验收阈值仍待确定。
+
+当前工作目录为 `artifacts/runs/diagnostic_pose_learning/`。`eval_initial8/operator_summary.json` 记录 fresh 初始化策略的 **8×20 秒 PhysX 批量前测，墙钟 49.73 秒**；全部完成且无跌倒，移动引用仍有约 38.5 cm 平均位置 RMSE。这是工程前测，不是学习结果或硬件有效性证明。
+
+当前已启动 fresh 276-input、single-18 Actor 的 **1000 次迭代训练**：`train_pose_config.json` 使用 4096 环境、24 步、5 epoch、4 minibatch、stage 1；现有 family 采样混入 `references/train/` 的 8 条 EE pose 引用。`train_initial_checkpoint.pt` 的腿 action std 为 .3（.2 rad scale 下等于 .06 rad），臂目标角 std 为 .01 rad；辅助预测／速度估计、自适应采样和 DR 均关闭。训练正在运行，尚无完成或后测结果；不把初始常量动作当成学到的协调策略。训练入口沿用 `scripts/train.py --initialize-from`；实际执行状态与输出目录由唯一 GPU operator 管理，勿重复启动。
+
+`references/test/` 为独立的 8 项固定评估套件。引用源是 **synthetic_fk_reference**，不是实测 FastUMI；局部引用为固定根 FK，移动引用离线加约 .6 m 水平根位移后仅保存 EE pose，未证明足步动力学可执行。现有 demonstrations `.align(reset_tcp)` 只平移位置、保留世界朝向；评估直接使用冻结世界位姿。详见 [引用构造记录](../artifacts/runs/diagnostic_pose_learning/references/README.md)。`scripts/evaluate_isaac.py --num-envs 8` 可消费该套件；旧两例 exact-hold 失败仍是历史结果，不要求批量动力学逐点复制顺序轨迹才可开展新任务评价。
+
+以下保留资产／软件命令及旧位置任务历史复现记录；旧配置与 checkpoint 不作为本轮位姿训练入口。不启动独立 AS2／Piper-H 预训练，也不继续已取消的六轴位置候选。
+
 ## 资产与预览
 
 ```bash
@@ -63,17 +75,17 @@ cp artifacts/runs/diagnostic_physx_sdk_zero_armature_hold2s/probe.py artifacts/r
 env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/bin/python artifacts/runs/reproduce_physx_hold2s/probe.py --headless
 ```
 
-## 近距离学习结果与 4096 环境候选
+## 旧位置任务：近距离学习与 4096 环境历史
 
 `artifacts/runs/diagnostic_near_goal_learning_seed0/README.md` 的 **Executed result** 记录已完成的 32 环境 × 256 步 × 20 次 PPO（163,840 transitions、80 次优化器更新），以及同一冻结 16 例的顺序前后评估。实际前测是修复后的 `eval_pre_retry/results.json`，不是首次失败的 `eval_pre/results.json`；后测是 `eval_post20/results.json`。`paired20_summary.json` 显示 2 秒后的平均逐例 RMSE 从 0.0630698 降至 0.0624163 m，但仅 5 例改善、11 例变差，四条线轨迹全部变差，连续 2 秒处于 5 cm 内的案例从 9 减至 8。这是有效的负面学习结果，不能由总体均值的小幅改善宣布跟踪成功。前后各 16×20 秒均完整、有限，无跌倒、动作裁剪或力矩饱和；非零 goal-swap 响应只说明输出开始受目标影响。包仍为 `trained=false`。
 
-首次前测因 `inference_mode` 创建的 PD target 在该上下文外被原位修改而失败；artifact 评估器改用 `no_grad` 后完成重跑，并精确复现第一例。另已纠正报告中的完整 canonical bundle hash。失败脚本、日志和 hash 修正前报告均保留，生产控制器没有因此修改。`artifacts/runs/diagnostic_batched_eval_probe/initial_two_comparison.json` 的两例批量对照虽满足状态/误差容差，但两例的连续 5 cm hold 时长均未精确一致，因此 `passed=false`；未放宽标准，也未进行 16 例批量评估。当前有效学习比较仍采用顺序评估。
+首次前测因 `inference_mode` 创建的 PD target 在该上下文外被原位修改而失败；artifact 评估器改用 `no_grad` 后完成重跑，并精确复现第一例。另已纠正报告中的完整 canonical bundle hash。失败脚本、日志和 hash 修正前报告均保留，生产控制器没有因此修改。`artifacts/runs/diagnostic_batched_eval_probe/initial_two_comparison.json` 的两例批量对照虽满足状态/误差容差，但两例的连续 5 cm hold 时长均未精确一致，因此 `passed=false`；未放宽标准，也未进行 16 例批量评估。该旧实验的有效学习比较来自当时的顺序评估；当前位姿评估使用上文的新批量入口。
 
 4096 配置和历史容量命令见 `artifacts/runs/diagnostic_4096_scale/README.md`；以下记录替代其中早期直接追加 997 次的建议。它只将上述训练配置改为 4096 环境、24 步 rollout、5 epoch、4 minibatch，复用完全相同的 `artifacts/runs/diagnostic_near_goal_learning_seed0/candidate_spec.json`，保持单个 18 关节 Actor、任务、奖励、2 ms/50 Hz、stage 0 和其他选项。`capacity3_summary.json` 已记录真实容量运行 exit 0：3 次迭代、294,912 transitions、60 次优化器更新，全部有限，零跌倒，53,084,160 个子步关节样本零饱和。吞吐约 29.8k–32.3k 环境控制步/秒；500 ms 采样的设备显存峰值 6,652 MiB 包含后台占用，也可能漏掉更短峰值。每环境仅 1.44 秒，不能据此认定长期学习或跟踪有效。
 
 原 200 m 有限地面无法覆盖 8 m 间距下 1024/4096 环境的 ±124/±252 m 原点范围。修复 `a2076da` 按 cloner 网格跨度加两侧各 100 m 计算宽度；1/32/1024/4096 环境分别为 200/240/448/704 m。`cpu_coverage.json` 用安装版本 cloner 与 canonical 足部碰撞球验证重置几何，最小足部边缘余量约 99.754 m，地面材质、高度和厚度未变。CPU XY 布局证据与真实容量步进证据分别保留；运行 metadata 没有保存实际 XY 原点或地面宽度，不外推动态覆盖。
 
-容量三轮 KL 为 42.725、0.0693、0.0358，保存的 Adam 学习率已到 `1e-5`。`artifacts/runs/diagnostic_4096_scale/kl_probe/README.md` 的固定观测判别支持 fresh Adam／`.001` 学习率重启对窄 Gaussian std 的敏感性，normalizer 变化也有影响；未发现 Actor/Critic/normalizer 加载错误，未保存真实首 minibatch，不能精确重建其因果。选择已有 `--resume` 保留 Adam 和低学习率进行有界续训，不再次初始化。
+容量三轮 KL 为 42.725、0.0693、0.0358，保存的 Adam 学习率已到 `1e-5`。`artifacts/runs/diagnostic_4096_scale/kl_probe/README.md` 的固定观测判别支持 fresh Adam／`.001` 学习率重启对窄 Gaussian std 的敏感性，normalizer 变化也有影响；未发现 Actor/Critic/normalizer 加载错误，未保存真实首 minibatch，不能精确重建其因果。该历史续训选择已有 `--resume` 保留 Adam 和低学习率，没有再次初始化。
 
 首次 `train50` 恢复在新增任何迭代前失败：`map_location` 将 CUDA RNG 状态搬到 GPU，但恢复 API 需要 CPU ByteTensor。最小修复 `f114ae5` 仅将 RNG 状态转回 CPU，5 项测试含真实 CUDA，实际 checkpoint 重放和独立 review 通过。失败日志及验证见 `train50_console.log` 和 `kl_probe/resume_actual_checkpoint.json`。修复后的 `train100/` 已用下列命令从 capacity iteration 2 严格恢复并完成 97 个追加迭代，达到总计 100 次；不重复启动同一目录。仿真回合按既有语义重新开始。
 
@@ -83,11 +95,13 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 /home/lyb/miniconda3/envs/pawweaver-train/b
 
 4096 阶段总计 9,830,400 transitions、2,000 次优化；97 轮续训全部有限，零跌倒/饱和、8,192 次超时重置，最终学习率自行恢复至约 `.000256289`。`checkpoint_000099.pt` 及 bundle 已在 runtime 独立校验。原冻结 16×20 秒顺序 `eval_post100/` 也已完成，配对结果见 `artifacts/runs/diagnostic_4096_scale/paired100_summary.json`：初始化／train20／train100 的 2 秒后平均逐例 RMSE 为 **6.307／6.242／6.844 cm**，四条线轨迹均退步，线轨迹平均为 **2.722／3.199／4.653 cm**。train100 相对初始化 6 好 10 差，相对 train20 5 好 11 差；连续至少 2 秒处于 5 cm 内的案例为 9/16。所有案例完整 20 秒，无跌倒、50 Hz 非足部净力超过 5 N、动作裁剪或子步力矩饱和。非零目标响应不能抵消任务指标退步，尚未学会有效跟踪；未追加 1000 次训练或改用批量评估。
 
-用户已确认**整机单个 18 关节 Actor 训练为主线，不启动独立 AS2／Piper-H 预训练**。下一步候选见 `artifacts/runs/diagnostic_balanced_axis_learning/README.md`：用平衡静态 y±0.05 m 目标判别整机目标条件学习瓶颈。目标配置支持已提交 `df9a21e`，12 项 CPU 测试及独立审查通过；4096×24×100 候选已启动，尚无完成结果；原冻结 16 例评估或验收条件不变。所有 GPU 实验仍由唯一 operator 顺序执行，重复实验使用新输出路径。`artifacts/runs/subsystem_pretraining_transfer/` 的随机教师 CPU 原型仅备用：接口检查不是独立预训练或技能迁移证据，未选定 teacher／蒸馏训练路线。临时参数和原正式验收边界不变。
+旧位置任务的 balanced-y 实验与完整固定 16×20 秒评估已完成，见 `artifacts/runs/diagnostic_balanced_axis_learning/full16_summary.json`。2 秒后平均逐例 RMSE 为 **5.466 cm**，相对初始化 **6.307 cm** 有 9 好 7 差，相对 train100 **6.844 cm** 有 13 好 3 差；连续至少 2 秒处于 5 cm 内为 **10/16**。线轨迹均值 **3.251 cm** 仍高于初始化 **2.722 cm**，其中 3/4 变差。全部完整 20 秒，无跌倒、50 Hz 非足部净力超过 5 N、裁剪或子步饱和。这支持旧位置任务的部分改善，不是稳定全任务跟踪，更不验证新增的末端朝向要求。历史配置、日志和评价数值保留；六轴候选未启动并已取消。
+
+上述记录均为旧位置任务历史；当前位姿接口及训练状态见本文开头。`artifacts/runs/subsystem_pretraining_transfer/` 随机教师 CPU 原型仅备用，无独立预训练或技能迁移证据。所有 GPU 实验仍由唯一 operator 顺序执行，重复实验使用新输出路径。临时硬件参数仍不能作为正式硬件有效性证据。
 
 ## 正式训练与课程
 
-以下命令要求 M0 参数闭合，当前不能成功开始正式训练：
+以下是待硬件 M0 闭合后的正式流程模板；新位姿接口已经实现，但当前工程包和临时参数不能替代正式训练前提：
 
 ```bash
 conda activate pawweaver-runtime
@@ -117,8 +131,8 @@ python -m pawweaver.evaluation compare artifacts/evaluation/physx_seed0/report.j
 
 ## FastUMI 与视觉
 
-在 `pawweaver-data` 中运行 `python -m pawweaver.data --help`。输入需要 pose、逐帧时间戳、稳定 source ID，以及单位、sensor→TCP、source→task、速度/加速度、工作区边界的配置。转换器仅读取位姿，不下载视频，增强前按 source ID 划分数据。当前没有下载实测 FastUMI 示范集。
+在 `pawweaver-data` 中运行 `python -m pawweaver.data --help`。输入需要 pose、逐帧时间戳、稳定 source ID，以及单位、sensor→TCP、source→task、速度/加速度、工作区边界的配置。转换器组合完整 source→task、输入 pose、sensor→TCP 刚体变换；位置和 WXYZ 朝向使用相同时间缩放，朝向以 SLERP 重采样。转换器不下载视频，增强前按 source ID 划分数据。当前没有下载实测 FastUMI 示范集，训练引用为上文合成 FK 数据。
 
-在 `pawweaver-runtime` 中运行 `python -m pawweaver.visual_runtime --help`。需要有效资产、策略包、轨迹与 scenario JSON。scenario 定义 `marker_id`、`marker_size_m`、`marker_to_goal`、`marker_rpy_rad`，可加入延迟、遮挡、深度缺失、位置噪声和随机种子；`--record` 输出腕部视频。
+在 `pawweaver-runtime` 中运行 `python -m pawweaver.visual_runtime --help`。需要有效资产、策略包、轨迹与 scenario JSON。scenario 定义 `marker_id`、`marker_size_m`、`marker_to_goal`（标记系平移）、`marker_to_goal_quat_wxyz`（显式标记到目标朝向标定），可加入延迟、遮挡、深度缺失、位置噪声和随机种子；`--record` 输出腕部视频。
 
 相机在 2 ms 物理时钟上调度约 30 Hz 图像，50 Hz 控制器消费到达的测量。真值仅用于场景生成和评分。持续失跟后暂停参考推进、保持有界关节目标；这种保持的整机稳定性仍需训练策略验证。基座定位来自仿真状态，不包含真机自主定位。

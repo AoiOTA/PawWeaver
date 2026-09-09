@@ -25,3 +25,82 @@ def test_pairing_rejects_different_policy(tmp_path):
     b.write_text(json.dumps(dict(common,engine="MuJoCo",policy_sha256="policy_b")))
     with pytest.raises(ValueError,match="policy_sha256"):
         compare(a,b)
+
+def test_pose_suite_is_explicit_and_frozen(tmp_path):
+    manifest=create_suite(tmp_path)
+    trajectories=load_suite(tmp_path)
+    assert manifest["task_kind"]=="world_tcp_pose"
+    assert not manifest["reachability_screened"]
+    rotating=trajectories[1]
+    np.testing.assert_allclose(np.linalg.norm(rotating.orientations_wxyz,axis=-1),1.)
+    assert np.ptp(rotating.orientations_wxyz[:,3])>.2
+    assert rotating.metadata["orientation_profile"]=="bounded_world_yaw_0.25_rad"
+    assert rotating.metadata["orientation_generation"]=="explicit_sinusoidal_world_yaw"
+    assert "orientation_wxyz" not in rotating.metadata
+    with pytest.raises(FileExistsError,match="Frozen"):
+        create_suite(tmp_path)
+
+
+def test_position_only_suite_is_not_upgraded(tmp_path):
+    (tmp_path/"manifest.json").write_text(json.dumps({"schema_version":1,"cases":[]}))
+    with pytest.raises(ValueError,match="position-only"):
+        load_suite(tmp_path)
+
+
+def test_orientation_does_not_invent_acceptance_thresholds():
+    from pawweaver.evaluation import summarize
+    rows=[dict(trajectory={"family":"line"},rmse_m=.08,p95_m=.15,fallen=False,
+               orientation_rmse_rad=2.,orientation_p95_rad=3.)]
+    summary=summarize(rows)
+    assert summary["tracking_pass_rate"]==1.
+    assert summary["mean_orientation_rmse_rad"]==2.
+    assert summary["mean_orientation_p95_rad"]==3.
+    assert summary["success_rates_scope"]=="position_criteria_only"
+    assert summary["pose_acceptance_passed"] is None
+    rows[0]["rmse_m"]+=.0001
+    assert summarize(rows)["tracking_pass_rate"]==0.
+
+
+def test_pair_report_keeps_position_transfer_separate(tmp_path):
+    common=dict(suite_sha256="suite",asset_hash="asset",seed=0,case_ids=list(range(100)),
+                policy_sha256="policy",reachability_screened=True,task_kind="world_tcp_pose")
+    a=tmp_path/"a.json";b=tmp_path/"b.json"
+    a.write_text(json.dumps(dict(common,engine="PhysX",summary={"reach_success_rate":.95})))
+    b.write_text(json.dumps(dict(common,engine="MuJoCo",summary={"reach_success_rate":.90})))
+    result=compare(a,b)
+    assert result["transfer_drop_within_target"]
+    assert result["position_criteria_eligible"]
+    assert not result["eligible_for_acceptance"]
+    assert result["pose_acceptance_passed"] is None
+    common.pop("task_kind")
+    a.write_text(json.dumps(dict(common,engine="PhysX",summary={"reach_success_rate":.95})))
+    with pytest.raises(ValueError,match="task_kind"):
+        compare(a,b)
+    b.write_text(json.dumps(dict(common,engine="MuJoCo",summary={"reach_success_rate":.90})))
+    assert compare(a,b)["task_kind"]=="position_only"
+
+
+def test_pose_metrics_flow_into_report_without_full_pose_pass(tmp_path):
+    from pawweaver.task import episode_metrics
+    from pawweaver.evaluation import save_run
+    times=np.array([0.,1.,2.,3.])
+    metrics=episode_metrics(times,np.full(4,.04),np.zeros((4,3)),np.ones((4,18)),
+                            np.ones((4,18)),False,orientation_errors=np.array([0.,0.,.3,.4]))
+    metrics["trajectory"]={"case_id":"one","family":"line"}
+    suite=tmp_path/"suite";suite.mkdir()
+    (suite/"manifest.json").write_text(json.dumps({"task_kind":"world_tcp_pose","reachability_screened":False}))
+    report=save_run(tmp_path/"report",suite,{"asset_hash":"asset"},{"policy_sha256":"policy"},0,"MuJoCo",[metrics])
+    assert report["task_kind"]=="world_tcp_pose"
+    assert report["summary"]["mean_orientation_rmse_rad"]==pytest.approx(np.sqrt((.3**2+.4**2)/2))
+    assert report["summary"]["mean_orientation_p95_rad"]==pytest.approx(.395)
+    assert report["summary"]["tracking_pass_rate"]==1.
+    assert report["summary"]["pose_acceptance_passed"] is None
+
+
+def test_pairing_ignores_unconsumed_bundle_metadata_hash(tmp_path):
+    common=dict(suite_sha256="suite",asset_hash="asset",seed=0,case_ids=["a"],policy_sha256="same_actor",
+                reachability_screened=False,summary={"reach_success_rate":1.})
+    a=tmp_path/"a.json";b=tmp_path/"b.json"
+    a.write_text(json.dumps(dict(common,engine="PhysX",bundle_hash="config_a")))
+    b.write_text(json.dumps(dict(common,engine="MuJoCo",bundle_hash="config_b")))
+    assert compare(a,b)["reach_success_drop_percentage_points"]==0.

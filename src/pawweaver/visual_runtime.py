@@ -7,11 +7,14 @@ import cv2
 import mujoco
 import numpy as np
 from PIL import Image
-from .math import rpy_quat
 from .contracts import GoalSample
 from .mujoco_runtime import MujocoRunner
 from .trajectories import Trajectory
-from .vision import Intrinsics,MarkerEstimator,DelayedMeasurements
+from .vision import Intrinsics,MarkerEstimator,DelayedMeasurements,quaternion_rotation,rotation_quaternion
+
+def orientation_error_rad(actual,target):
+    a=np.asarray(actual,float);b=np.asarray(target,float)
+    return float(2*np.arccos(np.clip(abs(np.dot(a,b))/(np.linalg.norm(a)*np.linalg.norm(b)),0.,1.)))
 
 class RenderedVision:
     def __init__(self,runner,calibration,scenario,trajectory,output):
@@ -19,7 +22,8 @@ class RenderedVision:
         self.color=Intrinsics(**calibration["color"])
         self.depth=Intrinsics(**calibration["depth"])
         self.estimator=MarkerEstimator(self.color,self.depth,calibration["depth_to_color"],
-            scenario["marker_id"],scenario["marker_size_m"],scenario["marker_to_goal"])
+            scenario["marker_id"],scenario["marker_size_m"],scenario["marker_to_goal"],
+            scenario["marker_to_goal_quat_wxyz"])
         self.queue=DelayedMeasurements(scenario.get("max_age_s",.5))
         self.rng=np.random.default_rng(scenario.get("seed",731))
         self.color_renderer=mujoco.Renderer(runner.model,self.color.height,self.color.width)
@@ -27,12 +31,9 @@ class RenderedVision:
         self.depth_renderer.enable_depth_rendering()
         self.marker_id=runner.model.body("vision_marker").mocapid[0]
         self.offset=np.asarray(scenario["marker_to_goal"],float)
-        self.rotation=np.zeros(9)
-        self.quat=rpy_quat(scenario["marker_rpy_rad"])
-        mujoco.mju_quat2Mat(self.rotation,self.quat)
-        self.rotation=self.rotation.reshape(3,3)
+        self.marker_to_goal_rotation=self.estimator.marker_to_goal_rotation
         self.next_capture=0.
-        self.reference_time=0.
+        self.reference_time=float(trajectory.timestamps[0])
         self.hold=True
         self.samples=[]
         self.controls=[]
@@ -44,8 +45,10 @@ class RenderedVision:
         if not self.hold:
             self.reference_time+=runner.spec.physics_dt
         goal=self.trajectory.sample(self.reference_time)
-        runner.data.mocap_pos[self.marker_id]=goal-self.rotation@self.offset
-        runner.data.mocap_quat[self.marker_id]=self.quat
+        goal_quat=self.trajectory.sample_orientation(self.reference_time)
+        marker_rotation=quaternion_rotation(goal_quat)@self.marker_to_goal_rotation.T
+        runner.data.mocap_pos[self.marker_id]=goal-marker_rotation@self.offset
+        runner.data.mocap_quat[self.marker_id]=rotation_quaternion(marker_rotation)
         mujoco.mj_forward(runner.model,runner.data)
         if now+1e-9<self.next_capture:
             return
@@ -65,13 +68,16 @@ class RenderedVision:
         world_from_color[:3,3]=camera.xpos
         measurement=self.estimator.measure(rgb,depth,now,world_from_color)
         error=None
+        orientation_error=None
         if measurement is not None:
             noisy=np.asarray(measurement.position)+self.rng.normal(0,self.scenario.get("position_noise_m",0.),3)
-            measurement=GoalSample(now,tuple(noisy),True,measurement.confidence)
+            measurement=GoalSample(now,tuple(noisy),measurement.orientation_wxyz,measurement.valid,measurement.confidence)
             # Truth is used only below for scoring, never passed to the estimator/controller.
             error=float(np.linalg.norm(noisy-goal))
+            orientation_error=orientation_error_rad(measurement.orientation_wxyz,goal_quat)
             self.queue.enqueue(measurement,now+self.scenario.get("latency_s",0.))
-        self.samples.append({"capture_s":now,"measured":measurement is not None,"measurement_error_m":error,"occluded":occluded})
+        self.samples.append({"capture_s":now,"measured":measurement is not None,"measurement_error_m":error,
+            "measurement_orientation_error_rad":orientation_error,"occluded":occluded})
         self.last_rgb=rgb
 
     def close(self):
@@ -120,12 +126,14 @@ def run_visual(runner,asset,trajectory,scenario,output,duration=60.,record=False
             fallen=bool(base.xpos[2]<.2 or base.xmat.reshape(3,3)[2,2]<.35)
             vision.controls.append({"time_s":float(runner.data.time),"hold":vision.hold,
                 "tcp_error_m":float(np.linalg.norm(state.tcp_pos_w.numpy()[0]-truth)),
+                "tcp_orientation_error_rad":orientation_error_rad(state.tcp_quat_w.numpy()[0],trajectory.sample_orientation(vision.reference_time)),
                 "reference_time_s":vision.reference_time,"fallen":fallen})
             if writer is not None and vision.last_rgb is not None:
                 writer.append_data(vision.last_rgb)
             if fallen:
                 break
         errors=[r["measurement_error_m"] for r in vision.samples if r["measured"]]
+        orientation_errors=[r["measurement_orientation_error_rad"] for r in vision.samples if r["measured"]]
         recoveries=[]
         for _,end in scenario.get("occlusion_intervals_s",[]):
             recovered=next((r["time_s"] for r in vision.controls if r["time_s"]>=end and not r["hold"]),None)
@@ -133,6 +141,7 @@ def run_visual(runner,asset,trajectory,scenario,output,duration=60.,record=False
         report={"mode":"rendered_rgbd_with_simulated_base_odometry","policy_sha256":runner.bundle["policy_sha256"],
             "asset_hash":runner.manifest["asset_hash"],"camera_hz":30,"control_hz":50,
             "measurement_rmse_m":float(np.sqrt(np.mean(np.square(errors)))) if errors else None,
+            "measurement_orientation_rmse_rad":float(np.sqrt(np.mean(np.square(orientation_errors)))) if orientation_errors else None,
             "missed_frame_fraction":float(np.mean([not r["measured"] for r in vision.samples])),
             "hold_fraction":float(np.mean([r["hold"] for r in vision.controls])),
             "fallen":any(r["fallen"] for r in vision.controls),

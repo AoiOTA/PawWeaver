@@ -8,13 +8,13 @@ from .assets.model import RobotTree,numbers
 from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
 from .control import JointPD
 from .observations import ObservationBuilder
-from .math import quat_apply,quat_apply_inverse
+from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_quat
 from .task import GoalBank,reward_terms
-from .isaac_robot import create_scene
 from .training_inputs import training_inputs
 
 class WholeBodyEnv:
     def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0,*,diagnostic=False,provisional_spec=None):
+        from .isaac_robot import create_scene
         self.manifest,self.spec,_=training_inputs(asset,diagnostic=diagnostic,provisional_spec=provisional_spec)
         self.diagnostic=diagnostic
         conversion=json.loads((asset/"usd/conversion.json").read_text())
@@ -41,6 +41,8 @@ class WholeBodyEnv:
         self.gripper_id=self.robot.body_names.index("arm_gripper_base")
         tree=RobotTree.load(asset/"robot.urdf")
         self.tcp_offset=torch.tensor(numbers(tree.joints["tcp_mount"].find("origin").get("xyz")),device=device,dtype=torch.float32)
+        self.tcp_rotation=torch.tensor(rpy_quat(numbers(tree.joints["tcp_mount"].find("origin").get("rpy","0 0 0"))),
+            device=device,dtype=torch.float32)
         self.pd=JointPD(self.spec,num_envs,device)
         self.observations=ObservationBuilder(num_envs,self.pd.default_pos)
         self.episode_length_buf=torch.zeros(num_envs,device=device,dtype=torch.long)
@@ -71,9 +73,13 @@ class WholeBodyEnv:
         # Isaac Lab 3 Warp data is XYZW; the portable contract is WXYZ.
         pose=data.root_link_pose_w.torch
         gripper=data.body_link_pose_w.torch[:,self.gripper_id]
-        tcp=gripper[:,:3]+quat_apply(gripper[:,[6,3,4,5]],self.tcp_offset.expand(self.num_envs,-1))
-        return RobotState(data.joint_pos.torch[:,self.joint_ids],data.joint_vel.torch[:,self.joint_ids],
-            pose[:,:3],pose[:,[6,3,4,5]],data.root_link_ang_vel_b.torch,tcp,data.root_link_lin_vel_b.torch)
+        gripper_quat=gripper[:,[6,3,4,5]]
+        tcp=gripper[:,:3]+quat_apply(gripper_quat,self.tcp_offset.expand(self.num_envs,-1))
+        return RobotState(joint_pos=data.joint_pos.torch[:,self.joint_ids],
+            joint_vel=data.joint_vel.torch[:,self.joint_ids],base_pos_w=pose[:,:3],
+            base_quat_w=pose[:,[6,3,4,5]],base_ang_vel_b=data.root_link_ang_vel_b.torch,
+            tcp_pos_w=tcp,tcp_quat_w=quat_mul(gripper_quat,self.tcp_rotation.expand(self.num_envs,-1)),
+            base_lin_vel_b=data.root_link_lin_vel_b.torch)
 
     def reset(self,ids):
         if not len(ids):
@@ -96,9 +102,10 @@ class WholeBodyEnv:
         self.sim.forward()
         self.scene.update(.002)
         state=self.state()
-        self.reference.reset(ids,state.tcp_pos_w[ids])
+        self.reference.reset(ids,state.tcp_pos_w[ids],state.tcp_quat_w[ids])
         goal=self.reference.current(self.episode_length_buf)
-        self.observations.reset(ids,state,goal,self.episode_length_buf.float()*.02)
+        self.observations.reset(ids,state,goal,self.episode_length_buf.float()*.02,
+            goal_quat_w=self.reference.current_orientation(self.episode_length_buf))
         self.previous_tcp[ids]=state.tcp_pos_w[ids]
         self.previous_error[ids]=(goal-state.tcp_pos_w).norm(dim=-1)[ids]
 
@@ -180,7 +187,8 @@ class WholeBodyEnv:
         last_goal=self.reference.current(self.episode_length_buf-1)
         self.observations.push_state(state)
         self.observations.push_goal(goal,self.episode_length_buf.float()*.02,
-            torch.ones(self.num_envs,device=self.device,dtype=torch.bool),torch.ones(self.num_envs,device=self.device))
+            torch.ones(self.num_envs,device=self.device,dtype=torch.bool),torch.ones(self.num_envs,device=self.device),
+            orientation_wxyz=self.reference.current_orientation(self.episode_length_buf))
         for i,name in enumerate(self.robot.body_names):
             key="contact_"+name
             if key in self.scene.sensors:
@@ -191,7 +199,9 @@ class WholeBodyEnv:
         nonfeet=[i for i in range(len(self.robot.body_names)) if i not in self.foot_ids]
         collision=(self.contacts[:,nonfeet]>5.).any(dim=-1)
         error=goal-state.tcp_pos_w
-        terms=reward_terms(error=error,previous_error=self.previous_error,
+        orientation_error=quat_angle_error(state.tcp_quat_w,self.reference.current_orientation(self.episode_length_buf))
+        terms=reward_terms(error=error,orientation_error=orientation_error,previous_error=self.previous_error,
+            orientation_tracking_width_rad=self.config.get("orientation_tracking_width_rad",.5),
             tcp_velocity=(state.tcp_pos_w-self.previous_tcp)/.02,goal_velocity=(goal-last_goal)/.02,
             action=self.pd.last_action,previous_action=self.previous_action,torque=self.torque,
             effort=self.pd.effort,q=state.joint_pos,qd=state.joint_vel,previous_qd=self.previous_qd,
@@ -213,11 +223,12 @@ class WholeBodyEnv:
             score=float(self.episode_error[index]/self.episode_length_buf[index])/.08+float(fallen[index])
             self.reference.sampler.update(family,score)
         extras={"time_outs":timeout&~fallen,"tracking_error_m":self.previous_error.mean().item(),
-                "fall_fraction":fallen.float().mean().item()}
+                "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item()}
         if self.diagnostic:
             extras.update(falls=int(fallen.sum().item()),resets=len(ids) if auto_reset else 0,
                 torque_saturated=saturated,torque_samples=self.num_envs*18*self.spec.decimation,
                 tracking_error_max_m=float(error.norm(dim=-1).max()),
+                orientation_error_max_rad=float(orientation_error.max()),
                 base_height_min_m=float((state.base_pos_w[:,2]-self.scene.env_origins[:,2]).min()))
         if auto_reset:
             self.reset(ids)

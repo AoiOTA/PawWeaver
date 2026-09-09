@@ -7,14 +7,19 @@ from .contracts import ActuatorSpec, canonical_hash
 from .observations import ObservationSpec
 
 def export_bundle(actor,actuators:ActuatorSpec,asset_manifest:dict,config:dict,output:Path,*,trained:bool,metadata=None):
+    if actor.obs_dim!=ObservationSpec().size:
+        raise ValueError("Bundle requires the 276-dimensional pose observation contract")
     if trained and not asset_manifest["ready_for_training"]:
         raise ValueError("Cannot mark a policy trained for unverified hardware")
     output.mkdir(parents=True,exist_ok=True)
     policy = torch.jit.script(actor.as_jit().cpu().eval())
     policy.save(str(output/"policy.pt"))
-    manifest = {"schema_version":1,"asset_hash":asset_manifest["asset_hash"],"trained":trained,
+    # Deployment consumers need identity fields, not a duplicate of the full run record.
+    training_metadata = {key:metadata[key] for key in ("seed","diagnostic","provisional_spec")
+                         if metadata is not None and key in metadata}
+    manifest = {"schema_version":2,"asset_hash":asset_manifest["asset_hash"],"trained":trained,
                 "actuators":actuators.to_dict(),"observation":ObservationSpec().to_dict(),
-                "training_config":config,"training_metadata":metadata or {},
+                "training_config":config,"training_metadata":training_metadata,
                 "policy_sha256":hashlib.sha256((output/"policy.pt").read_bytes()).hexdigest()}
     manifest["bundle_hash"] = canonical_hash(manifest)
     (output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
@@ -25,7 +30,9 @@ def load_bundle(path:Path,asset_hash:str,require_trained=True):
     checksum = manifest.pop("bundle_hash")
     if canonical_hash(manifest)!=checksum:
         raise ValueError("Bundle manifest checksum mismatch")
-    if manifest["schema_version"]!=1 or manifest["asset_hash"]!=asset_hash:
+    if manifest["schema_version"]!=2:
+        raise ValueError("Unsupported policy bundle schema; 276 pose observations are required and position-only bundles are incompatible")
+    if manifest["asset_hash"]!=asset_hash:
         raise ValueError("Policy bundle and robot asset versions differ")
     if require_trained and not manifest["trained"]:
         raise ValueError("Untrained smoke policies cannot be used for acceptance evaluation")

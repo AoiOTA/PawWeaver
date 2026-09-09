@@ -7,7 +7,9 @@ from rsl_rl.storage import RolloutStorage
 from pawweaver.learning import WholeBodyActor, AuxiliaryPPO
 
 def observations(n=8):
-    return TensorDict({"policy":torch.randn(n,246),"critic":torch.randn(n,270),
+    # Actual combined-robot critic adds base velocity, 30 contacts, domain
+    # parameters and 18-joint actuator randomization to the 276 policy values.
+    return TensorDict({"policy":torch.randn(n,276),"critic":torch.randn(n,386),
         "velocity_label":torch.randn(n,3),"future_label":torch.randn(n,12),
         "future_valid":torch.ones(n,12)},batch_size=[n])
 

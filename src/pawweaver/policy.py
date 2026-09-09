@@ -16,7 +16,7 @@ class CausalFeatures(nn.Module):
         self.prediction,self.velocity = prediction,velocity
         self.velocity_net = mlp(210,3,[128,64])
         self.future_net = mlp(12,12,[64,64])
-        self.output_dim = 246+int(velocity)*3+int(prediction)*12
+        self.output_dim = 276+int(velocity)*3+int(prediction)*12
 
     def estimates(self,normalized:torch.Tensor,raw:torch.Tensor):
         v = self.velocity_net(normalized[:,:210])
@@ -43,5 +43,7 @@ class ExportedPolicy(nn.Module):
         self.output = copy.deepcopy(deterministic_output)
 
     def forward(self,obs:torch.Tensor):
+        if obs.dim()!=2 or obs.size(-1)!=276:
+            raise ValueError("Expected 276-dimensional pose observations; position-only 246 inputs are incompatible")
         normalized = self.normalizer(obs)
         return self.output(self.network(self.features(normalized,obs)))

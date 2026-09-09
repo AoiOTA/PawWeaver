@@ -31,7 +31,7 @@ try:
     renderer.enable_depth_rendering()
     depth=renderer.render().copy()
     Image.fromarray(rgb).save(root/"rendered.png")
-    estimator=MarkerEstimator(intr,intr,np.eye(4),7,.16,[0,0,0])
+    estimator=MarkerEstimator(intr,intr,np.eye(4),7,.16,[0,0,0],[1,0,0,0])
     world_from_color=np.diag([1.,-1.,-1.,1.])
     sample=estimator.measure(rgb,depth,0.,world_from_color)
     if sample is None:

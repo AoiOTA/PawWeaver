@@ -21,9 +21,10 @@ def canonical_hash(value: dict) -> str:
 
 @dataclass(frozen=True)
 class GoalSample:
-    """Position [m] in a fixed task frame, monotonic timestamp [s]."""
+    """World pose (XYZ meters, WXYZ orientation), monotonic timestamp [s]."""
     timestamp: float
     position: tuple[float, float, float]
+    orientation_wxyz: tuple[float, float, float, float]
     valid: bool = True
     confidence: float = 1.0
 
@@ -32,17 +33,24 @@ class GoalSample:
             raise ValueError("GoalSample must contain finite values")
         if len(self.position) != 3 or not 0 <= self.confidence <= 1:
             raise ValueError("GoalSample expects XYZ and confidence in [0,1]")
+        orientation = np.asarray(self.orientation_wxyz,dtype=float)
+        if orientation.shape != (4,) or not np.isfinite(orientation).all() or not np.any(orientation):
+            raise ValueError("GoalSample requires a finite nonzero WXYZ orientation")
+        orientation = orientation / np.max(np.abs(orientation))
+        orientation = orientation / np.linalg.norm(orientation)
+        object.__setattr__(self,"orientation_wxyz",tuple(float(value) for value in orientation))
 
 
 @dataclass
 class RobotState:
-    """Batched tensors; positions [m/rad], velocities [m/s, rad/s], base quaternion WXYZ."""
+    """Batched tensors; positions [m/rad], velocities [m/s, rad/s], base/TCP quaternions WXYZ."""
     joint_pos: torch.Tensor
     joint_vel: torch.Tensor
     base_pos_w: torch.Tensor
     base_quat_w: torch.Tensor
     base_ang_vel_b: torch.Tensor
     tcp_pos_w: torch.Tensor
+    tcp_quat_w: torch.Tensor
     base_lin_vel_b: torch.Tensor | None = None  # supervision/critic only
 
 
@@ -111,4 +119,3 @@ def named_indices(available: list[str] | tuple[str, ...], required: tuple[str, .
     if missing:
         raise ValueError(f"Missing required joints/bodies: {sorted(missing)}")
     return [available.index(name) for name in required]
-

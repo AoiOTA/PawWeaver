@@ -12,6 +12,7 @@ from .control import JointPD
 from .observations import ObservationBuilder
 from .trajectories import Trajectory
 from .task import episode_metrics
+from .math import quat_angle_error
 
 class MujocoRunner:
     def __init__(self,asset:Path,bundle:Path,*,software_fixture=False):
@@ -40,12 +41,16 @@ class MujocoRunner:
         rotation=base.xmat.reshape(3,3)
         velocity=np.zeros(6)
         mujoco.mj_objectVelocity(self.model,self.data,mujoco.mjtObj.mjOBJ_BODY,base.id,velocity,0)
-        return RobotState(self.tensor(self.data.qpos[self.q_indices]),self.tensor(self.data.qvel[self.v_indices]),
-            self.tensor(base.xpos),self.tensor(base.xquat),self.tensor(rotation.T@velocity[:3]),
-            self.tensor(self.data.body("tcp").xpos),
-            self.tensor(rotation.T@(velocity[3:]+np.cross(velocity[:3],base.xpos-base.xipos))))
+        tcp=self.data.body("tcp")
+        return RobotState(joint_pos=self.tensor(self.data.qpos[self.q_indices]),
+            joint_vel=self.tensor(self.data.qvel[self.v_indices]),base_pos_w=self.tensor(base.xpos),
+            base_quat_w=self.tensor(base.xquat),base_ang_vel_b=self.tensor(rotation.T@velocity[:3]),
+            tcp_pos_w=self.tensor(tcp.xpos),tcp_quat_w=self.tensor(tcp.xquat),
+            base_lin_vel_b=self.tensor(rotation.T@(velocity[3:]+np.cross(velocity[:3],base.xpos-base.xipos))))
 
-    def reset(self,goal=None):
+    def reset(self,goal=None,*,goal_quat_w=None):
+        if (goal is None)!=(goal_quat_w is None):
+            raise ValueError("A goal requires both position and world-frame orientation")
         mujoco.mj_resetData(self.model,self.data)
         self.data.qpos[self.q_indices]=self.spec.default_pos
         mujoco.mj_forward(self.model,self.data)
@@ -54,17 +59,24 @@ class MujocoRunner:
         self.holding=False
         state=self.state()
         target=state.tcp_pos_w if goal is None else self.tensor(goal)
-        self.observations.reset(torch.tensor([0]),state,target,torch.zeros(1))
+        target_quat=state.tcp_quat_w if goal is None else self.tensor(goal_quat_w)
+        self.observations.reset(torch.tensor([0]),state,target,torch.zeros(1),goal_quat_w=target_quat)
 
-    @torch.inference_mode()
-    def step(self,goal=None,*,measurement:GoalSample|None=None,hold=False):
+    @torch.no_grad()
+    def step(self,goal=None,*,goal_quat_w=None,measurement:GoalSample|None=None,hold=False):
+        if (goal is None)!=(goal_quat_w is None):
+            raise ValueError("A goal requires both position and world-frame orientation")
+        if goal is not None and measurement is not None:
+            raise ValueError("Provide a goal pose or a measured pose, not both")
         state=self.state()
         now=torch.tensor([self.data.time],dtype=torch.float32)
         if goal is not None:
-            self.observations.push_goal(self.tensor(goal),now,torch.ones(1,dtype=torch.bool),torch.ones(1))
+            self.observations.push_goal(self.tensor(goal),now,torch.ones(1,dtype=torch.bool),torch.ones(1),
+                orientation_wxyz=self.tensor(goal_quat_w))
         elif measurement is not None:
             self.observations.push_goal(self.tensor(measurement.position),torch.tensor([measurement.timestamp]),
-                torch.tensor([measurement.valid]),torch.tensor([measurement.confidence]))
+                torch.tensor([measurement.valid]),torch.tensor([measurement.confidence]),
+                orientation_wxyz=self.tensor(measurement.orientation_wxyz))
         observation=self.observations.build(state,self.action,now)
         if hold:
             if not self.holding:
@@ -84,27 +96,34 @@ class MujocoRunner:
         return observation.numpy()[0],self.action.numpy()[0]
 
     def evaluate(self,trajectory:Trajectory,output:Path):
-        self.reset(trajectory.positions[0])
-        rows={key:[] for key in ("times","errors","base","tcp","goal","torques","velocities","actions","observations")}
+        self.reset(trajectory.positions[0],goal_quat_w=trajectory.sample_orientation(trajectory.timestamps[0]))
+        rows={key:[] for key in ("times","errors","base","tcp","goal","torques","velocities","actions","observations",
+            "tcp_quat_w","goal_quat_w","orientation_errors_rad")}
         fallen=False
-        steps=int((trajectory.timestamps[-1]-trajectory.timestamps[0])/.02)
+        start_time=float(trajectory.timestamps[0])
+        steps=round((trajectory.timestamps[-1]-start_time)/.02)
         for _ in range(steps):
-            goal=trajectory.sample(self.data.time)
-            obs,action=self.step(goal)
+            goal=trajectory.sample(start_time+self.data.time)
+            obs,action=self.step(goal,goal_quat_w=trajectory.sample_orientation(start_time+self.data.time))
             state=self.state()
             # Score the target at the same time as the resulting state.
-            target=trajectory.sample(self.data.time)
+            target=trajectory.sample(start_time+self.data.time)
+            target_quat=trajectory.sample_orientation(start_time+self.data.time)
             error=np.linalg.norm(state.tcp_pos_w.numpy()[0]-target)
+            orientation_error=float(quat_angle_error(state.tcp_quat_w,self.tensor(target_quat))[0])
             values=(self.data.time,error,state.base_pos_w.numpy()[0],state.tcp_pos_w.numpy()[0],target,
-                    self.torque.copy(),self.data.qvel[self.v_indices].copy(),action,obs)
+                    self.torque.copy(),self.data.qvel[self.v_indices].copy(),action,obs,
+                    state.tcp_quat_w.numpy()[0],target_quat,orientation_error)
             for key,value in zip(rows,values):
                 rows[key].append(value)
             base=self.data.body("base_link")
             fallen=base.xpos[2]<.2 or base.xmat.reshape(3,3)[2,2]<.35
             if fallen:
                 break
-        result=episode_metrics(rows["times"],rows["errors"],rows["base"],rows["torques"],rows["velocities"],fallen)
-        result.update(engine="MuJoCo",trajectory=trajectory.metadata,bundle_hash=self.bundle["policy_sha256"])
+        result=episode_metrics(rows["times"],rows["errors"],rows["base"],rows["torques"],rows["velocities"],fallen,
+            orientation_errors=rows["orientation_errors_rad"])
+        result.update(engine="MuJoCo",trajectory=trajectory.metadata,
+            policy_sha256=self.bundle["policy_sha256"])
         output.mkdir(parents=True,exist_ok=True)
         np.savez_compressed(output/"trace.npz",**{key:np.asarray(value) for key,value in rows.items()})
         (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")

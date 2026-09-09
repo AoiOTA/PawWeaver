@@ -1,4 +1,4 @@
-"""Run a frozen goal suite with the standalone exported policy."""
+"""Run a frozen world TCP pose suite with the standalone exported policy."""
 import argparse
 import json
 from pathlib import Path

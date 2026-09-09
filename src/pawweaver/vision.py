@@ -25,10 +25,34 @@ class Intrinsics:
     def matrix(self):
         return np.array([[self.fx,0,self.cx],[0,self.fy,self.cy],[0,0,1.]])
 
-def transform_points(points,transform):
+def quaternion_rotation(quaternion):
+    """Explicit WXYZ calibration; normalize finite nonzero input."""
+    q = np.asarray(quaternion,float)
+    if q.shape != (4,) or not np.isfinite(q).all() or not np.any(q):
+        raise ValueError("Expected finite nonzero WXYZ calibration quaternion")
+    q = q/np.max(np.abs(q))
+    w,x,y,z = q/np.linalg.norm(q)
+    return np.array([[1-2*(y*y+z*z),2*(x*y-w*z),2*(x*z+w*y)],
+                     [2*(x*y+w*z),1-2*(x*x+z*z),2*(y*z-w*x)],
+                     [2*(x*z-w*y),2*(y*z+w*x),1-2*(x*x+y*y)]])
+
+def rotation_quaternion(rotation):
+    import cv2
+    vector = cv2.Rodrigues(np.asarray(rotation,float))[0].ravel()
+    angle = np.linalg.norm(vector)
+    return np.r_[np.cos(angle/2),vector*(.5 if angle < 1e-12 else np.sin(angle/2)/angle)]
+
+def calibrated_transform(transform):
     transform = np.asarray(transform,float)
-    if transform.shape!=(4,4) or not np.isfinite(transform).all():
-        raise ValueError("Expected calibrated 4x4 transform")
+    if (transform.shape != (4,4) or not np.isfinite(transform).all()
+            or not np.allclose(transform[3],[0,0,0,1])
+            or not np.allclose(transform[:3,:3].T@transform[:3,:3],np.eye(3),atol=1e-6)
+            or not np.isclose(np.linalg.det(transform[:3,:3]),1,atol=1e-6)):
+        raise ValueError("Expected calibrated rigid 4x4 transform")
+    return transform
+
+def transform_points(points,transform):
+    transform = calibrated_transform(transform)
     return points@transform[:3,:3].T+transform[:3,3]
 
 def register_depth(depth,depth_intr:Intrinsics,color_intr:Intrinsics,depth_to_color):
@@ -52,14 +76,15 @@ def register_depth(depth,depth_intr:Intrinsics,color_intr:Intrinsics,depth_to_co
 
 class MarkerEstimator:
     def __init__(self,color:Intrinsics,depth:Intrinsics,depth_to_color,marker_id:int,
-                 marker_size_m:float,marker_to_goal):
+                 marker_size_m:float,marker_to_goal,marker_to_goal_quat_wxyz):
         import cv2
         self.cv2 = cv2
         self.color,self.depth = color,depth
-        self.depth_to_color = np.asarray(depth_to_color,float)
+        self.depth_to_color = calibrated_transform(depth_to_color)
         self.marker_id,self.marker_size = marker_id,marker_size_m
         self.marker_to_goal = np.asarray(marker_to_goal,float)
-        if marker_size_m<=0 or self.marker_to_goal.shape!=(3,):
+        self.marker_to_goal_rotation = quaternion_rotation(marker_to_goal_quat_wxyz)
+        if not np.isfinite(marker_size_m) or marker_size_m<=0 or self.marker_to_goal.shape!=(3,) or not np.isfinite(self.marker_to_goal).all():
             raise ValueError("Specify physical marker size and goal offset in marker frame")
         dictionary = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
         self.detector = cv2.aruco.ArucoDetector(dictionary,cv2.aruco.DetectorParameters())
@@ -91,9 +116,11 @@ class MarkerEstimator:
         center = np.array([(u-self.color.cx)*z/self.color.fx,(v-self.color.cy)*z/self.color.fy,z])
         rotation,_ = cv2.Rodrigues(rvec)
         goal_c = center+rotation@self.marker_to_goal
+        world_from_color_at_capture = calibrated_transform(world_from_color_at_capture)
         goal_w = transform_points(goal_c,world_from_color_at_capture)
+        orientation = rotation_quaternion(world_from_color_at_capture[:3,:3]@rotation@self.marker_to_goal_rotation)
         confidence = float(np.exp(-np.std(values)/.01))
-        return GoalSample(capture_timestamp,tuple(goal_w),True,confidence)
+        return GoalSample(capture_timestamp,tuple(goal_w),tuple(orientation),True,confidence)
 
 class DelayedMeasurements:
     def __init__(self,max_age=.5):

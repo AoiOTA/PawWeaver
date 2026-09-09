@@ -3,11 +3,12 @@ from dataclasses import asdict, dataclass
 import torch
 
 from .contracts import RobotState
-from .math import quat_apply_inverse
+from .math import normalize_quat,quat_apply_inverse,quat_conjugate,quat_mul,quat_to_rotation_6d
 
 
 @dataclass(frozen=True)
 class ObservationSpec:
+    schema_version: int = 2
     history_frames: int = 5
     goal_frames: int = 4
     proprio_dim: int = 42
@@ -16,11 +17,12 @@ class ObservationSpec:
     angular_velocity_scale: float = 0.25
     max_goal_age: float = 0.5
     control_dt: float = 0.02
+    orientation_encoding: str = "rotation_columns_0_xyz_then_1_xyz"
 
     @property
     def size(self) -> int:
-        # proprio history, previous action, TCP position, relative goal history, valid/confidence/age
-        return self.history_frames*self.proprio_dim + self.action_dim + 3 + self.goal_frames*3 + 3
+        # Preserve the 246-position prefix, then TCP rotation6D and four goal rotations6D.
+        return self.history_frames*self.proprio_dim + self.action_dim + 3 + self.goal_frames*3 + 3 + 6 + self.goal_frames*6
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -33,6 +35,7 @@ class ObservationBuilder:
         self.default_pos = default_pos
         self.proprio = torch.zeros(batch, self.spec.history_frames, 42, device=self.device)
         self.goals_w = torch.zeros(batch, self.spec.goal_frames, 3, device=self.device)
+        self.goal_quats_w = torch.zeros(batch, self.spec.goal_frames, 4, device=self.device)
         self.stamp = torch.full((batch,), -torch.inf, device=self.device)
         self.valid = torch.zeros(batch, device=self.device, dtype=torch.bool)
         self.confidence = torch.zeros(batch, device=self.device)
@@ -46,10 +49,17 @@ class ObservationBuilder:
                           state.joint_vel*self.spec.joint_velocity_scale,
                           state.base_ang_vel_b*self.spec.angular_velocity_scale, gravity), dim=-1)
 
-    def reset(self, ids: torch.Tensor, state: RobotState, goal_w: torch.Tensor, timestamp: torch.Tensor):
+    def reset(self, ids: torch.Tensor, state: RobotState, goal_w: torch.Tensor, timestamp: torch.Tensor,
+              *, goal_quat_w: torch.Tensor):
+        if goal_w.shape != (self.batch,3) or goal_quat_w.shape != (self.batch,4):
+            raise ValueError("Reset requires batched goal XYZ and WXYZ")
+        orientation = normalize_quat(goal_quat_w[ids])
+        if not bool(torch.isfinite(goal_w[ids]).all() and torch.isfinite(timestamp[ids]).all()):
+            raise ValueError("Reset goal position and timestamp must be finite")
         current = self._proprio(state)
         self.proprio[ids] = current[ids, None, :]
         self.goals_w[ids] = goal_w[ids, None, :]
+        self.goal_quats_w[ids] = orientation[:,None,:]
         self.stamp[ids] = timestamp[ids]
         self.valid[ids] = True
         self.confidence[ids] = 1
@@ -61,14 +71,19 @@ class ObservationBuilder:
         self.proprio[ids, -1] = self._proprio(state)[ids]
         # Histories are sampled at 50 Hz even when camera samples arrive at 30 Hz.
         self.goals_w[ids, :-1] = self.goals_w[ids, 1:].clone()
+        self.goal_quats_w[ids, :-1] = self.goal_quats_w[ids, 1:].clone()
 
     def push_goal(self, position_w: torch.Tensor, timestamp: torch.Tensor,
-                  valid: torch.Tensor, confidence: torch.Tensor):
-        finite = torch.isfinite(position_w).all(-1) & torch.isfinite(timestamp) & torch.isfinite(confidence)
+                  valid: torch.Tensor, confidence: torch.Tensor, *, orientation_wxyz: torch.Tensor):
+        if position_w.shape != (self.batch,3) or orientation_wxyz.shape != (self.batch,4):
+            raise ValueError("Goal updates require batched XYZ and WXYZ")
+        finite = (torch.isfinite(position_w).all(-1) & torch.isfinite(timestamp) & torch.isfinite(confidence)
+                  & torch.isfinite(orientation_wxyz).all(-1) & (orientation_wxyz.abs().amax(-1)>0))
         newer = timestamp > self.stamp
         accepted = finite & valid & newer & (confidence > 0)
         ids = accepted.nonzero(as_tuple=False).flatten()
         self.goals_w[ids, -1] = position_w[ids]
+        self.goal_quats_w[ids, -1] = normalize_quat(orientation_wxyz[ids])
         self.stamp[ids] = timestamp[ids]
         self.confidence[ids] = confidence[ids].clamp(0, 1)
         # Out-of-order measurements cannot invalidate a more recent accepted sample.
@@ -86,7 +101,11 @@ class ObservationBuilder:
         age = (now-self.stamp).clamp_min(0)
         valid = self.valid & (age <= self.spec.max_goal_age)
         quality = torch.stack((valid.float(), self.confidence*valid, age.clamp(max=10.0)), dim=-1)
-        result = torch.cat((self.proprio.flatten(1), previous_action, tcp_b, goal_b.flatten(1), quality), -1)
+        base_inverse = quat_conjugate(normalize_quat(state.base_quat_w))
+        tcp_rotation = quat_to_rotation_6d(quat_mul(base_inverse,normalize_quat(state.tcp_quat_w)))
+        goal_rotation = quat_to_rotation_6d(quat_mul(base_inverse[:,None,:],self.goal_quats_w))
+        result = torch.cat((self.proprio.flatten(1), previous_action, tcp_b, goal_b.flatten(1), quality,
+                            tcp_rotation,goal_rotation.flatten(1)), -1)
         if result.shape[-1] != self.spec.size or not torch.isfinite(result).all():
             raise ValueError("Non-finite or inconsistent observation")
         return result

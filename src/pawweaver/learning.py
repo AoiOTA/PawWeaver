@@ -10,12 +10,19 @@ class WholeBodyActor(MLPModel):
         # Flags are plain booleans and may be initialized before nn.Module.
         self.prediction,self.velocity = prediction,velocity
         super().__init__(*args,**kwargs)
-        if self.obs_dim != 246 or self.obs_groups != ["policy"]:
-            raise ValueError("Actor must receive only the 246-dimensional causal policy group")
+        if self.obs_dim != 276 or self.obs_groups != ["policy"]:
+            raise ValueError("Actor requires the 276-dimensional causal pose policy group; 246 position-only observations are incompatible")
         self.features = CausalFeatures(prediction,velocity)
 
     def _get_latent_dim(self):
-        return 246+int(self.velocity)*3+int(self.prediction)*12
+        return 276+int(self.velocity)*3+int(self.prediction)*12
+
+    def load_state_dict(self,state_dict,strict=True,assign=False):
+        first=state_dict.get("mlp.0.weight")
+        legacy_dim=246+int(self.velocity)*3+int(self.prediction)*12
+        if first is not None and first.shape[1]==legacy_dim:
+            raise ValueError("Position-only 246-observation checkpoints are incompatible with the 276 pose contract")
+        return super().load_state_dict(state_dict,strict=strict,assign=assign)
 
     def get_latent(self,obs,masks=None,hidden_state=None):
         raw = obs["policy"]

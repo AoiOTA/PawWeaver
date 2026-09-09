@@ -6,7 +6,7 @@ from pathlib import Path
 import h5py
 import numpy as np
 from scipy.interpolate import PchipInterpolator
-from scipy.spatial.transform import Rotation
+from scipy.spatial.transform import Rotation, Slerp
 from .trajectories import Trajectory, split_for_source
 
 def rigid_transform(value):
@@ -30,15 +30,18 @@ def convert(source:Path, timestamps:np.ndarray, config:dict, source_id:str):
         raise ValueError("Expected FastUMI XYZ + XYZW pose rows; joint trajectories are not accepted")
     times = np.asarray(timestamps,dtype=float)*float(config["timestamp_scale_s"])
     xyz = q[:,:3]*float(config["position_scale_m"])
-    Trajectory(times,xyz,{})
     norms = np.linalg.norm(q[:,3:7],axis=-1)
     if not np.allclose(norms,1,atol=.01):
         raise ValueError("Quaternion norm invalid; verify XYZW convention")
-    rotations = Rotation.from_quat(q[:,3:7]).as_matrix()
+    source_rotations = Rotation.from_quat(q[:,3:7])
+    rotations = source_rotations.as_matrix()
     extrinsic = rigid_transform(config["sensor_to_tcp"]) if pose_kind == "sensor" else np.eye(4)
     xyz = xyz+np.einsum("nij,j->ni",rotations,extrinsic[:3,3])
     task = rigid_transform(config["source_to_task"])
     xyz = xyz@task[:3,:3].T+task[:3,3]
+    goal_rotations = Rotation.from_matrix(task[:3,:3]) * source_rotations * Rotation.from_matrix(extrinsic[:3,:3])
+    orientations = goal_rotations.as_quat()[:,[3,0,1,2]]
+    Trajectory(times,xyz,orientations,{})
     times = times-times[0]
     max_gap = float(config["max_gap_s"])
     if np.max(np.diff(times))>max_gap:
@@ -53,13 +56,14 @@ def convert(source:Path, timestamps:np.ndarray, config:dict, source_id:str):
                 np.sqrt(np.linalg.norm(spline(probe,2),axis=-1).max()/max_acc))
     new_t = np.arange(0,times[-1]*scale+1e-9,dt)
     positions = spline(new_t/scale)
+    orientations = Slerp(times,goal_rotations)(new_t/scale).as_quat()[:,[3,0,1,2]]
     lower,upper = np.asarray(config["task_bounds_m"],float)
     if (positions<lower).any() or (positions>upper).any():
         raise ValueError("Trajectory is outside the configured task workspace")
     metadata = {"family":"fastumi","source_id":source_id,"source_pose_sha256":hashlib.sha256(q.tobytes()).hexdigest(),
                 "split":split_for_source(source_id),"time_scale":float(scale),"conversion":config,
                 "reachability":"task bounds only; robot-specific validation required"}
-    return Trajectory(new_t,positions,metadata)
+    return Trajectory(new_t,positions,orientations,metadata)
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
