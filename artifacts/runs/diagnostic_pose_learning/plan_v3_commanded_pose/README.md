@@ -13,3 +13,9 @@
 ## 实际启动记录
 
 集成CPU148项通过、独立只读审查无阻断finding；初始两引擎stand20和MuJoCo dev8实际退出0。初始stand位置RMSE：PhysX6.79cm、MuJoCo10.10cm，均完整且未跌倒；但MuJoCo从7.88s出现后大腿真实地面接触，不能称干净支撑，world接触列已从机器人非足统计中排除。64环境2轮PPO实际退出0，3072交互、40更新、全部有限、零跌倒；其权重未用于主训练。fresh4096环境连续1000轮已启动，当前完成量以train1000/metrics.jsonl及最终checkpoint progress为准。
+
+## 连续训练首个开发读出：checkpoint250（实际251轮）
+
+CPU导出及MuJoCo dev8完整评估实际退出0：6/8完整，low_stand19.22s跌倒，neutral_yaw53.48s跌倒。完整neutral_forward命令速度RMSE.1930m/s，接近.2m/s设定值，尚无有效前进；完整high_stand/lateral_stand位置RMSE.7647/.7025m、朝向1.4067/2.4401rad。低位短片段不能与完整初始60s直接比较来声称改善。
+
+保存轨迹全FK复核8例通过，最大TCP误差4.86e-8m；各例未见足底高于同侧thigh，但high与neutral_left有非足净力，且上述跌倒和大误差仍在。这不是全身协同成功。主训练仍连续运行，等后续检查点判断趋势，不根据单个开发检查点切换方法。

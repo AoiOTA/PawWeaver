@@ -1,0 +1,21 @@
+{
+  "checkpoint": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/train1000/checkpoint_000250.pt",
+  "checkpoint_sha256": "7d8042543933602a4bcfde4f6e02d11768d49ee7fab79e5337cc9fd1dc0c9715",
+  "iteration": 250,
+  "completed_iterations_in_checkpoint": 251,
+  "training_progress": {
+    "status": "running",
+    "stop_reason": null,
+    "requested_iterations": 1000,
+    "completed_iterations": 251,
+    "start_iteration": 0,
+    "last_completed_iteration": 250,
+    "completed_transitions": 24674304
+  },
+  "policy_sha256": "733a2cee7f5234967b3911d70256c58fa24cf5adb6f9d28e05da16105ace882f",
+  "device": "cpu",
+  "observation_size": 279,
+  "seed": 0,
+  "trained": false,
+  "note": "Snapshot index is zero-based:250/500/999 contain251/501/1000 iterations in this fresh run. JIT hashes can differ across exports; compare deterministic actions. Source checkpoint was only read."
+}
