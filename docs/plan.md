@@ -1,11 +1,11 @@
 # PawWeaver：当前目标与推进依据
 
-**当前状态（E3）**：折足单项对照已完成且不采用：各100轮、983万交互，候选出现新的MuJoCo跌倒，任务与折足没有一致收益；见[负结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)。现进入已授权的[速度＋末端目标方法比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)：独立279输入、单18关节Actor，任务系跟随base XY/yaw并固定地面Z，速度来自预设命令。CPU合同已检查，初始双引擎站立与小规模入口验证进行中，随后fresh连续1000轮；不把本路线称为世界固定EE-only成功。
+**当前状态（E3）**：折足单项对照已完成且不采用：各100轮、983万交互，候选出现新的MuJoCo跌倒，任务与折足没有一致收益；见[负结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)。现进入已授权的[速度＋末端目标方法比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)：独立279输入、单18关节Actor，任务系跟随base XY/yaw并固定地面Z，速度来自预设命令。CPU合同、初始双引擎站立与2轮训练入口已验证，fresh连续1000轮正在运行；约250/500轮MuJoCo开发读出已完成，后者全8例完整但尚无有效移动与整体操作成功；不把本路线称为世界固定EE-only成功。
 
 
 **v3方案执行已恢复（2026-09-10）**：用户在新请求中明确要求执行 `/home/lyb/Desktop/PawWeaver_KISS_My_Agent_完整项目改进方案_2026-09-10_v3.md`。下文“本阶段最后一轮／整理后停止”保留为上一阶段历史边界，本次继续计划内开发与仿真；不是重新运行已完成的2000轮。先处理真实奖励信号、采样消费者、完整评估及完整更新保存，再按任务效果决定训练路线和预算。主代理唯一操作GPU，其他代理只做CPU或源码工作；本次不由文档内历史发布命令自动触发远程推送。世界系EE-only主路线、可选单Actor速度＋EE方法比较、下蹲／倾身／支撑移动目标、原验收和临时参数边界保留；正式朝向阈值仍未指定。
 
-当前实际下一步是[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)：E1两组各100轮及双引擎后测完成，候选有位置收益但朝向与悬足问题未解决。按near40%/body30%/step30%的低LR下限候选已完整学习1000轮并完成双引擎开发复测；支撑移动仍不稳定。实际PhysX训练分布已确认足球底长期高于同侧髋，当前执行[单项折足奖励对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)：同checkpoint500起点、各100轮、仅新项0/−10不同。全身支撑目标仍未完成，依后测决定采用与后续连续学习。
+已完成的[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)给出了连续1000轮及双引擎证据；其后的[折足成本对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)未支持采用。当前下一步是完成顶部所述E3预算和双引擎终测，继续按实际任务与支撑判断。
 
 
 以用户明确的全身控制能力目标和实际证据推进。《AS2 EDU + Piper-H 全身协同移动操作仿真方案》提供架构、场景和验证思路的参考；不要求逐条恢复全部模块、按固定阶段顺序执行或重做已经完成的工作。具体实验记录见 [runbook](runbook.md)，数值评价和证据边界见 [validation](validation.md)。
@@ -14,7 +14,7 @@
 
 同一个强化学习 Actor 仅根据固定任务／世界系末端位置、朝向目标及本体观测，统一输出12腿＋6臂关节目标。机器人为了完成末端任务，自主协调机械臂、身体姿态与支撑：需要时下蹲、倾身、升降身体、转身和迈步；原地全身仍够不到时，稳定地移动过去完成任务。目标不随基座移动而重新锚定，不输入外部底盘速度命令或手写步态。
 
-**2026-09-10新增路线授权**：用户要求核实EE-only与“底盘速度指令＋EE目标”两类方法，并明确两种都可以试。上述EE-only路线保留；比较分支允许给同一个18关节Actor增加外部底盘速度任务命令。新增分支必须明确EE目标的坐标系及部署时速度输入来源；若改变为随底盘的EE目标，不能把其成功报告为固定世界系EE-only任务通过，也不能把整套配方差异仅归因于增加速度输入。稳定支撑、完整臂姿态与全身协同效果、原性能数值和硬件证据边界保持。按最新停止边界，本阶段仅完成这两类方法的文献核实，不实现或训练速度指令分支。 已核实：[UMI on Legs](https://umi-on-legs.github.io/static/umi-on-legs.pdf)摘要、§3.2与Fig.4使用不随基座移动的task-frame EE目标；Paw保存sim-world目标相当于选择固定任务基准，观测转换到当前base表达不改变目标固定性质，但不代表完整复制UMI坐标处理。[Deep Whole-Body Control](https://proceedings.mlr.press/v205/fu23a/fu23a.pdf)§2.1与Fig.4使用单18动作Actor、前向速度与yaw命令，EE参考随base水平位置／yaw移动且保持固定z；其渐进advantage mixing用于处理早期忽略locomotion的问题。这些是待考虑的方法条件，不证明输入差异已解释Paw失败，也不引出本阶段的新实现。
+**2026-09-10新增路线授权**：用户要求核实EE-only与“底盘速度指令＋EE目标”两类方法，并明确两种都可以试。上述EE-only路线保留；比较分支允许给同一个18关节Actor增加外部底盘速度任务命令。新增分支必须明确EE目标的坐标系及部署时速度输入来源；若改变为随底盘的EE目标，不能把其成功报告为固定世界系EE-only任务通过，也不能把整套配方差异仅归因于增加速度输入。稳定支撑、完整臂姿态与全身协同效果、原性能数值和硬件证据边界保持。上一阶段仅完成了文献核实；本次v3执行已按条件进入速度指令比较分支，当前状态见顶部。 已核实：[UMI on Legs](https://umi-on-legs.github.io/static/umi-on-legs.pdf)摘要、§3.2与Fig.4使用不随基座移动的task-frame EE目标；Paw保存sim-world目标相当于选择固定任务基准，观测转换到当前base表达不改变目标固定性质，但不代表完整复制UMI坐标处理。[Deep Whole-Body Control](https://proceedings.mlr.press/v205/fu23a/fu23a.pdf)§2.1与Fig.4使用单18动作Actor、前向速度与yaw命令，EE参考随base水平位置／yaw移动且保持固定z；其渐进advantage mixing用于处理早期忽略locomotion的问题。这些是待考虑的方法条件，不证明输入差异已解释Paw失败，不构成输入差异的因果结论。
 
 既要能到达给定目标，也要能持续跟踪移动目标。协调包含两个方向：机械臂伸展、旋转、俯仰造成负载变化时，腿和身体调整姿态与支撑保持稳定；四足运动或调整身体时，机械臂灵活补偿以保持世界系末端跟踪。训练轨迹应广泛覆盖组合机器人的操作空间，并包含需要移动支撑位置的目标。18维动作、训练有限、局部误差下降或基座移动均不单独证明上述能力；需要结合TCP误差、臂6关节实际运动、身体运动和足端接触判断。
 
