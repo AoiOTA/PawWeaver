@@ -164,7 +164,7 @@ def render(states,output):
             f"Actual yaw-frame: vx={actual[0]:+.3f}m/s | vy={actual[1]:+.3f}m/s | yawrate={trace['base_yaw_rate'][index]:+.3f}rad/s",
             f"Elapsed {trace['times'][index]:.2f}s / recorded {trace['times'][-1]:.2f}s / requested {metrics['requested_steps']*DT:.2f}s | current fall={fall} | recorded end: {terminal}",
             f"EE error: {trace['errors'][index]:.3f}m / {trace['orientation_errors_rad'][index]:.3f}rad | base upZ={trace['base_up_z'][index]:.3f}",
-            'Cyan=target; orange=TCP; RGB=pose axes | provisional model',
+            'Cyan=target; orange=TCP; RGB=pose axes | provisional model | trained=false',
             'Saved-state replay; no new physics / policy execution / visual control. All saved frames included.']
         for j,text in enumerate(lines):
             draw.text((12,5+j*24),text,font=font,fill=(240,240,240))

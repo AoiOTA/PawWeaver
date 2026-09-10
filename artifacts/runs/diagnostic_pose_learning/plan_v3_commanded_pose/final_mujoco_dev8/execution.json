@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/home/lyb/miniconda3/envs/pawweaver-runtime/bin/python",
+    "scripts/evaluate_commanded_mujoco.py",
+    "--asset",
+    "assets/generated/diagnostic",
+    "--bundle",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/train1000/bundle",
+    "--suite",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/dev8",
+    "--output",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/final_mujoco_dev8",
+    "--seed",
+    "0",
+    "--diagnostic",
+    "--provisional-spec",
+    "artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/spec.json"
+  ],
+  "actual_exit_code": 0,
+  "started_utc": "2026-09-10T13:21:57.411697+00:00",
+  "ended_utc": "2026-09-10T13:23:56.068913+00:00",
+  "console_log": "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/final_mujoco_dev8_console.log"
+}

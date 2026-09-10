@@ -1,11 +1,11 @@
 # PawWeaver：当前目标与推进依据
 
-**当前状态（E3）**：折足单项对照已完成且不采用：各100轮、983万交互，候选出现新的MuJoCo跌倒，任务与折足没有一致收益；见[负结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)。现进入已授权的[速度＋末端目标方法比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)：独立279输入、单18关节Actor，任务系跟随base XY/yaw并固定地面Z，速度来自预设命令。CPU合同、初始双引擎站立与2轮训练入口已验证，fresh连续1000轮正在运行；约250/500轮MuJoCo开发读出已完成，后者全8例完整但尚无有效移动与整体操作成功；不把本路线称为世界固定EE-only成功。
+**当前结果（E3，2026-09-10）**：速度＋末端目标B路线fresh1000轮已实际退出0，98,304,000次交互／20,000次更新全部有限，3987次训练跌倒。初始与最终双引擎dev8／独立来源test8评估均已退出0：初始每组8/8完整60秒；最终PhysX为7/8、4/8，MuJoCo为7/8、1/8。完整命令窗实际移动速度接近0，非中立末端任务仍有大误差，部分存活回合也有非足接触。此预算内未形成可用移动操作策略，不采用为成果，也不直接追加预算或启动E4／E5。详见[完整配对与支撑结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)。A路线276输入世界系EE-only保留；B路线279输入单18关节Actor的EE系跟随base XY/yaw、地面Z固定，仿真速度来自预设命令，未来部署拟由操作员提供。结果不证明世界固定EE-only成功、硬件有效性或完整WBC，`trained=false`。
 
 
 **v3方案执行已恢复（2026-09-10）**：用户在新请求中明确要求执行 `/home/lyb/Desktop/PawWeaver_KISS_My_Agent_完整项目改进方案_2026-09-10_v3.md`。下文“本阶段最后一轮／整理后停止”保留为上一阶段历史边界，本次继续计划内开发与仿真；不是重新运行已完成的2000轮。先处理真实奖励信号、采样消费者、完整评估及完整更新保存，再按任务效果决定训练路线和预算。主代理唯一操作GPU，其他代理只做CPU或源码工作；本次不由文档内历史发布命令自动触发远程推送。世界系EE-only主路线、可选单Actor速度＋EE方法比较、下蹲／倾身／支撑移动目标、原验收和临时参数边界保留；正式朝向阈值仍未指定。
 
-已完成的[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)给出了连续1000轮及双引擎证据；其后的[折足成本对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)未支持采用。当前下一步是完成顶部所述E3预算和双引擎终测，继续按实际任务与支撑判断。
+已完成的[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)给出了连续1000轮及双引擎证据；其后的[折足成本对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)未支持采用。E3训练及初始／最终双引擎开发与独立测试现已完成，当前配方未形成可用移动操作策略；保留负结果，不原样自动追加训练。 E4仍是条件性的任务贡献分配诊断：只有证据支持普通PPO偏顾某一任务而忽略另一任务，才在E3同任务内考虑匹配的Advantage Mixing比较；两项都未学会不自动满足该条件。E5独立双引擎、多种子正式统计只对筛选出的可用方案开展，不把当前诊断后测称作E5完成。
 
 
 以用户明确的全身控制能力目标和实际证据推进。《AS2 EDU + Piper-H 全身协同移动操作仿真方案》提供架构、场景和验证思路的参考；不要求逐条恢复全部模块、按固定阶段顺序执行或重做已经完成的工作。具体实验记录见 [runbook](runbook.md)，数值评价和证据边界见 [validation](validation.md)。
@@ -43,7 +43,7 @@
 - UMI实测数据不是当前依赖。已有可靠实现和证据继续复用；未标定的外部位姿不冒称本机器人原生TCP示范。
 - 临时动力学参数允许已授权工程实验继续，但结果不能建立硬件有效性；不把参数未闭合用作停止所有学习工作的理由，也不把工程成功写成正式硬件验收。
 
-## 本阶段最终状态
+## 上一阶段最终状态（v3恢复执行前的历史记录）
 
 | 工作 | 已有证据与下一步 |
 |---|---|

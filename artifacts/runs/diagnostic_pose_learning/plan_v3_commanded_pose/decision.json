@@ -76,7 +76,7 @@
     "No world-fixed EE-only success claim",
     "No base pose or gait commands"
   ],
-  "next": "CPU contract and zero-mean dual-engine stand20, then real training smoke and fresh continuous learning",
+  "next": "Current recipe not selected; retain A and B evidence. Do not automatically extend budget, trigger conditional E4 without one-task dominance evidence, or enter E5 without a viable selected policy.",
   "initial_validation": {
     "cpu_integrated_tests_passed": 148,
     "initial_mujoco_stand20_exit": 0,
@@ -87,5 +87,42 @@
     "main_train_output": "train1000",
     "gpu_owner": "root",
     "initial_stand_limitation": "MuJoCo true rear-thigh ground contact from7.88s; no clean support success claim. PhysX has no recorded robot nonfoot contact."
+  },
+  "training_result": {
+    "status": "completed",
+    "actual_exit_code": 0,
+    "completed_iterations": 1000,
+    "transitions": 98304000,
+    "optimizer_updates": 20000,
+    "all_finite": true,
+    "falls": 3987,
+    "resets": 33627,
+    "source": "training_summary.json",
+    "final_bundle": "train1000/bundle"
+  },
+  "final_evaluation": {
+    "status": "completed",
+    "source": "final_readout.json",
+    "all_eight_evaluations_actual_exit_code": 0,
+    "initial_completed_no_fall": {
+      "physx_dev8": 8,
+      "physx_test8": 8,
+      "mujoco_dev8": 8,
+      "mujoco_test8": 8
+    },
+    "final_completed_no_fall": {
+      "physx_dev8": 7,
+      "physx_test8": 4,
+      "mujoco_dev8": 7,
+      "mujoco_test8": 1
+    },
+    "denominator_per_suite": 8,
+    "requested_seconds": 60,
+    "development_uses_training_sources": true,
+    "test_uses_independent_original_test_sources": true,
+    "selected": false,
+    "conclusion": "Near-zero command response and large nonneutral EE errors remain; survival can include nonfoot contact. No useful general locomotion-manipulation policy shown in this budget.",
+    "e4_trigger_supported": false,
+    "e5_ready": false
   }
 }
