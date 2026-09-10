@@ -1,6 +1,6 @@
 # 验证记录 · 2026-09-10
 
-**E2当前状态**：首轮课程因持续崩坏在78/1000轮完整保存退出；降低adaptive LR下限至1e-7的同起点候选现已完整完成1000轮并退出0，98,304,000次交互／20,000次更新／1750次训练跌倒，数值有限。匹配checkpoint50支持学习率反馈修复了早期崩坏，但连续250/500/1000读出呈现进步与退化并存。最终workspace4：PhysX全4例完整，MuJoCo高位10.46秒跌倒；train10两引擎各9/10完整，失败分别是PhysX step01与MuJoCo step00。持续折足和支撑转换仍未解决，不原样自动扩到2000轮；先核对训练分布中的垂直折足盲区。见[E2记录](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)。
+**E2当前状态**：首轮课程因持续崩坏在78/1000轮完整保存退出；降低adaptive LR下限至1e-7的同起点候选现已完整完成1000轮并退出0，98,304,000次交互／20,000次更新／1750次训练跌倒，数值有限。匹配checkpoint50支持学习率反馈修复了早期崩坏，但连续250/500/1000读出呈现进步与退化并存。最终workspace4：PhysX全4例完整，MuJoCo高位10.46秒跌倒；train10两引擎各9/10完整，失败分别是PhysX step01与MuJoCo step00。持续折足和支撑转换仍未解决，不原样自动扩到2000轮；实际PhysX训练分布已确认垂直折足，现启动[单项折足奖励对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)，同checkpoint500起点各100轮，唯一组间差异为新增单側平方惩罚0/−10。源码60项CPU检查及独立review通过，效果待真实后测。见[E2记录](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)。
 
 **v3 E1最新结果（2026-09-10）**：两组各100轮及8项双引擎后测已实际退出0；每组983万交互／2000更新。取消非负裁零后，workspace4每例位置改善，位置单项计数两引擎均1/4→3/4；test8均0/8→8/8，全部20秒完整且无跌倒。MuJoCo test8朝向均值.34549→.40566 rad退步，足部受力仍不合理，不能称完整位姿或WBC完成。详见[v3逐例比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_reward_signal/README.md)。已选择candidate100权重进入仅训练来源的10条固定near/body/step课程（40/30/30），连续1000轮后按实际任务与足几何选择下一步。
 
