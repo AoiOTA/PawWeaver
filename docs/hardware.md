@@ -22,6 +22,18 @@
 
 M0 的六项 `verified_overrides` 仍需补齐带来源的实际参数：装配、相机及支架、线缆、质量差异、关节映射和执行器。相机更换没有自动消除整机动力学的待核实项；软件检查通过也不代表 M1–M4 成功率已达标。
 
+## 真实控制接口尚未接入
+
+当前统一18关节链路的实际终点是仿真：[MujocoRunner](../src/pawweaver/mujoco_runtime.py) 从 `mjData` 读取状态并将 [JointPD](../src/pawweaver/control.py) 结果写入 `data.ctrl`；现有 `src/`、`scripts/` 没有 AS2 EDU 低层或 Piper-H SDK 通信消费者。当前50Hz Actor动作经 `q_target=q0+action_scale*clip(action,-1,1)` 和位置限位后，由500Hz显式PD计算并限矩。`ActuatorSpec.velocity` 虽有字段，此控制函数没有按该字段限制目标变化率，不能据此称已具备实机速度保护。以上均未证明真实设备具有相同位置／MIT／力矩闭环、频率和响应。
+
+接入前尚需按实际设备确认：
+
+- AS2 EDU、Piper-H具体型号／固件及可用低层模式；18关节设备索引、方向、零位和适用限位。当前顺序为FR、FL、RR、RL各hip/thigh/calf，再arm_joint1…6，见[接口契约](../src/pawweaver/contracts.py)。
+- 两设备指令与反馈频率、时间戳／延迟、底层增益、持续执行能力及控制中断后的设备行为；SDK编码范围不能替代这些信息。
+- 同步关节状态、IMU与世界系基座位姿来源，结合安装和TCP标定计算世界TCP；当前观测历史使用基座位姿转换世界目标，仿真真值不能替代实机定位。
+
+本地固定版本资料仍有待实物版本裁决的差异：[手册限位配置](../configs/hardware.json) 与 [SDK参考](../configs/actuator_references.json) 的Piper-H J2为195°／180°、J4为±127°／±135°、J6为±170°／±180°。此前MDH与URDF的100姿态一致只核对了几何，未关闭设备映射或限位版本差异。AS2增益／力矩来自官方仿真配置，Piper-H力矩范围来自CAN编码，均未证明实际持续能力。以上确认与临时参数仿真并行；本轮只核查了本地代码和固定资料，未连接、探测或操作设备。
+
 ## 官方资料
 
 - [AS2 MuJoCo 模型](https://github.com/unitreerobotics/unitree_mujoco/blob/1eb6642e3f3fdfb7fb13a9794fd6a2dd93ea0e7d/unitree_robots/as2/as2.xml)
