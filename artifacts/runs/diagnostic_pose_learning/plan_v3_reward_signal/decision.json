@@ -1,0 +1,13 @@
+{
+  "source_initializer": "artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/initial_checkpoint.pt",
+  "semantics": "initialize-from: same Actor/Critic and fixed std, fresh Adam at1e-5, fresh UMI EMA2/8 for both; no sampler or reward state resume",
+  "iterations_per_arm": 100,
+  "envs": 4096,
+  "rollout_steps": 24,
+  "transitions_per_arm": 9830400,
+  "optimizer_updates_per_arm": 2000,
+  "only_config_difference": "umi_clip_nonnegative true versus false",
+  "evaluation": "fixed workspace4 (low/high/lateral20s,far60s) and original test8x20s; development only, all failures retained",
+  "stop": "NaN/invalid simulation immediately; otherwise complete100 and evaluate. Investigate early termination and task/support degradation before any extension. No full-method infeasibility claim from pilot.",
+  "evidence": "low_noise251_retry/summary.json and counterfactual.json; no-load100-to1 changes postclip in only0.0549479% captured samples, whereas89.9546% positive-load samples clip."
+}
