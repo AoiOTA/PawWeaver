@@ -60,3 +60,20 @@ def test_saved_contact_columns_keep_actual_body_order_without_pickle(tmp_path):
         column=trace["contact_body_names"].tolist().index("FR_foot")
         np.testing.assert_array_equal(trace["contacts"][:,column],[30.,60.])
         np.testing.assert_array_equal(trace["times"],[.02,.04])
+
+
+def test_terminal_causes_keep_first_terminated_control_frame(tmp_path):
+    rows=[{key:[] for key in ('times','base','base_up_z','fall_height','fall_tilt')} for _ in range(2)]
+    fallen=np.zeros(2,dtype=bool)
+    for step in range(1,4):
+        values=dict(base=np.array([[0,0,.14],[0,0,.18]]),base_up_z=np.array([1.,0. if step==3 else 1.]),
+                    fall_height=np.array([True,False]),fall_tilt=np.array([False,step==3]))
+        evaluator.append_batch_step(rows,[3,3],fallen,step,values,[True,step==3])
+    for index,row in enumerate(rows):
+        path=tmp_path/f'{index}.npz'
+        evaluator.save_trace(path,row,[])
+        with np.load(path,allow_pickle=False) as trace:
+            assert len(trace['times'])==(1 if index==0 else 3)
+            assert bool(trace['fall_height'][-1])==(index==0)
+            assert bool(trace['fall_tilt'][-1])==(index==1)
+            assert trace['base_up_z'][-1]==(1. if index==0 else 0.)

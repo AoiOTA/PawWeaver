@@ -23,5 +23,5 @@ for trajectory in load_suite(args.suite):
     results.append(result)
     print(json.dumps(result),flush=True)
 save_run(args.output,args.suite,runner.manifest,runner.bundle,args.seed,"MuJoCo",results,
-    evaluation=dict(diagnostic=args.diagnostic,provisional_spec=runner.provisional,
+    evaluation=dict(diagnostic=args.diagnostic,provisional_spec=runner.provisional,termination=runner.termination,
         evidence_limit="Provisional engineering only; no hardware validity or formal acceptance." if args.diagnostic else "Pose acceptance thresholds remain unspecified."))

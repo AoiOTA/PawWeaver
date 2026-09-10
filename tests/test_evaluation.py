@@ -26,6 +26,30 @@ def test_pairing_rejects_different_policy(tmp_path):
     with pytest.raises(ValueError,match="policy_sha256"):
         compare(a,b)
 
+
+@pytest.mark.parametrize('left,right,accepted', [
+    (None,{'minimum_base_height_m':.2,'minimum_base_up_z':.35},True),
+    ({'minimum_base_height_m':.15,'minimum_base_up_z':.35},
+     {'minimum_base_height_m':.15,'minimum_base_up_z':.35},True),
+    (None,{'minimum_base_height_m':.15,'minimum_base_up_z':.35},False),
+    ({'minimum_base_height_m':.15,'minimum_base_up_z':.35},
+     {'minimum_base_height_m':.15,'minimum_base_up_z':.2},False),
+])
+def test_crossengine_pairing_checks_only_resolved_termination_semantics(tmp_path,left,right,accepted):
+    common=dict(suite_sha256='suite',asset_hash='asset',seed=0,case_ids=['a'],policy_sha256='policy',
+                reachability_screened=False,summary={'reach_success_rate':1.})
+    paths=[tmp_path/'physx.json',tmp_path/'mujoco.json']
+    for path,engine,rule,background in zip(paths,['PhysX','MuJoCo'],[left,right],['one','different']):
+        evaluation={'other_metadata':background}
+        if rule is not None:
+            evaluation['termination']=rule
+        path.write_text(json.dumps(dict(common,engine=engine,evaluation=evaluation)))
+    if accepted:
+        assert compare(*paths)['reach_success_drop_percentage_points']==0
+    else:
+        with pytest.raises(ValueError,match='termination rule'):
+            compare(*paths)
+
 def test_pose_suite_is_explicit_and_frozen(tmp_path):
     manifest=create_suite(tmp_path)
     trajectories=load_suite(tmp_path)

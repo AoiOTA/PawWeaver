@@ -12,7 +12,7 @@ from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,GoalSample
 from .control import JointPD
 from .observations import ObservationBuilder
 from .trajectories import Trajectory
-from .task import episode_metrics
+from .task import episode_metrics,termination_config,fall_causes
 from .math import quat_angle_error
 from .training_inputs import training_inputs,check_training_identity
 
@@ -31,6 +31,7 @@ class MujocoRunner:
         if software_fixture and self.manifest["robot"]!="synthetic_software_fixture":
             raise ValueError("Software test mode only accepts the synthetic box fixture")
         self.policy,self.spec,self.bundle=load_bundle(bundle,self.manifest["asset_hash"],require_trained=not (software_fixture or diagnostic))
+        self.termination=termination_config(self.bundle["training_config"])
         if diagnostic:
             check_training_identity(dict(self.bundle.get("training_metadata",{}),asset_hash=self.bundle["asset_hash"]),
                 dict(asset_hash=self.manifest["asset_hash"],diagnostic=True,provisional_spec=self.provisional))
@@ -165,7 +166,8 @@ class MujocoRunner:
             raise ValueError("Evaluation requires a case lasting at least one control step")
         self.reset(trajectory.positions[0],goal_quat_w=trajectory.sample_orientation(trajectory.timestamps[0]))
         rows={key:[] for key in ("times","errors","base","tcp","goal","torques","velocities","actions","observations",
-            "tcp_quat_w","goal_quat_w","orientation_errors_rad","contacts","nonfoot_ground_contact_count")}
+            "tcp_quat_w","goal_quat_w","orientation_errors_rad","contacts","nonfoot_ground_contact_count",
+            "base_up_z","fall_height","fall_tilt")}
         contact_body_names=np.asarray([self.model.body(index).name for index in range(self.model.nbody)],dtype=str)
         fallen=False
         for _ in range(steps):
@@ -178,20 +180,24 @@ class MujocoRunner:
             error=np.linalg.norm(state.tcp_pos_w.numpy()[0]-target)
             orientation_error=float(quat_angle_error(state.tcp_quat_w,self.tensor(target_quat))[0])
             contacts,nonfoot_ground_contact_count=self._contact_snapshot()
+            base=self.data.body("base_link")
+            base_up_z=base.xmat.reshape(3,3)[2,2]
+            fall_height,fall_tilt=fall_causes(base.xpos[2],base_up_z,self.termination)
             values=(self.data.time,error,state.base_pos_w.numpy()[0],state.tcp_pos_w.numpy()[0],target,
                     self.torque.copy(),self.data.qvel[self.v_indices].copy(),action,obs,
-                    state.tcp_quat_w.numpy()[0],target_quat,orientation_error,contacts,nonfoot_ground_contact_count)
+                    state.tcp_quat_w.numpy()[0],target_quat,orientation_error,contacts,nonfoot_ground_contact_count,
+                    base_up_z,fall_height,fall_tilt)
             for key,value in zip(rows,values):
                 rows[key].append(value)
-            base=self.data.body("base_link")
-            fallen=base.xpos[2]<.2 or base.xmat.reshape(3,3)[2,2]<.35
+            fallen=fall_height|fall_tilt
             if fallen:
                 break
         result=episode_metrics(rows["times"],rows["errors"],rows["base"],rows["torques"],rows["velocities"],fallen,
             orientation_errors=rows["orientation_errors_rad"])
         result.update(engine="MuJoCo",trajectory=trajectory.metadata,
             policy_sha256=self.bundle["policy_sha256"],diagnostic=self.diagnostic,
-            trained=bool(self.bundle["trained"]),elapsed_seconds=float(self.data.time))
+            trained=bool(self.bundle["trained"]),elapsed_seconds=float(self.data.time),
+            fall_height=bool(fall_height),fall_tilt=bool(fall_tilt))
         output.mkdir(parents=True,exist_ok=True)
         np.savez_compressed(output/"trace.npz",contact_body_names=contact_body_names,
             **{key:np.asarray(value) for key,value in rows.items()})

@@ -79,6 +79,9 @@ def compare(physx:Path,mujoco:Path):
         raise ValueError("Paired evaluations contain different episodes")
     if a["engine"]!="PhysX" or b["engine"]!="MuJoCo":
         raise ValueError("Expected PhysX and MuJoCo reports")
+    legacy_termination={"minimum_base_height_m":.2,"minimum_base_up_z":.35}
+    if a.get("evaluation",{}).get("termination",legacy_termination)!=b.get("evaluation",{}).get("termination",legacy_termination):
+        raise ValueError("Paired evaluations differ in termination rule")
     task_a=a.get("task_kind","position_only")
     if task_a!=b.get("task_kind","position_only"):
         raise ValueError("Paired evaluations differ in task_kind")

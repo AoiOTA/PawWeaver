@@ -9,7 +9,7 @@ from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
 from .control import JointPD
 from .observations import ObservationBuilder
 from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_quat
-from .task import GoalBank,reward_terms,sum_reward_terms,UmiPoseReward
+from .task import GoalBank,reward_terms,sum_reward_terms,UmiPoseReward,termination_config,fall_causes
 from .training_inputs import training_inputs
 
 class WholeBodyEnv:
@@ -21,6 +21,7 @@ class WholeBodyEnv:
         if conversion["source_asset_hash"]!=self.manifest["asset_hash"]:
             raise ValueError("USD was converted from a different canonical asset")
         self.config,self.device,self.num_envs=config,device,num_envs
+        self.termination=termination_config(config)
         self.umi_pose_reward=UmiPoseReward(device) if config.get("umi_pose_reward",False) else None
         self.num_actions=18
         self.max_episode_length=round(config["episode_seconds"]/.02)
@@ -49,7 +50,8 @@ class WholeBodyEnv:
         self.episode_length_buf=torch.zeros(num_envs,device=device,dtype=torch.long)
         self.reference=GoalBank(num_envs,self.max_episode_length,device,seed,
             config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()),
-            static_goal_offsets_m=config.get("static_goal_offsets_m"))
+            static_goal_offsets_m=config.get("static_goal_offsets_m"),
+            demonstrations_only=config.get("demonstrations_only",False))
         self.previous_action=torch.zeros(num_envs,18,device=device)
         self.previous_qd=torch.zeros_like(self.previous_action)
         self.previous_tcp=torch.zeros(num_envs,3,device=device)
@@ -198,7 +200,9 @@ class WholeBodyEnv:
                 self.contacts[:,i]=self.scene[key].data.net_forces_w.torch[:,0].norm(dim=-1)
         down=torch.zeros_like(state.base_pos_w); down[:,2]=-1.
         gravity=quat_apply_inverse(state.base_quat_w,down)
-        fallen=(state.base_pos_w[:,2]-self.scene.env_origins[:,2]<.2)|(gravity[:,2]>-.35)
+        base_up_z=-gravity[:,2]
+        fall_height,fall_tilt=fall_causes(state.base_pos_w[:,2]-self.scene.env_origins[:,2],base_up_z,self.termination)
+        fallen=fall_height|fall_tilt
         nonfeet=[i for i in range(len(self.robot.body_names)) if i not in self.foot_ids]
         collision=(self.contacts[:,nonfeet]>5.).any(dim=-1)
         error=goal-state.tcp_pos_w
@@ -234,7 +238,8 @@ class WholeBodyEnv:
             score=float(self.episode_error[index]/self.episode_length_buf[index])/.08+float(fallen[index])
             self.reference.sampler.update(family,score)
         extras={"time_outs":timeout&~fallen,"tracking_error_m":self.previous_error.mean().item(),
-                "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item()}
+                "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item(),
+                "fall_height":fall_height,"fall_tilt":fall_tilt,"base_up_z":base_up_z}
         if self.config.get("umi_pose_reward",False):
             extras.update(umi_nonterminal_clipped_fraction=(nonterminal<0).float().mean().item(),
                 umi_nonterminal_preclip_mean=nonterminal.mean().item())

@@ -231,8 +231,10 @@ def test_diagnostic_evaluation_archives_elapsed_pose_and_early_fall(diagnostic_b
             trace['velocities'], fall, orientation_errors=trace['orientation_errors_rad'])
         unchanged.update(engine='MuJoCo', trajectory=trajectory.metadata,
             policy_sha256=runner.bundle['policy_sha256'], diagnostic=True, trained=False,
-            elapsed_seconds=float(runner.data.time))
+            elapsed_seconds=float(runner.data.time),fall_height=fall,fall_tilt=False)
         assert result == unchanged
+        assert trace['fall_height'][-1]==fall and not trace['fall_tilt'].any()
+        np.testing.assert_allclose(trace['base_up_z'],1.)
 
 
 def test_mujoco_suite_cli_preserves_engineering_report(diagnostic_bundle, tmp_path, monkeypatch):
@@ -263,7 +265,44 @@ def test_mujoco_suite_cli_preserves_engineering_report(diagnostic_bundle, tmp_pa
     assert report['episodes'][0]['elapsed_seconds'] == .02
     assert report['evaluation']['provisional_spec'] == json.loads(spec_path.read_text())
     assert 'no hardware validity' in report['evaluation']['evidence_limit']
+    assert report['evaluation']['termination']=={'minimum_base_height_m':.2,'minimum_base_up_z':.35}
     assert (output / 'case/trace.npz').exists()
+
+
+@pytest.mark.parametrize('height,tilt,fallen', [(.18,False,False),(.14,False,True),(.3,True,True),(.14,True,True)])
+def test_mujoco_bundle_height_profile_and_actual_terminal_snapshot(diagnostic_bundle,tmp_path,monkeypatch,height,tilt,fallen):
+    import json
+    from pawweaver.contracts import canonical_hash
+    from pawweaver.trajectories import Trajectory
+    bundle,spec_path=diagnostic_bundle
+    manifest_path=bundle/'manifest.json'
+    manifest=json.loads(manifest_path.read_text())
+    manifest['training_config']['minimum_base_height_m']=.15
+    manifest.pop('bundle_hash')
+    manifest['bundle_hash']=canonical_hash(manifest)
+    manifest_path.write_text(json.dumps(manifest))
+    runner=MujocoRunner(ASSET,bundle,diagnostic=True,provisional_spec=spec_path)
+    assert runner.termination=={'minimum_base_height_m':.15,'minimum_base_up_z':.35}
+    def step(*args,**kwargs):
+        runner.data.time+=.02
+        runner.data.qpos[2]=height
+        if tilt:
+            runner.data.qpos[3:7]=[np.sqrt(.5),np.sqrt(.5),0,0]
+        mujoco.mj_forward(runner.model,runner.data)
+        return np.zeros(276),np.zeros(18)
+    monkeypatch.setattr(runner,'step',step)
+    state=runner.state()
+    trajectory=Trajectory([0,.06],np.repeat(state.tcp_pos_w.numpy(),2,axis=0),
+                          np.repeat(state.tcp_quat_w.numpy(),2,axis=0),{'family':'reach'})
+    result=runner.evaluate(trajectory,tmp_path/'evaluation')
+    assert result['fallen']==fallen
+    assert result['fall_height']==(height<.15) and result['fall_tilt']==tilt
+    with np.load(tmp_path/'evaluation/trace.npz',allow_pickle=False) as trace:
+        assert len(trace['times'])==(1 if fallen else 3)
+        assert trace['fall_height'][-1]==result['fall_height']
+        assert trace['fall_tilt'][-1]==result['fall_tilt']
+        assert trace['base'][-1,2]==pytest.approx(height)
+        assert trace['base_up_z'][-1]==pytest.approx(0. if tilt else 1.,abs=1e-7)
 
 
 def test_attach_marker_preserves_diagnostic_model(diagnostic_bundle, tmp_path):

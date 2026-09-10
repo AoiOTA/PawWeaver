@@ -3,6 +3,20 @@ import numpy as np
 import torch
 from .trajectories import FAMILIES,synthetic,AdaptiveSampler,Trajectory
 
+def termination_config(config):
+    """Resolve the control-rate fall rule; lower heights are opt-in profiles."""
+    height=float(config.get("minimum_base_height_m",.2))
+    if not np.isfinite(height) or height<=0:
+        raise ValueError("minimum_base_height_m must be finite and positive")
+    return {"minimum_base_height_m":height,"minimum_base_up_z":.35}
+
+
+def fall_causes(base_height,base_up_z,termination):
+    """Strict height/tilt predicates for scalars, NumPy arrays or Torch tensors."""
+    return (base_height<termination["minimum_base_height_m"],
+            base_up_z<termination["minimum_base_up_z"])
+
+
 class UmiPoseReward:
     """Opt-in engineering recipe, UMI d75c9c182d8044dadf53043612da2ffbf1936a97.
 
@@ -60,7 +74,8 @@ class UmiPoseReward:
 
 
 class GoalBank:
-    def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=(),static_goal_offsets_m=None):
+    def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=(),static_goal_offsets_m=None,
+                 demonstrations_only=False):
         self.batch,self.steps,self.device=batch,steps,device
         self.rng=np.random.default_rng(seed)
         self.stage,self.adaptive=stage,adaptive
@@ -71,6 +86,9 @@ class GoalBank:
                 raise ValueError("Static goal offsets must be a nonempty finite [N,3] array in meters")
             self.static_goal_offsets_m=offsets.copy()
         self.demonstrations=[Trajectory.load(path) for path in demonstrations]
+        self.demonstrations_only=demonstrations_only
+        if demonstrations_only and not self.demonstrations:
+            raise ValueError("demonstrations_only requires a nonempty training demonstration collection")
         if any(t.metadata.get("split")!="train" for t in self.demonstrations):
             raise ValueError("Only pre-split training demonstrations can enter the training GoalBank")
         families=FAMILIES+(('fastumi',) if self.demonstrations else ())
@@ -91,7 +109,7 @@ class GoalBank:
             raise ValueError("Goal reset orientation must be nonzero")
         start_orientations=start_orientations/scale
         start_orientations/=np.linalg.norm(start_orientations,axis=-1,keepdims=True)
-        if self.static_goal_offsets_m is not None:
+        if self.static_goal_offsets_m is not None and not self.demonstrations_only:
             indices=ids.cpu().numpy()
             targets=starts+self.static_goal_offsets_m[indices%len(self.static_goal_offsets_m)]
             self.positions[ids]=torch.as_tensor(targets,device=self.device,dtype=torch.float32)[:,None,:]
@@ -99,7 +117,9 @@ class GoalBank:
             self.family[indices]=0
             return
         for index,start,start_orientation in zip(ids.cpu().tolist(),starts,start_orientations):
-            if self.stage==0:
+            if self.demonstrations_only:
+                family=len(FAMILIES)
+            elif self.stage==0:
                 family=int(self.rng.choice([0,1]))
             else:
                 family=int(self.sampler.sample(self.rng,1)[0] if self.adaptive else self.rng.integers(len(self.sampler.families)))

@@ -79,7 +79,7 @@ def main():
         results=[]; layout=[]
         started=time.perf_counter()
         keys=("times","errors","base","tcp","goal","tcp_quat_w","goal_quat_w","orientation_errors_rad",
-              "torques","velocities","actions","observations","contacts")
+              "torques","velocities","actions","observations","contacts","base_up_z","fall_height","fall_tilt")
         for first in range(0,len(trajectories),args.num_envs):
             batch=trajectories[first:first+args.num_envs]
             batch_lengths=lengths[first:first+args.num_envs]
@@ -109,7 +109,10 @@ def main():
                         tcp=tcp,goal=goals,tcp_quat_w=state.tcp_quat_w[:count].cpu().numpy(),goal_quat_w=goal_quats,
                         orientation_errors_rad=angles.cpu().numpy(),torques=env.torque[:count].cpu().numpy(),
                         velocities=state.joint_vel[:count].cpu().numpy(),actions=action[:count].cpu().numpy(),
-                        observations=observation[:count].cpu().numpy(),contacts=env.contacts[:count].cpu().numpy())
+                        observations=observation[:count].cpu().numpy(),contacts=env.contacts[:count].cpu().numpy(),
+                        base_up_z=extras["base_up_z"][:count].cpu().numpy(),
+                        fall_height=extras["fall_height"][:count].cpu().numpy(),
+                        fall_tilt=extras["fall_tilt"][:count].cpu().numpy())
                     step_fallen=(done[:count]&~extras["time_outs"][:count]).cpu().numpy()
                     if append_batch_step(rows,batch_lengths,fallen,step,values,step_fallen):
                         break
@@ -117,14 +120,15 @@ def main():
                 result=episode_metrics(record["times"],record["errors"],record["base"],record["torques"],record["velocities"],fallen[slot],
                                        orientation_errors=record["orientation_errors_rad"])
                 result.update(engine="PhysX",trajectory=trajectory.metadata,policy_sha256=bundle["policy_sha256"],
-                              diagnostic=args.diagnostic,elapsed_seconds=record["times"][-1],batch_index=len(layout)-1,env_index=slot)
+                              diagnostic=args.diagnostic,elapsed_seconds=record["times"][-1],batch_index=len(layout)-1,env_index=slot,
+                              fall_height=bool(record["fall_height"][-1]),fall_tilt=bool(record["fall_tilt"][-1]))
                 output=args.output/trajectory.metadata["case_id"];output.mkdir(parents=True,exist_ok=True)
                 save_trace(output/"trace.npz",record,env.robot.body_names)
                 (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")
                 results.append(result)
                 print(json.dumps(result),flush=True)
         evaluation=dict(num_envs=args.num_envs,batch_layout=layout,wall_elapsed_seconds=time.perf_counter()-started,
-                        diagnostic=args.diagnostic,provisional_spec=provisional,
+                        diagnostic=args.diagnostic,provisional_spec=provisional,termination=env.termination,
                         evidence_limit="Provisional engineering only; no hardware validity or formal acceptance." if args.diagnostic else "Pose acceptance thresholds remain unspecified.")
         save_run(args.output,args.suite,manifest,bundle,args.seed,"PhysX",results,evaluation=evaluation)
         env.close()

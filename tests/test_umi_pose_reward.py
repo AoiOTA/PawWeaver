@@ -7,7 +7,7 @@ from unittest.mock import Mock
 import pytest
 import torch
 
-from pawweaver.task import UmiPoseReward
+from pawweaver.task import UmiPoseReward,termination_config
 
 
 @pytest.mark.parametrize("attribute,schedule",[
@@ -67,6 +67,7 @@ def fixed_env():
         "action_rate":0.,"normalized_torque":0.,"joint_acceleration":0.,"joint_limit":0.,
         "saturation":0.,"foot_slip":0.,"body_tilt":0.,"collision":-10.,"termination":-5.}}
     env.umi_pose_reward=UmiPoseReward()
+    env.termination=termination_config(env.config)
     env.spec=SimpleNamespace(decimation=0)
     env.num_envs=2
     env.device="cpu"
@@ -102,6 +103,26 @@ def test_actual_step_clips_nonterminal_but_preserves_fall_cost(fixed_env):
     assert extras["umi_nonterminal_preclip_mean"]==pytest.approx(4*torch.exp(torch.tensor(-.5)).item()-10)
     assert extras["falls"]==1 and extras["resets"]==0
     assert extras["collision_control_samples"]==2
+
+
+@pytest.mark.parametrize('height,tilt,fallen', [(.18,False,False),(.14,False,True),(.3,True,True),(.14,True,True)])
+def test_actual_physx_step_preserves_configured_fall_causes_before_reset(fixed_env,height,tilt,fallen):
+    env=fixed_env
+    env.config['minimum_base_height_m']=.15
+    env.termination=termination_config(env.config)
+    state=env.state()
+    # Nonzero environment origins must not affect the resolved ground height.
+    env.scene.env_origins=env.scene.env_origins.clone()
+    env.scene.env_origins[:,2]=2.
+    state.base_pos_w[:,2]=height+2.
+    if tilt:
+        state.base_quat_w[:]=torch.tensor([2**-.5,2**-.5,0.,0.])
+    env.reset=lambda ids: state.base_pos_w.fill_(99.)
+    _,_,done,extras=env.step(torch.zeros(2,18),auto_reset=True)
+    assert done.tolist()==[fallen]*2
+    assert extras['fall_height'].tolist()==[height<.15]*2
+    assert extras['fall_tilt'].tolist()==[tilt]*2
+    torch.testing.assert_close(extras['base_up_z'],torch.full((2,),0. if tilt else 1.),atol=1e-6,rtol=0)
 
 
 def test_default_actual_step_keeps_negative_nonterminal(fixed_env):
