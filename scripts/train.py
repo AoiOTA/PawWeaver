@@ -32,6 +32,7 @@ config=json.loads(args.config.read_text())
 import torch
 from pawweaver.observations import ObservationSpec
 from pawweaver.learning import validate_leg_mean_config
+from pawweaver.task import UmiPoseReward
 checkpoint=None
 checkpoint_path=args.resume or args.initialize_from
 if checkpoint_path:
@@ -40,6 +41,9 @@ if checkpoint_path:
         raise ValueError("Checkpoint observation contract differs: pose-only training requires 276 inputs; legacy position-only checkpoints cannot be padded or loaded")
 leg_mean_transform=validate_leg_mean_config(config,
     checkpoint["metadata"]["config"] if checkpoint else None, resume=bool(args.resume))
+if args.resume and config.get("umi_pose_reward",False):
+    # Missing or malformed course state fails before starting the simulator.
+    UmiPoseReward().load_state_dict(checkpoint.get("umi_pose_reward"))
 launcher=AppLauncher(args)
 try:
     import torch
@@ -82,7 +86,7 @@ try:
             usd_conversion=json.loads((args.asset/"usd/conversion.json").read_text()),
             source_sha256={str(path):hashlib.sha256(path.read_bytes()).hexdigest() for path in
                 (Path(__file__),Path("src/pawweaver/isaac_env.py"),Path("src/pawweaver/training_inputs.py"),
-                 Path("src/pawweaver/learning.py"),Path("src/pawweaver/isaac_robot.py"))},
+                 Path("src/pawweaver/learning.py"),Path("src/pawweaver/isaac_robot.py"),Path("src/pawweaver/task.py"))},
             actual_armature_kg_m2={name:env.loaded_armature[:,i].tolist() for i,name in enumerate(env.spec.joint_names)},
             contact_body_mapping={name:sensor.body_names for name,sensor in env.scene.sensors.items()},
             initial_foot_link_height_m=(env.robot.data.body_link_pose_w.torch[:,env.foot_ids,2]-env.scene.env_origins[:,None,2]).tolist(),
@@ -104,6 +108,9 @@ try:
         algorithm.learning_rate=algorithm.optimizer.param_groups[0]["lr"]
         env.reference.sampler.load_state_dict(checkpoint["sampler"])
         env.reference.rng.bit_generator.state=checkpoint["reference_rng"]
+        if env.umi_pose_reward is not None:
+            env.umi_pose_reward.load_state_dict(checkpoint["umi_pose_reward"])
+            env.umi_pose_reward.on_reset()  # Simulator episodes restart on resume.
         torch.set_rng_state(checkpoint["torch_rng"].cpu())
         if args.device.startswith("cuda"):
             torch.cuda.set_rng_state_all([state.cpu() for state in checkpoint["cuda_rng"]])
@@ -126,10 +133,11 @@ try:
     writer=SummaryWriter(str(args.output/"tensorboard"))
     for iteration in range(start_iteration,start_iteration+args.iterations):
         begin=time.perf_counter()
+        umi_stats={"umi_nonterminal_clipped_fraction":0.,"umi_nonterminal_preclip_mean":0.}
         if args.diagnostic:
             before=[p.detach().clone() for p in actor.parameters()]
             steps_before=len(optimizer_steps)
-            probe={"falls":0,"resets":0,"torque_saturated":0,"torque_samples":0,
+            probe={"falls":0,"resets":0,"torque_saturated":0,"torque_samples":0,"collision_control_samples":0,
                    "tracking_error_sum_m":0.,"tracking_error_max_m":0.,"orientation_error_sum_rad":0.,
                    "orientation_error_max_rad":0.,"base_height_min_m":float("inf"),
                    "reward_min":float("inf"),"reward_max":float("-inf"),"action_abs_max":0.}
@@ -137,11 +145,14 @@ try:
             for _ in range(config["rollout_steps"]):
                 actions=algorithm.act(obs)
                 obs,reward,done,extras=env.step(actions)
+                if env.umi_pose_reward is not None:
+                    for key in umi_stats:
+                        umi_stats[key]+=extras[key]/config["rollout_steps"]
                 if args.diagnostic:
                     finite_observations(obs)
                     if not torch.isfinite(actions).all() or not torch.isfinite(reward).all():
                         raise FloatingPointError("Non-finite actions/rewards")
-                    for key in ("falls","resets","torque_saturated","torque_samples"):
+                    for key in ("falls","resets","torque_saturated","torque_samples","collision_control_samples"):
                         probe[key]+=extras[key]
                     probe["tracking_error_sum_m"]+=extras["tracking_error_m"]
                     probe["orientation_error_sum_rad"]+=extras["orientation_error_rad"]
@@ -171,6 +182,9 @@ try:
             fall_fraction=extras["fall_fraction"])
         if args.diagnostic:
             stats.update(probe)
+        if env.umi_pose_reward is not None:
+            stats.update(umi_stats)
+            stats.update({"umi_"+key:value for key,value in env.umi_pose_reward.state_dict().items()})
         with (args.output/"metrics.jsonl").open("a") as stream:
             stream.write(json.dumps(stats)+"\n")
         for key,value in stats.items():
@@ -181,6 +195,8 @@ try:
                         "sampler":env.reference.sampler.state_dict(),"reference_rng":env.reference.rng.bit_generator.state,
                         "torch_rng":torch.get_rng_state(),"cuda_rng":torch.cuda.get_rng_state_all(),
                         "resume_semantics":"Optimizer/RNG/sampler restored; simulator episodes restart."}
+            if env.umi_pose_reward is not None:
+                checkpoint["umi_pose_reward"]=env.umi_pose_reward.state_dict()
             torch.save(checkpoint,args.output/f"checkpoint_{iteration:06d}.pt")
             export_bundle(actor,env.spec,manifest,config,args.output/"bundle",trained=not args.diagnostic,metadata=metadata)
     writer.close()

@@ -9,7 +9,7 @@ from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,named_indices
 from .control import JointPD
 from .observations import ObservationBuilder
 from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_quat
-from .task import GoalBank,reward_terms,sum_reward_terms
+from .task import GoalBank,reward_terms,sum_reward_terms,UmiPoseReward
 from .training_inputs import training_inputs
 
 class WholeBodyEnv:
@@ -21,6 +21,7 @@ class WholeBodyEnv:
         if conversion["source_asset_hash"]!=self.manifest["asset_hash"]:
             raise ValueError("USD was converted from a different canonical asset")
         self.config,self.device,self.num_envs=config,device,num_envs
+        self.umi_pose_reward=UmiPoseReward(device) if config.get("umi_pose_reward",False) else None
         self.num_actions=18
         self.max_episode_length=round(config["episode_seconds"]/.02)
         torch.manual_seed(seed)
@@ -108,6 +109,8 @@ class WholeBodyEnv:
             goal_quat_w=self.reference.current_orientation(self.episode_length_buf))
         self.previous_tcp[ids]=state.tcp_pos_w[ids]
         self.previous_error[ids]=(goal-state.tcp_pos_w).norm(dim=-1)[ids]
+        if self.umi_pose_reward is not None:
+            self.umi_pose_reward.on_reset()
 
     def randomize(self,ids):
         cfg=self.config["randomization"]
@@ -209,8 +212,14 @@ class WholeBodyEnv:
             lower=self.pd.lower,upper=self.pd.upper,gravity_b=gravity,
             foot_velocity=self.robot.data.body_link_lin_vel_w.torch[:,self.foot_ids],
             foot_contact=self.contacts[:,self.foot_ids]>1.,collision=collision,fallen=fallen)
-        reward=sum_reward_terms(terms,self.config["reward_weights"],
-            coupled_pose=self.config.get("coupled_pose_reward",False))*.02
+        if self.config.get("umi_pose_reward",False):
+            nonterminal=self.umi_pose_reward.nonterminal_reward(terms,self.config["reward_weights"],
+                error.norm(dim=-1),orientation_error)
+            reward=nonterminal.clamp_min(0)*.02
+            self.umi_pose_reward.update(error.norm(dim=-1),orientation_error)
+        else:
+            reward=sum_reward_terms(terms,self.config["reward_weights"],
+                coupled_pose=self.config.get("coupled_pose_reward",False))*.02
         reward+=self.config["reward_weights"]["termination"]*fallen
         timeout=self.episode_length_buf>=self.max_episode_length
         done=fallen|timeout
@@ -226,8 +235,13 @@ class WholeBodyEnv:
             self.reference.sampler.update(family,score)
         extras={"time_outs":timeout&~fallen,"tracking_error_m":self.previous_error.mean().item(),
                 "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item()}
+        if self.config.get("umi_pose_reward",False):
+            extras.update(umi_nonterminal_clipped_fraction=(nonterminal<0).float().mean().item(),
+                umi_nonterminal_preclip_mean=nonterminal.mean().item())
         if self.diagnostic:
+            # One boolean per environment at 50 Hz; not substep contact pairs.
             extras.update(falls=int(fallen.sum().item()),resets=len(ids) if auto_reset else 0,
+                collision_control_samples=int(collision.sum().item()),
                 torque_saturated=saturated,torque_samples=self.num_envs*18*self.spec.decimation,
                 tracking_error_max_m=float(error.norm(dim=-1).max()),
                 orientation_error_max_rad=float(orientation_error.max()),

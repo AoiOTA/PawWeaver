@@ -3,6 +3,62 @@ import numpy as np
 import torch
 from .trajectories import FAMILIES,synthetic,AdaptiveSampler,Trajectory
 
+class UmiPoseReward:
+    """Opt-in engineering recipe, UMI d75c9c182d8044dadf53043612da2ffbf1936a97.
+
+    Global error EMA at 50 Hz preserves the upstream approximately 16 s time
+    scale. Resets select shared widths but never clear the running errors.
+    """
+    position_schedule=((100.,2.),(1.,1.),(.8,.5),(.5,.1),(.4,.05),(.2,.01),(.1,.005))
+    orientation_schedule=((100.,8.),(1.,4.),(.8,2.),(.6,1.),(.2,.5))
+    alpha=.00125
+
+    def __init__(self,device="cpu"):
+        self.position_ema_m=torch.tensor(1.,device=device,dtype=torch.float64)
+        self.orientation_ema_rad=torch.tensor(1.,device=device,dtype=torch.float64)
+        self.position_sigma_m2=2.
+        self.orientation_sigma_rad=8.
+
+    def update(self,position_error,orientation_error):
+        self.position_ema_m.mul_(1-self.alpha).add_(position_error.double().mean(),alpha=self.alpha)
+        self.orientation_ema_rad.mul_(1-self.alpha).add_(orientation_error.double().mean(),alpha=self.alpha)
+
+    def on_reset(self):
+        for threshold,sigma in self.position_schedule:
+            if self.position_ema_m.item()<threshold:
+                self.position_sigma_m2=sigma
+        for threshold,sigma in self.orientation_schedule:
+            if self.orientation_ema_rad.item()<threshold:
+                self.orientation_sigma_rad=sigma
+
+    def nonterminal_reward(self,terms,weights,position_error,orientation_error):
+        pose=4*torch.exp(-position_error.square()/self.position_sigma_m2)*torch.exp(
+            -orientation_error/self.orientation_sigma_rad)
+        return pose+sum(weights[name]*value for name,value in terms.items()
+                        if name not in ("tracking","orientation_tracking","termination"))
+
+    def state_dict(self):
+        return {"position_ema_m":self.position_ema_m.item(),
+                "orientation_ema_rad":self.orientation_ema_rad.item(),
+                "position_sigma_m2":self.position_sigma_m2,
+                "orientation_sigma_rad":self.orientation_sigma_rad}
+
+    def load_state_dict(self,state):
+        required=("position_ema_m","orientation_ema_rad","position_sigma_m2","orientation_sigma_rad")
+        if not isinstance(state,dict) or any(key not in state for key in required):
+            raise ValueError("UMI pose reward resume requires saved EMA and sigma state")
+        values={key:float(state[key]) for key in required}
+        if any(not np.isfinite(v) or v<0 for v in values.values()):
+            raise ValueError("UMI pose reward state must be finite and nonnegative")
+        if (values["position_sigma_m2"] not in dict(self.position_schedule).values()
+                or values["orientation_sigma_rad"] not in dict(self.orientation_schedule).values()):
+            raise ValueError("UMI pose reward state has unknown sigma")
+        self.position_ema_m.fill_(values["position_ema_m"])
+        self.orientation_ema_rad.fill_(values["orientation_ema_rad"])
+        self.position_sigma_m2=values["position_sigma_m2"]
+        self.orientation_sigma_rad=values["orientation_sigma_rad"]
+
+
 class GoalBank:
     def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=(),static_goal_offsets_m=None):
         self.batch,self.steps,self.device=batch,steps,device
