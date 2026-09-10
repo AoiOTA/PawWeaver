@@ -1,0 +1,28 @@
+{
+  "kind": "saved PhysX states rendered as MuJoCo geometry; no new simulation or visual control",
+  "render_exit_code": 0,
+  "videos": {
+    "low": {
+      "frames": 999,
+      "fps": 50,
+      "duration_s": 19.98,
+      "ffprobe_exit_code": 0,
+      "full_decode_exit_code": 0,
+      "visually_checked_frames": [
+        399,
+        998
+      ]
+    },
+    "far": {
+      "frames": 2999,
+      "fps": 50,
+      "duration_s": 59.98,
+      "ffprobe_exit_code": 0,
+      "full_decode_exit_code": 0,
+      "visually_checked_frames": [
+        399,
+        2998
+      ]
+    }
+  }
+}

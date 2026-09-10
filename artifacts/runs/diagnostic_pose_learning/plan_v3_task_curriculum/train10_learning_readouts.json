@@ -332,6 +332,4679 @@
           }
         }
       ]
+    },
+    "checkpoint999": {
+      "evaluation_exit_code": 0,
+      "engine": "MuJoCo",
+      "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+      "cases": [
+        {
+          "case_id": "near_00",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.08884895430346516,
+          "position_p95_m": 0.0936335251295444,
+          "orientation_rmse_rad": 0.2739670177157583,
+          "orientation_p95_rad": 0.28897982835769653,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1501,
+              3000
+            ],
+            "actual_samples": 1500,
+            "requested_samples": 1500,
+            "completed_requested_window": true,
+            "first_actual_s": 30.01999999999424,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.08923613234305593,
+            "position_p95_m": 0.08952772740069792,
+            "orientation_rmse_rad": 0.2804974588157054,
+            "orientation_p95_rad": 0.28227812945842745,
+            "base_height_mean_m": 0.17716914415359497,
+            "base_tilt_p95_rad": 0.12204852309013074,
+            "requested_start_s": 30.0,
+            "requested_end_s": 60.0,
+            "samples": 1500
+          }
+        },
+        {
+          "case_id": "near_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.0891523269587167,
+          "position_p95_m": 0.09146154728720533,
+          "orientation_rmse_rad": 0.27584600656651226,
+          "orientation_p95_rad": 0.29073646664619446,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1501,
+              3000
+            ],
+            "actual_samples": 1500,
+            "requested_samples": 1500,
+            "completed_requested_window": true,
+            "first_actual_s": 30.01999999999424,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.08983931693949691,
+            "position_p95_m": 0.08986188682868464,
+            "orientation_rmse_rad": 0.2835466613006346,
+            "orientation_p95_rad": 0.28363149613142014,
+            "base_height_mean_m": 0.1770746260881424,
+            "base_tilt_p95_rad": 0.11874415098901296,
+            "requested_start_s": 30.0,
+            "requested_end_s": 60.0,
+            "samples": 1500
+          }
+        },
+        {
+          "case_id": "near_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.08877647452803963,
+          "position_p95_m": 0.09531035523316077,
+          "orientation_rmse_rad": 0.27458813336475857,
+          "orientation_p95_rad": 0.3041815161705017,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1501,
+              3000
+            ],
+            "actual_samples": 1500,
+            "requested_samples": 1500,
+            "completed_requested_window": true,
+            "first_actual_s": 30.01999999999424,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.0891374848561366,
+            "position_p95_m": 0.0894345025329302,
+            "orientation_rmse_rad": 0.279755522918682,
+            "orientation_p95_rad": 0.2815502494573593,
+            "base_height_mean_m": 0.177188441157341,
+            "base_tilt_p95_rad": 0.1224108200330297,
+            "requested_start_s": 30.0,
+            "requested_end_s": 60.0,
+            "samples": 1500
+          }
+        },
+        {
+          "case_id": "near_03",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.08751334813247515,
+          "position_p95_m": 0.09490539830558861,
+          "orientation_rmse_rad": 0.2292276425920286,
+          "orientation_p95_rad": 0.27873197197914124,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1501,
+              3000
+            ],
+            "actual_samples": 1500,
+            "requested_samples": 1500,
+            "completed_requested_window": true,
+            "first_actual_s": 30.01999999999424,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.08715931828840502,
+            "position_p95_m": 0.08726785632367694,
+            "orientation_rmse_rad": 0.21695010991392238,
+            "orientation_p95_rad": 0.21704722866415976,
+            "base_height_mean_m": 0.17958621680736542,
+            "base_tilt_p95_rad": 0.2379296419492376,
+            "requested_start_s": 30.0,
+            "requested_end_s": 60.0,
+            "samples": 1500
+          }
+        },
+        {
+          "case_id": "body_low",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.13701615116940213,
+          "position_p95_m": 0.1481127265265,
+          "orientation_rmse_rad": 0.7504793508292767,
+          "orientation_p95_rad": 0.8048607110977173,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 2000,
+            "requested_samples": 2000,
+            "completed_requested_window": true,
+            "first_actual_s": 20.019999999999783,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.14772763883938328,
+            "position_p95_m": 0.1480951487889011,
+            "orientation_rmse_rad": 0.7951064145759597,
+            "orientation_p95_rad": 0.7960912317037583,
+            "base_height_mean_m": 0.23930783569812775,
+            "base_tilt_p95_rad": 0.4311701275055671,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 2000
+          }
+        },
+        {
+          "case_id": "body_high",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.05379687310873865,
+          "position_p95_m": 0.09949743462470478,
+          "orientation_rmse_rad": 0.23750519086387578,
+          "orientation_p95_rad": 0.3559744954109192,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 2000,
+            "requested_samples": 2000,
+            "completed_requested_window": true,
+            "first_actual_s": 20.019999999999783,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.04603782115476654,
+            "position_p95_m": 0.07404051433729282,
+            "orientation_rmse_rad": 0.2440296164814322,
+            "orientation_p95_rad": 0.36598293036222457,
+            "base_height_mean_m": 0.333962082862854,
+            "base_tilt_p95_rad": 0.35434284675749894,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 2000
+          }
+        },
+        {
+          "case_id": "body_lateral",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.030185232241606533,
+          "position_p95_m": 0.06917920624479619,
+          "orientation_rmse_rad": 0.17348171218366631,
+          "orientation_p95_rad": 0.18333938717842102,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 2000,
+            "requested_samples": 2000,
+            "completed_requested_window": true,
+            "first_actual_s": 20.019999999999783,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.01985300242231268,
+            "position_p95_m": 0.020270858698400916,
+            "orientation_rmse_rad": 0.18114315968659764,
+            "orientation_p95_rad": 0.18310413211584092,
+            "base_height_mean_m": 0.2652708888053894,
+            "base_tilt_p95_rad": 0.5039580380337798,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 2000
+          }
+        },
+        {
+          "case_id": "step_00",
+          "completed": false,
+          "fallen": true,
+          "requested_steps": 3000,
+          "actual_steps": 809,
+          "position_rmse_m": 0.1848414955734027,
+          "position_p95_m": 0.44156951250478366,
+          "orientation_rmse_rad": 0.8650566140034717,
+          "orientation_p95_rad": 2.291394472122192,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 0,
+            "requested_samples": 2000,
+            "completed_requested_window": false,
+            "first_actual_s": null,
+            "last_actual_s": null,
+            "position_rmse_m": null,
+            "position_p95_m": null,
+            "orientation_rmse_rad": null,
+            "orientation_p95_rad": null,
+            "base_height_mean_m": null,
+            "base_tilt_p95_rad": null,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 0
+          }
+        },
+        {
+          "case_id": "step_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.35802389188722583,
+          "position_p95_m": 0.3936489404016752,
+          "orientation_rmse_rad": 1.6578911765006854,
+          "orientation_p95_rad": 1.840980052947998,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 2000,
+            "requested_samples": 2000,
+            "completed_requested_window": true,
+            "first_actual_s": 20.019999999999783,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.3928963348382948,
+            "position_p95_m": 0.3929654201603606,
+            "orientation_rmse_rad": 1.8375011936030083,
+            "orientation_p95_rad": 1.8387860119342805,
+            "base_height_mean_m": 0.22054000198841095,
+            "base_tilt_p95_rad": 0.27164801457750287,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 2000
+          }
+        },
+        {
+          "case_id": "step_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.03541103575175323,
+          "position_p95_m": 0.07427871554049725,
+          "orientation_rmse_rad": 0.14957098283866932,
+          "orientation_p95_rad": 0.20516708493232727,
+          "hold": {
+            "planned_tick_interval_inclusive": [
+              1001,
+              3000
+            ],
+            "actual_samples": 2000,
+            "requested_samples": 2000,
+            "completed_requested_window": true,
+            "first_actual_s": 20.019999999999783,
+            "last_actual_s": 60.00000000002736,
+            "position_rmse_m": 0.026747222347252752,
+            "position_p95_m": 0.03540740923073179,
+            "orientation_rmse_rad": 0.14773266314372405,
+            "orientation_p95_rad": 0.2049687437713146,
+            "base_height_mean_m": 0.3148488700389862,
+            "base_tilt_p95_rad": 0.39784722674072037,
+            "requested_start_s": 20.0,
+            "requested_end_s": 60.0,
+            "samples": 2000
+          }
+        }
+      ]
     }
+  },
+  "final_physx": {
+    "evaluation_exit_code": 0,
+    "engine": "PhysX",
+    "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+    "cases": [
+      {
+        "case_id": "near_00",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.08420762024440402,
+        "position_p95_m": 0.09268962305655089,
+        "orientation_rmse_rad": 0.20830050692630578,
+        "orientation_p95_rad": 0.2467038631439209,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "actual_samples": 1500,
+          "requested_samples": 1500,
+          "completed_requested_window": true,
+          "first_actual_s": 30.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.08393143021696056,
+          "position_p95_m": 0.08979862154378626,
+          "orientation_rmse_rad": 0.1997488320758132,
+          "orientation_p95_rad": 0.21244428902864457,
+          "base_height_mean_m": 0.18204227089881897,
+          "base_tilt_p95_rad": 0.17634359002113342,
+          "requested_start_s": 30.0,
+          "requested_end_s": 60.0,
+          "samples": 1500
+        }
+      },
+      {
+        "case_id": "near_01",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.08650198936330271,
+        "position_p95_m": 0.0894038962133734,
+        "orientation_rmse_rad": 0.22185087421449243,
+        "orientation_p95_rad": 0.2438439428806305,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "actual_samples": 1500,
+          "requested_samples": 1500,
+          "completed_requested_window": true,
+          "first_actual_s": 30.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.08826810996377026,
+          "position_p95_m": 0.08863519123682372,
+          "orientation_rmse_rad": 0.23364076367020448,
+          "orientation_p95_rad": 0.2342246651649475,
+          "base_height_mean_m": 0.17933198809623718,
+          "base_tilt_p95_rad": 0.12563318014144897,
+          "requested_start_s": 30.0,
+          "requested_end_s": 60.0,
+          "samples": 1500
+        }
+      },
+      {
+        "case_id": "near_02",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.0847498817918794,
+        "position_p95_m": 0.0920338091043028,
+        "orientation_rmse_rad": 0.20429927991890975,
+        "orientation_p95_rad": 0.23908871412277222,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "actual_samples": 1500,
+          "requested_samples": 1500,
+          "completed_requested_window": true,
+          "first_actual_s": 30.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.0859533881730587,
+          "position_p95_m": 0.09074774867187387,
+          "orientation_rmse_rad": 0.20664854642218866,
+          "orientation_p95_rad": 0.218048919737339,
+          "base_height_mean_m": 0.1824772208929062,
+          "base_tilt_p95_rad": 0.17825941741466522,
+          "requested_start_s": 30.0,
+          "requested_end_s": 60.0,
+          "samples": 1500
+        }
+      },
+      {
+        "case_id": "near_03",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.08702611550317922,
+        "position_p95_m": 0.09765214653572613,
+        "orientation_rmse_rad": 0.22398090111118296,
+        "orientation_p95_rad": 0.296495646238327,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "actual_samples": 1500,
+          "requested_samples": 1500,
+          "completed_requested_window": true,
+          "first_actual_s": 30.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.08923777312446866,
+          "position_p95_m": 0.08954026708149605,
+          "orientation_rmse_rad": 0.2322306841479569,
+          "orientation_p95_rad": 0.23381485044956207,
+          "base_height_mean_m": 0.18111112713813782,
+          "base_tilt_p95_rad": 0.13437315821647644,
+          "requested_start_s": 30.0,
+          "requested_end_s": 60.0,
+          "samples": 1500
+        }
+      },
+      {
+        "case_id": "body_low",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.1116332509685166,
+        "position_p95_m": 0.11995388650177659,
+        "orientation_rmse_rad": 0.6580903513787232,
+        "orientation_p95_rad": 0.7063107490539551,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 2000,
+          "requested_samples": 2000,
+          "completed_requested_window": true,
+          "first_actual_s": 20.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.11928604712856676,
+          "position_p95_m": 0.11989532425832844,
+          "orientation_rmse_rad": 0.705933483431278,
+          "orientation_p95_rad": 0.7063165426254272,
+          "base_height_mean_m": 0.23580338060855865,
+          "base_tilt_p95_rad": 0.36373084783554077,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 2000
+        }
+      },
+      {
+        "case_id": "body_high",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.052774172880295456,
+        "position_p95_m": 0.0938883556829573,
+        "orientation_rmse_rad": 0.1877332832956347,
+        "orientation_p95_rad": 0.2820791006088257,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 2000,
+          "requested_samples": 2000,
+          "completed_requested_window": true,
+          "first_actual_s": 20.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.046763218708489915,
+          "position_p95_m": 0.07401234531729352,
+          "orientation_rmse_rad": 0.18639395981222942,
+          "orientation_p95_rad": 0.28097077310085294,
+          "base_height_mean_m": 0.3378421664237976,
+          "base_tilt_p95_rad": 0.3402169346809387,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 2000
+        }
+      },
+      {
+        "case_id": "body_lateral",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.031393823337032715,
+        "position_p95_m": 0.06733896239819143,
+        "orientation_rmse_rad": 0.18706206816702672,
+        "orientation_p95_rad": 0.20538067817687988,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 2000,
+          "requested_samples": 2000,
+          "completed_requested_window": true,
+          "first_actual_s": 20.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.021360790431222153,
+          "position_p95_m": 0.022034089147490474,
+          "orientation_rmse_rad": 0.20265754645961703,
+          "orientation_p95_rad": 0.2057286746799946,
+          "base_height_mean_m": 0.26607415080070496,
+          "base_tilt_p95_rad": 0.4773014187812805,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 2000
+        }
+      },
+      {
+        "case_id": "step_00",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.06458719661707792,
+        "position_p95_m": 0.16519450651563786,
+        "orientation_rmse_rad": 0.4016356875261294,
+        "orientation_p95_rad": 0.723581850528717,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 2000,
+          "requested_samples": 2000,
+          "completed_requested_window": true,
+          "first_actual_s": 20.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.027411812615093,
+          "position_p95_m": 0.045092624987827255,
+          "orientation_rmse_rad": 0.3747240598782042,
+          "orientation_p95_rad": 0.40794859975576403,
+          "base_height_mean_m": 0.2913605570793152,
+          "base_tilt_p95_rad": 0.4364214837551117,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 2000
+        }
+      },
+      {
+        "case_id": "step_01",
+        "completed": false,
+        "fallen": true,
+        "requested_steps": 3000,
+        "actual_steps": 573,
+        "position_rmse_m": 0.19073514609456468,
+        "position_p95_m": 0.3696054876364304,
+        "orientation_rmse_rad": 0.45121385681987586,
+        "orientation_p95_rad": 0.9896077334880827,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 0,
+          "requested_samples": 2000,
+          "completed_requested_window": false,
+          "first_actual_s": null,
+          "last_actual_s": null,
+          "position_rmse_m": null,
+          "position_p95_m": null,
+          "orientation_rmse_rad": null,
+          "orientation_p95_rad": null,
+          "base_height_mean_m": null,
+          "base_tilt_p95_rad": null,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 0
+        }
+      },
+      {
+        "case_id": "step_02",
+        "completed": true,
+        "fallen": false,
+        "requested_steps": 3000,
+        "actual_steps": 3000,
+        "position_rmse_m": 0.038032466561695004,
+        "position_p95_m": 0.07251668340970523,
+        "orientation_rmse_rad": 0.18335117282446628,
+        "orientation_p95_rad": 0.27969759702682495,
+        "hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "actual_samples": 2000,
+          "requested_samples": 2000,
+          "completed_requested_window": true,
+          "first_actual_s": 20.02,
+          "last_actual_s": 60.0,
+          "position_rmse_m": 0.026420326646767505,
+          "position_p95_m": 0.040413121924903886,
+          "orientation_rmse_rad": 0.1905422574713602,
+          "orientation_p95_rad": 0.2803457364439964,
+          "base_height_mean_m": 0.3201412260532379,
+          "base_tilt_p95_rad": 0.42071372270584106,
+          "requested_start_s": 20.0,
+          "requested_end_s": 60.0,
+          "samples": 2000
+        }
+      }
+    ]
+  },
+  "initial_vs_final": {
+    "before_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/initial_mujoco_train10",
+    "after_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/lr_floor_checkpoint999_mujoco_train10",
+    "comparison_kind": "same_engine",
+    "before_engine": "MuJoCo",
+    "after_engine": "MuJoCo",
+    "before_policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+    "after_policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+    "cases": [
+      {
+        "case_id": "near_00",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06652256664692924,
+            "position_p95_m": 0.08454266107663265,
+            "orientation_rmse_rad": 0.3856194993028113,
+            "orientation_p95_rad": 0.48838359117507935
+          },
+          "after": {
+            "position_rmse_m": 0.08884895430346516,
+            "position_p95_m": 0.0936335251295444,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.06628784078573924,
+              "position_p95_m": 0.08337436370427347,
+              "orientation_rmse_rad": 0.3787025738617087,
+              "orientation_p95_rad": 0.4983999758958816
+            },
+            "after": {
+              "position_rmse_m": 0.08923613234305593,
+              "position_p95_m": 0.08952772740069792,
+              "orientation_rmse_rad": 0.2804974588157054,
+              "orientation_p95_rad": 0.28227812945842745
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02294829155731669,
+            "position_p95_m": 0.006153363696424455,
+            "orientation_rmse_rad": -0.09820511504600327,
+            "orientation_p95_rad": -0.21612184643745413
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.022326387656535926,
+          "position_p95_m": 0.009090864052911748,
+          "orientation_rmse_rad": -0.11165248158705299,
+          "orientation_p95_rad": -0.1994037628173828
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06652256664692924,
+            "p95_m": 0.08454266107663265,
+            "executed_fragment_rmse_m": 0.06624800242814345,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.3856194993028113,
+            "orientation_p95_rad": 0.48838359117507935,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 18680.413053575736,
+            "base_displacement_m": 0.30147698521614075,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08884895430346516,
+            "p95_m": 0.0936335251295444,
+            "executed_fragment_rmse_m": 0.08830246468571933,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 656.1534363925728,
+            "base_displacement_m": 0.35734447836875916,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_01",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.067073823500656,
+            "position_p95_m": 0.08414788166282079,
+            "orientation_rmse_rad": 0.3820672462601841,
+            "orientation_p95_rad": 0.47764909267425537
+          },
+          "after": {
+            "position_rmse_m": 0.0891523269587167,
+            "position_p95_m": 0.09146154728720533,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.06647562080778206,
+              "position_p95_m": 0.08300613154492846,
+              "orientation_rmse_rad": 0.38211906827238534,
+              "orientation_p95_rad": 0.493908679485321
+            },
+            "after": {
+              "position_rmse_m": 0.08983931693949691,
+              "position_p95_m": 0.08986188682868464,
+              "orientation_rmse_rad": 0.2835466613006346,
+              "orientation_p95_rad": 0.28363149613142014
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02336369613171485,
+            "position_p95_m": 0.006855755283756176,
+            "orientation_rmse_rad": -0.09857240697175074,
+            "orientation_p95_rad": -0.2102771833539009
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.0220785034580607,
+          "position_p95_m": 0.007313665624384541,
+          "orientation_rmse_rad": -0.10622123969367187,
+          "orientation_p95_rad": -0.1869126260280609
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.067073823500656,
+            "p95_m": 0.08414788166282079,
+            "executed_fragment_rmse_m": 0.06678333202134454,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.3820672462601841,
+            "orientation_p95_rad": 0.47764909267425537,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 18089.360347955346,
+            "base_displacement_m": 0.3170270323753357,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.0891523269587167,
+            "p95_m": 0.09146154728720533,
+            "executed_fragment_rmse_m": 0.08859765215344789,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 606.1890093569402,
+            "base_displacement_m": 0.3591974973678589,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06730248756453136,
+            "position_p95_m": 0.08940441600002204,
+            "orientation_rmse_rad": 0.40857462476070794,
+            "orientation_p95_rad": 0.5423402190208435
+          },
+          "after": {
+            "position_rmse_m": 0.08877647452803963,
+            "position_p95_m": 0.09531035523316077,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.06743099095701637,
+              "position_p95_m": 0.08901920501375522,
+              "orientation_rmse_rad": 0.4161877503363062,
+              "orientation_p95_rad": 0.5595492929220198
+            },
+            "after": {
+              "position_rmse_m": 0.0891374848561366,
+              "position_p95_m": 0.0894345025329302,
+              "orientation_rmse_rad": 0.279755522918682,
+              "orientation_p95_rad": 0.2815502494573593
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02170649389912023,
+            "position_p95_m": 0.0004152975191749758,
+            "orientation_rmse_rad": -0.13643222741762417,
+            "orientation_p95_rad": -0.27799904346466053
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.021473986963508274,
+          "position_p95_m": 0.0059059392331387295,
+          "orientation_rmse_rad": -0.13398649139594937,
+          "orientation_p95_rad": -0.2381587028503418
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06730248756453136,
+            "p95_m": 0.08940441600002204,
+            "executed_fragment_rmse_m": 0.06700542125192899,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.40857462476070794,
+            "orientation_p95_rad": 0.5423402190208435,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 20576.958779579163,
+            "base_displacement_m": 0.37485188245773315,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08877647452803963,
+            "p95_m": 0.09531035523316077,
+            "executed_fragment_rmse_m": 0.08823194358434173,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 649.7760449785594,
+            "base_displacement_m": 0.35706642270088196,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_03",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06671588116644919,
+            "position_p95_m": 0.08477624801030138,
+            "orientation_rmse_rad": 0.39063486674463177,
+            "orientation_p95_rad": 0.5133901238441467
+          },
+          "after": {
+            "position_rmse_m": 0.08751334813247515,
+            "position_p95_m": 0.09490539830558861,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.06629811626955953,
+              "position_p95_m": 0.08331428185690909,
+              "orientation_rmse_rad": 0.3801929072335339,
+              "orientation_p95_rad": 0.5137291520833968
+            },
+            "after": {
+              "position_rmse_m": 0.08715931828840502,
+              "position_p95_m": 0.08726785632367694,
+              "orientation_rmse_rad": 0.21695010991392238,
+              "orientation_p95_rad": 0.21704722866415976
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02086120201884549,
+            "position_p95_m": 0.003953574466767848,
+            "orientation_rmse_rad": -0.1632427973196115,
+            "orientation_p95_rad": -0.296681923419237
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.020797466966025954,
+          "position_p95_m": 0.010129150295287229,
+          "orientation_rmse_rad": -0.16140722415260317,
+          "orientation_p95_rad": -0.2346581518650055
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06671588116644919,
+            "p95_m": 0.08477624801030138,
+            "executed_fragment_rmse_m": 0.0664357191100145,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.39063486674463177,
+            "orientation_p95_rad": 0.5133901238441467,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 19471.668557045756,
+            "base_displacement_m": 0.33013680577278137,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08751334813247515,
+            "p95_m": 0.09490539830558861,
+            "executed_fragment_rmse_m": 0.0870031485592996,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 650.6869884701891,
+            "base_displacement_m": 0.313978910446167,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_low",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.1280500514205135,
+            "position_p95_m": 0.13825080070189433,
+            "orientation_rmse_rad": 0.43740711132644583,
+            "orientation_p95_rad": 0.46337854862213135
+          },
+          "after": {
+            "position_rmse_m": 0.13701615116940213,
+            "position_p95_m": 0.1481127265265,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.13494725358466533,
+              "position_p95_m": 0.13500983284303025,
+              "orientation_rmse_rad": 0.46236404040949813,
+              "orientation_p95_rad": 0.4626228004693985
+            },
+            "after": {
+              "position_rmse_m": 0.14772763883938328,
+              "position_p95_m": 0.1480951487889011,
+              "orientation_rmse_rad": 0.7951064145759597,
+              "orientation_p95_rad": 0.7960912317037583
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.012780385254717946,
+            "position_p95_m": 0.01308531594587084,
+            "orientation_rmse_rad": 0.3327423741664615,
+            "orientation_p95_rad": 0.33346843123435976
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.008966099748888623,
+          "position_p95_m": 0.009861925824605683,
+          "orientation_rmse_rad": 0.3130722395028309,
+          "orientation_p95_rad": 0.34148216247558594
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.1280500514205135,
+            "p95_m": 0.13825080070189433,
+            "executed_fragment_rmse_m": 0.1263830986197802,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.43740711132644583,
+            "orientation_p95_rad": 0.46337854862213135,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2312.1929746160777,
+            "base_displacement_m": 0.330358624458313,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.13701615116940213,
+            "p95_m": 0.1481127265265,
+            "executed_fragment_rmse_m": 0.13534234906148074,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 584.0754214277758,
+            "base_displacement_m": 0.2844453454017639,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_high",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.03651820232253196,
+            "position_p95_m": 0.07690220602974528,
+            "orientation_rmse_rad": 0.2471601840976293,
+            "orientation_p95_rad": 0.5142135620117188
+          },
+          "after": {
+            "position_rmse_m": 0.05379687310873865,
+            "position_p95_m": 0.09949743462470478,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.01992521433764288,
+              "position_p95_m": 0.0296191968008107,
+              "orientation_rmse_rad": 0.14568951093264315,
+              "orientation_p95_rad": 0.20595861002802848
+            },
+            "after": {
+              "position_rmse_m": 0.04603782115476654,
+              "position_p95_m": 0.07404051433729282,
+              "orientation_rmse_rad": 0.2440296164814322,
+              "orientation_p95_rad": 0.36598293036222457
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02611260681712366,
+            "position_p95_m": 0.044421317536482124,
+            "orientation_rmse_rad": 0.09834010554878905,
+            "orientation_p95_rad": 0.16002432033419609
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.017278670786206693,
+          "position_p95_m": 0.022595228594959507,
+          "orientation_rmse_rad": -0.009654993233753517,
+          "orientation_p95_rad": -0.15823906660079956
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.03651820232253196,
+            "p95_m": 0.07690220602974528,
+            "executed_fragment_rmse_m": 0.03745935378259141,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2471601840976293,
+            "orientation_p95_rad": 0.5142135620117188,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 10370.081999732069,
+            "base_displacement_m": 0.20993240177631378,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.05379687310873865,
+            "p95_m": 0.09949743462470478,
+            "executed_fragment_rmse_m": 0.05440577923142157,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 8421.540735579429,
+            "base_displacement_m": 0.024334745481610298,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_lateral",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.041302053476524714,
+            "position_p95_m": 0.06401852368339263,
+            "orientation_rmse_rad": 0.35542323665972825,
+            "orientation_p95_rad": 0.4758496582508087
+          },
+          "after": {
+            "position_rmse_m": 0.030185232241606533,
+            "position_p95_m": 0.06917920624479619,
+            "orientation_rmse_rad": 0.17348171218366631,
+            "orientation_p95_rad": 0.18333938717842102
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.03880242553952483,
+              "position_p95_m": 0.03881607113812068,
+              "orientation_rmse_rad": 0.3671053345731509,
+              "orientation_p95_rad": 0.3674639776349068
+            },
+            "after": {
+              "position_rmse_m": 0.01985300242231268,
+              "position_p95_m": 0.020270858698400916,
+              "orientation_rmse_rad": 0.18114315968659764,
+              "orientation_p95_rad": 0.18310413211584092
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.01894942311721215,
+            "position_p95_m": -0.018545212439719766,
+            "orientation_rmse_rad": -0.18596217488655328,
+            "orientation_p95_rad": -0.18435984551906587
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.011116821234918181,
+          "position_p95_m": 0.005160682561403562,
+          "orientation_rmse_rad": -0.18194152447606193,
+          "orientation_p95_rad": -0.2925102710723877
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.041302053476524714,
+            "p95_m": 0.06401852368339263,
+            "executed_fragment_rmse_m": 0.04199181562203033,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.35542323665972825,
+            "orientation_p95_rad": 0.4758496582508087,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 6006.966817974169,
+            "base_displacement_m": 0.18913233280181885,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.030185232241606533,
+            "p95_m": 0.06917920624479619,
+            "executed_fragment_rmse_m": 0.032342450146239515,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.17348171218366631,
+            "orientation_p95_rad": 0.18333938717842102,
+            "reached": true,
+            "reach_time_s": 8.079999999999368,
+            "fallen": false,
+            "absolute_joint_work_j": 1557.4671730746027,
+            "base_displacement_m": 0.14116010069847107,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_00",
+        "common_start_tick": 100,
+        "common_end_tick": 809,
+        "common_samples": 710,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06570901255610843,
+            "position_p95_m": 0.11792740517759527,
+            "orientation_rmse_rad": 0.2924933501357007,
+            "orientation_p95_rad": 0.48025194406509397
+          },
+          "after": {
+            "position_rmse_m": 0.1848414955734027,
+            "position_p95_m": 0.44156951250478366,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 809,
+          "common_samples": 0,
+          "metrics": {
+            "before": null,
+            "after": null
+          },
+          "after_minus_before": null
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.11913248301729427,
+          "position_p95_m": 0.3236421073271884,
+          "orientation_rmse_rad": 0.5725632638677709,
+          "orientation_p95_rad": 1.8111425280570979
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.03676291908281827,
+            "p95_m": 0.07077416161547506,
+            "executed_fragment_rmse_m": 0.03766120501260948,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.28359423643474746,
+            "orientation_p95_rad": 0.34177741408348083,
+            "reached": true,
+            "reach_time_s": 8.919999999999648,
+            "fallen": false,
+            "absolute_joint_work_j": 6922.137102243132,
+            "base_displacement_m": 0.987697184085846,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.1848414955734027,
+            "p95_m": 0.44156951250478366,
+            "executed_fragment_rmse_m": 0.17461717908369623,
+            "post_transient_samples": 710,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192,
+            "reached": false,
+            "reach_time_s": 7.679999999999376,
+            "fallen": true,
+            "absolute_joint_work_j": 4082.0398702185803,
+            "base_displacement_m": 0.6880606412887573,
+            "requested_steps": 3000,
+            "actual_steps": 809,
+            "completed": false,
+            "termination_reason": "fall",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 16.18000000000191,
+            "fall_height": false,
+            "fall_tilt": true
+          }
+        }
+      },
+      {
+        "case_id": "step_01",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06570205048939817,
+            "position_p95_m": 0.12280051106443109,
+            "orientation_rmse_rad": 0.588484096663626,
+            "orientation_p95_rad": 0.7758130431175232
+          },
+          "after": {
+            "position_rmse_m": 0.35802389188722583,
+            "position_p95_m": 0.3936489404016752,
+            "orientation_rmse_rad": 1.6578911765006854,
+            "orientation_p95_rad": 1.840980052947998
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.053550583787405306,
+              "position_p95_m": 0.10447918622089308,
+              "orientation_rmse_rad": 0.6363234455983163,
+              "orientation_p95_rad": 0.7816000342369079
+            },
+            "after": {
+              "position_rmse_m": 0.3928963348382948,
+              "position_p95_m": 0.3929654201603606,
+              "orientation_rmse_rad": 1.8375011936030083,
+              "orientation_p95_rad": 1.8387860119342805
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.3393457510508895,
+            "position_p95_m": 0.28848623393946754,
+            "orientation_rmse_rad": 1.201177748004692,
+            "orientation_p95_rad": 1.0571859776973724
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.2923218413978277,
+          "position_p95_m": 0.2708484293372441,
+          "orientation_rmse_rad": 1.0694070798370594,
+          "orientation_p95_rad": 1.0651670098304749
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06570205048939817,
+            "p95_m": 0.12280051106443109,
+            "executed_fragment_rmse_m": 0.06547992662855562,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.588484096663626,
+            "orientation_p95_rad": 0.7758130431175232,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 16858.065958611463,
+            "base_displacement_m": 1.0721813440322876,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.35802389188722583,
+            "p95_m": 0.3936489404016752,
+            "executed_fragment_rmse_m": 0.35226652680750375,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 1.6578911765006854,
+            "orientation_p95_rad": 1.840980052947998,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2081.8146551512373,
+            "base_displacement_m": 0.4028867781162262,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.037031282721592396,
+            "position_p95_m": 0.07403209084648547,
+            "orientation_rmse_rad": 0.2702593582239531,
+            "orientation_p95_rad": 0.5183903574943542
+          },
+          "after": {
+            "position_rmse_m": 0.03541103575175323,
+            "position_p95_m": 0.07427871554049725,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.018170281807189746,
+              "position_p95_m": 0.03512747104757658,
+              "orientation_rmse_rad": 0.1640055568412571,
+              "orientation_p95_rad": 0.19635121449828147
+            },
+            "after": {
+              "position_rmse_m": 0.026747222347252752,
+              "position_p95_m": 0.03540740923073179,
+              "orientation_rmse_rad": 0.14773266314372405,
+              "orientation_p95_rad": 0.2049687437713146
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.008576940540063006,
+            "position_p95_m": 0.0002799381831552067,
+            "orientation_rmse_rad": -0.016272893697533042,
+            "orientation_p95_rad": 0.008617529273033137
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.001620246969839166,
+          "position_p95_m": 0.00024662469401177944,
+          "orientation_rmse_rad": -0.12068837538528376,
+          "orientation_p95_rad": -0.313223272562027
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.037031282721592396,
+            "p95_m": 0.07403209084648547,
+            "executed_fragment_rmse_m": 0.03793938070505979,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2702593582239531,
+            "orientation_p95_rad": 0.5183903574943542,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 12212.805256999683,
+            "base_displacement_m": 0.9998367428779602,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.03541103575175323,
+            "p95_m": 0.07427871554049725,
+            "executed_fragment_rmse_m": 0.03676501878551635,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 5290.836081120007,
+            "base_displacement_m": 1.0432108640670776,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      }
+    ],
+    "cases_without_common_post2": [],
+    "equal_case_common_window_means": {
+      "before": {
+        "position_rmse_m": 0.06419274118652349,
+        "position_p95_m": 0.0936802744253321,
+        "orientation_rmse_rad": 0.37581235741754176,
+        "orientation_p95_rad": 0.5249660140275955
+      },
+      "after": {
+        "position_rmse_m": 0.11535657836548256,
+        "position_p95_m": 0.1601597361798456,
+        "orientation_rmse_rad": 0.4887613827458702,
+        "orientation_p95_rad": 0.6844345986843109
+      }
+    },
+    "scope": "Each delta uses identical 50Hz post2 ticks ending at the earlier stop. All failures and original unequal-duration metrics retained; no raw-duration delta. A missing common window makes group means null.",
+    "orientation_acceptance": null
+  },
+  "development500_vs_final": {
+    "before_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/lr_floor_checkpoint500_mujoco_train10",
+    "after_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/lr_floor_checkpoint999_mujoco_train10",
+    "comparison_kind": "same_engine",
+    "before_engine": "MuJoCo",
+    "after_engine": "MuJoCo",
+    "before_policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+    "after_policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+    "cases": [
+      {
+        "case_id": "near_00",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.0858823455704301,
+            "position_p95_m": 0.09200947626096628,
+            "orientation_rmse_rad": 0.21122645492847728,
+            "orientation_p95_rad": 0.2204820215702057
+          },
+          "after": {
+            "position_rmse_m": 0.08884895430346516,
+            "position_p95_m": 0.0936335251295444,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.08700667503667703,
+              "position_p95_m": 0.08786302273434207,
+              "orientation_rmse_rad": 0.21499838501122745,
+              "orientation_p95_rad": 0.21988386511802674
+            },
+            "after": {
+              "position_rmse_m": 0.08923613234305593,
+              "position_p95_m": 0.08952772740069792,
+              "orientation_rmse_rad": 0.2804974588157054,
+              "orientation_p95_rad": 0.28227812945842745
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.0022294573063788986,
+            "position_p95_m": 0.0016647046663558485,
+            "orientation_rmse_rad": 0.06549907380447798,
+            "orientation_p95_rad": 0.06239426434040071
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.002966608733035059,
+          "position_p95_m": 0.0016240488685781151,
+          "orientation_rmse_rad": 0.06274056278728105,
+          "orientation_p95_rad": 0.06849780678749084
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.0858823455704301,
+            "p95_m": 0.09200947626096628,
+            "executed_fragment_rmse_m": 0.08526552987879801,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.21122645492847728,
+            "orientation_p95_rad": 0.2204820215702057,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1827.1145113101675,
+            "base_displacement_m": 0.3277590274810791,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08884895430346516,
+            "p95_m": 0.0936335251295444,
+            "executed_fragment_rmse_m": 0.08830246468571933,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 656.1534363925728,
+            "base_displacement_m": 0.35734447836875916,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_01",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08886647133738962,
+            "position_p95_m": 0.09222671380076382,
+            "orientation_rmse_rad": 0.22603624762490646,
+            "orientation_p95_rad": 0.24550850689411163
+          },
+          "after": {
+            "position_rmse_m": 0.0891523269587167,
+            "position_p95_m": 0.09146154728720533,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.09076758220590034,
+              "position_p95_m": 0.09087787076860324,
+              "orientation_rmse_rad": 0.2332886772041866,
+              "orientation_p95_rad": 0.23347928673028945
+            },
+            "after": {
+              "position_rmse_m": 0.08983931693949691,
+              "position_p95_m": 0.08986188682868464,
+              "orientation_rmse_rad": 0.2835466613006346,
+              "orientation_p95_rad": 0.28363149613142014
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.0009282652664034247,
+            "position_p95_m": -0.0010159839399185994,
+            "orientation_rmse_rad": 0.050257984096447994,
+            "orientation_p95_rad": 0.05015220940113069
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.00028585562132707465,
+          "position_p95_m": -0.0007651665135584851,
+          "orientation_rmse_rad": 0.0498097589416058,
+          "orientation_p95_rad": 0.045227959752082825
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08886647133738962,
+            "p95_m": 0.09222671380076382,
+            "executed_fragment_rmse_m": 0.08817298022655387,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.22603624762490646,
+            "orientation_p95_rad": 0.24550850689411163,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1360.744927765883,
+            "base_displacement_m": 0.33604696393013,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.0891523269587167,
+            "p95_m": 0.09146154728720533,
+            "executed_fragment_rmse_m": 0.08859765215344789,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 606.1890093569402,
+            "base_displacement_m": 0.3591974973678589,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08982919271495965,
+            "position_p95_m": 0.09704010967358954,
+            "orientation_rmse_rad": 0.23023041784096235,
+            "orientation_p95_rad": 0.25458621978759766
+          },
+          "after": {
+            "position_rmse_m": 0.08877647452803963,
+            "position_p95_m": 0.09531035523316077,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.09176490116707889,
+              "position_p95_m": 0.09180587409078123,
+              "orientation_rmse_rad": 0.23728765836889906,
+              "orientation_p95_rad": 0.2373575337231159
+            },
+            "after": {
+              "position_rmse_m": 0.0891374848561366,
+              "position_p95_m": 0.0894345025329302,
+              "orientation_rmse_rad": 0.279755522918682,
+              "orientation_p95_rad": 0.2815502494573593
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.0026274163109422932,
+            "position_p95_m": -0.0023713715578510264,
+            "orientation_rmse_rad": 0.042467864549782935,
+            "orientation_p95_rad": 0.04419271573424338
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.0010527181869200153,
+          "position_p95_m": -0.0017297544404287768,
+          "orientation_rmse_rad": 0.04435771552379622,
+          "orientation_p95_rad": 0.04959529638290405
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08982919271495965,
+            "p95_m": 0.09704010967358954,
+            "executed_fragment_rmse_m": 0.08911134300082718,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.23023041784096235,
+            "orientation_p95_rad": 0.25458621978759766,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1351.4253833487846,
+            "base_displacement_m": 0.33823350071907043,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08877647452803963,
+            "p95_m": 0.09531035523316077,
+            "executed_fragment_rmse_m": 0.08823194358434173,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 649.7760449785594,
+            "base_displacement_m": 0.35706642270088196,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_03",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.09648651301223525,
+            "position_p95_m": 0.1096137134233287,
+            "orientation_rmse_rad": 0.2823062903782252,
+            "orientation_p95_rad": 0.34923526644706726
+          },
+          "after": {
+            "position_rmse_m": 0.08751334813247515,
+            "position_p95_m": 0.09490539830558861,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.10315378615770508,
+              "position_p95_m": 0.10319440121787679,
+              "orientation_rmse_rad": 0.2999679695113959,
+              "orientation_p95_rad": 0.29997351914644244
+            },
+            "after": {
+              "position_rmse_m": 0.08715931828840502,
+              "position_p95_m": 0.08726785632367694,
+              "orientation_rmse_rad": 0.21695010991392238,
+              "orientation_p95_rad": 0.21704722866415976
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.01599446786930006,
+            "position_p95_m": -0.015926544894199854,
+            "orientation_rmse_rad": -0.08301785959747354,
+            "orientation_p95_rad": -0.08292629048228267
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.008973164879760104,
+          "position_p95_m": -0.014708315117740095,
+          "orientation_rmse_rad": -0.05307864778619659,
+          "orientation_p95_rad": -0.07050329446792603
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.09648651301223525,
+            "p95_m": 0.1096137134233287,
+            "executed_fragment_rmse_m": 0.09560472159354093,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2823062903782252,
+            "orientation_p95_rad": 0.34923526644706726,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2749.0859246740865,
+            "base_displacement_m": 0.3407011926174164,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08751334813247515,
+            "p95_m": 0.09490539830558861,
+            "executed_fragment_rmse_m": 0.0870031485592996,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 650.6869884701891,
+            "base_displacement_m": 0.313978910446167,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_low",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.06693687355274835,
+            "position_p95_m": 0.10293227878876264,
+            "orientation_rmse_rad": 0.227086894198416,
+            "orientation_p95_rad": 0.40523427724838257
+          },
+          "after": {
+            "position_rmse_m": 0.13701615116940213,
+            "position_p95_m": 0.1481127265265,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.05990349168391396,
+              "position_p95_m": 0.059967588240079785,
+              "orientation_rmse_rad": 0.19379305656739643,
+              "orientation_p95_rad": 0.19386717677116394
+            },
+            "after": {
+              "position_rmse_m": 0.14772763883938328,
+              "position_p95_m": 0.1480951487889011,
+              "orientation_rmse_rad": 0.7951064145759597,
+              "orientation_p95_rad": 0.7960912317037583
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.08782414715546932,
+            "position_p95_m": 0.08812756054882132,
+            "orientation_rmse_rad": 0.6013133580085632,
+            "orientation_p95_rad": 0.6022240549325943
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.07007927761665378,
+          "position_p95_m": 0.04518044773773737,
+          "orientation_rmse_rad": 0.5233924566308608,
+          "orientation_p95_rad": 0.3996264338493347
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06693687355274835,
+            "p95_m": 0.10293227878876264,
+            "executed_fragment_rmse_m": 0.06688625905636457,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.227086894198416,
+            "orientation_p95_rad": 0.40523427724838257,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1703.5592229844399,
+            "base_displacement_m": 0.46173426508903503,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.13701615116940213,
+            "p95_m": 0.1481127265265,
+            "executed_fragment_rmse_m": 0.13534234906148074,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 584.0754214277758,
+            "base_displacement_m": 0.2844453454017639,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_high",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.053815676993946605,
+            "position_p95_m": 0.09550527057795911,
+            "orientation_rmse_rad": 0.21207632982435895,
+            "orientation_p95_rad": 0.29062432050704956
+          },
+          "after": {
+            "position_rmse_m": 0.05379687310873865,
+            "position_p95_m": 0.09949743462470478,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.028133190982031913,
+              "position_p95_m": 0.04404834321499733,
+              "orientation_rmse_rad": 0.20549245754275164,
+              "orientation_p95_rad": 0.27607755810022355
+            },
+            "after": {
+              "position_rmse_m": 0.04603782115476654,
+              "position_p95_m": 0.07404051433729282,
+              "orientation_rmse_rad": 0.2440296164814322,
+              "orientation_p95_rad": 0.36598293036222457
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.017904630172734626,
+            "position_p95_m": 0.02999217112229549,
+            "orientation_rmse_rad": 0.038537158938680566,
+            "orientation_p95_rad": 0.08990537226200102
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -1.880388520795334e-05,
+          "position_p95_m": 0.003992164046745669,
+          "orientation_rmse_rad": 0.02542886103951683,
+          "orientation_p95_rad": 0.06535017490386963
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.053815676993946605,
+            "p95_m": 0.09550527057795911,
+            "executed_fragment_rmse_m": 0.054310303234300326,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.21207632982435895,
+            "orientation_p95_rad": 0.29062432050704956,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 9114.668241036827,
+            "base_displacement_m": 0.07311690598726273,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.05379687310873865,
+            "p95_m": 0.09949743462470478,
+            "executed_fragment_rmse_m": 0.05440577923142157,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 8421.540735579429,
+            "base_displacement_m": 0.024334745481610298,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_lateral",
+        "common_start_tick": 100,
+        "common_end_tick": 447,
+        "common_samples": 348,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08985811470022495,
+            "position_p95_m": 0.09945952316227075,
+            "orientation_rmse_rad": 0.23718161056564824,
+            "orientation_p95_rad": 0.38429025560617447
+          },
+          "after": {
+            "position_rmse_m": 0.06540591880314305,
+            "position_p95_m": 0.08413308523844208,
+            "orientation_rmse_rad": 0.17449432128549755,
+            "orientation_p95_rad": 0.22836477383971213
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 447,
+          "common_samples": 0,
+          "metrics": {
+            "before": null,
+            "after": null
+          },
+          "after_minus_before": null
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.024452195897081905,
+          "position_p95_m": -0.015326437923828665,
+          "orientation_rmse_rad": -0.06268728928015069,
+          "orientation_p95_rad": -0.15592548176646234
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08985811470022495,
+            "p95_m": 0.09945952316227075,
+            "executed_fragment_rmse_m": 0.08547644453739944,
+            "post_transient_samples": 348,
+            "orientation_rmse_rad": 0.23718161056564824,
+            "orientation_p95_rad": 0.38429025560617447,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": true,
+            "absolute_joint_work_j": 1438.7226068359414,
+            "base_displacement_m": 0.17953729629516602,
+            "requested_steps": 3000,
+            "actual_steps": 447,
+            "completed": false,
+            "termination_reason": "fall",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 8.939999999999655,
+            "fall_height": true,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.030185232241606533,
+            "p95_m": 0.06917920624479619,
+            "executed_fragment_rmse_m": 0.032342450146239515,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.17348171218366631,
+            "orientation_p95_rad": 0.18333938717842102,
+            "reached": true,
+            "reach_time_s": 8.079999999999368,
+            "fallen": false,
+            "absolute_joint_work_j": 1557.4671730746027,
+            "base_displacement_m": 0.14116010069847107,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_00",
+        "common_start_tick": 100,
+        "common_end_tick": 809,
+        "common_samples": 710,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.10093888115424045,
+            "position_p95_m": 0.18554493175951264,
+            "orientation_rmse_rad": 0.4082114466654485,
+            "orientation_p95_rad": 0.9129358768463134
+          },
+          "after": {
+            "position_rmse_m": 0.1848414955734027,
+            "position_p95_m": 0.44156951250478366,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 809,
+          "common_samples": 0,
+          "metrics": {
+            "before": null,
+            "after": null
+          },
+          "after_minus_before": null
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.08390261441916226,
+          "position_p95_m": 0.256024580745271,
+          "orientation_rmse_rad": 0.45684516733802316,
+          "orientation_p95_rad": 1.3784585952758786
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.05958786994545521,
+            "p95_m": 0.1441066078196297,
+            "executed_fragment_rmse_m": 0.05988009432795959,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.3770882338289989,
+            "orientation_p95_rad": 0.6252941489219666,
+            "reached": true,
+            "reach_time_s": 9.939999999999989,
+            "fallen": false,
+            "absolute_joint_work_j": 7259.961393409915,
+            "base_displacement_m": 0.9821532368659973,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.1848414955734027,
+            "p95_m": 0.44156951250478366,
+            "executed_fragment_rmse_m": 0.17461717908369623,
+            "post_transient_samples": 710,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192,
+            "reached": false,
+            "reach_time_s": 7.679999999999376,
+            "fallen": true,
+            "absolute_joint_work_j": 4082.0398702185803,
+            "base_displacement_m": 0.6880606412887573,
+            "requested_steps": 3000,
+            "actual_steps": 809,
+            "completed": false,
+            "termination_reason": "fall",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 16.18000000000191,
+            "fall_height": false,
+            "fall_tilt": true
+          }
+        }
+      },
+      {
+        "case_id": "step_01",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.0900233468695736,
+            "position_p95_m": 0.1624119179449345,
+            "orientation_rmse_rad": 0.6730658795279284,
+            "orientation_p95_rad": 0.8122052550315857
+          },
+          "after": {
+            "position_rmse_m": 0.35802389188722583,
+            "position_p95_m": 0.3936489404016752,
+            "orientation_rmse_rad": 1.6578911765006854,
+            "orientation_p95_rad": 1.840980052947998
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.05529975649963601,
+              "position_p95_m": 0.09816914303388014,
+              "orientation_rmse_rad": 0.703496657295694,
+              "orientation_p95_rad": 0.8014869093894958
+            },
+            "after": {
+              "position_rmse_m": 0.3928963348382948,
+              "position_p95_m": 0.3929654201603606,
+              "orientation_rmse_rad": 1.8375011936030083,
+              "orientation_p95_rad": 1.8387860119342805
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.33759657833865875,
+            "position_p95_m": 0.2947962771264805,
+            "orientation_rmse_rad": 1.1340045363073143,
+            "orientation_p95_rad": 1.0372991025447846
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.26800054501765225,
+          "position_p95_m": 0.2312370224567407,
+          "orientation_rmse_rad": 0.984825296972757,
+          "orientation_p95_rad": 1.0287747979164124
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.0900233468695736,
+            "p95_m": 0.1624119179449345,
+            "executed_fragment_rmse_m": 0.08936900913927874,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.6730658795279284,
+            "orientation_p95_rad": 0.8122052550315857,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 11316.950228100228,
+            "base_displacement_m": 1.1115388870239258,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.35802389188722583,
+            "p95_m": 0.3936489404016752,
+            "executed_fragment_rmse_m": 0.35226652680750375,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 1.6578911765006854,
+            "orientation_p95_rad": 1.840980052947998,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2081.8146551512373,
+            "base_displacement_m": 0.4028867781162262,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.040276632553380765,
+            "position_p95_m": 0.0771513124475499,
+            "orientation_rmse_rad": 0.2179223908333593,
+            "orientation_p95_rad": 0.31730544567108154
+          },
+          "after": {
+            "position_rmse_m": 0.03541103575175323,
+            "position_p95_m": 0.07427871554049725,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.025643752651205828,
+              "position_p95_m": 0.04712960893515738,
+              "orientation_rmse_rad": 0.23908678898837352,
+              "orientation_p95_rad": 0.32001970857381823
+            },
+            "after": {
+              "position_rmse_m": 0.026747222347252752,
+              "position_p95_m": 0.03540740923073179,
+              "orientation_rmse_rad": 0.14773266314372405,
+              "orientation_p95_rad": 0.2049687437713146
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.0011034696960469242,
+            "position_p95_m": -0.01172219970442559,
+            "orientation_rmse_rad": -0.09135412584464947,
+            "orientation_p95_rad": -0.11505096480250362
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.004865596801627535,
+          "position_p95_m": -0.0028725969070526464,
+          "orientation_rmse_rad": -0.06835140799468997,
+          "orientation_p95_rad": -0.11213836073875427
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.040276632553380765,
+            "p95_m": 0.0771513124475499,
+            "executed_fragment_rmse_m": 0.041651602223402154,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2179223908333593,
+            "orientation_p95_rad": 0.31730544567108154,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 9096.769975125497,
+            "base_displacement_m": 1.013686180114746,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.03541103575175323,
+            "p95_m": 0.07427871554049725,
+            "executed_fragment_rmse_m": 0.03676501878551635,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 5290.836081120007,
+            "base_displacement_m": 1.0432108640670776,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      }
+    ],
+    "cases_without_common_post2": [],
+    "equal_case_common_window_means": {
+      "before": {
+        "position_rmse_m": 0.08029140484591293,
+        "position_p95_m": 0.11138952478396377,
+        "orientation_rmse_rad": 0.2925343962387731,
+        "orientation_p95_rad": 0.419240744560957
+      },
+      "after": {
+        "position_rmse_m": 0.11887864702163622,
+        "position_p95_m": 0.1616551240792102,
+        "orientation_rmse_rad": 0.48886264365605336,
+        "orientation_p95_rad": 0.6889371373504399
+      }
+    },
+    "scope": "Each delta uses identical 50Hz post2 ticks ending at the earlier stop. All failures and original unequal-duration metrics retained; no raw-duration delta. A missing common window makes group means null.",
+    "orientation_acceptance": null
+  },
+  "final_cross_engine": {
+    "before_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/lr_floor_checkpoint999_physx_train10",
+    "after_path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/lr_floor_checkpoint999_mujoco_train10",
+    "comparison_kind": "same_policy_cross_engine",
+    "before_engine": "PhysX",
+    "after_engine": "MuJoCo",
+    "before_policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+    "after_policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+    "cases": [
+      {
+        "case_id": "near_00",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08420762024440402,
+            "position_p95_m": 0.09268962305655089,
+            "orientation_rmse_rad": 0.20830050692630578,
+            "orientation_p95_rad": 0.2467038631439209
+          },
+          "after": {
+            "position_rmse_m": 0.08884895430346516,
+            "position_p95_m": 0.0936335251295444,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.08393143021696056,
+              "position_p95_m": 0.08979862154378626,
+              "orientation_rmse_rad": 0.1997488320758132,
+              "orientation_p95_rad": 0.21244428902864457
+            },
+            "after": {
+              "position_rmse_m": 0.08923613234305593,
+              "position_p95_m": 0.08952772740069792,
+              "orientation_rmse_rad": 0.2804974588157054,
+              "orientation_p95_rad": 0.28227812945842745
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.005304702126095365,
+            "position_p95_m": -0.0002708941430883405,
+            "orientation_rmse_rad": 0.08074862673989222,
+            "orientation_p95_rad": 0.06983384042978288
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.004641334059061142,
+          "position_p95_m": 0.0009439020729935105,
+          "orientation_rmse_rad": 0.06566651078945254,
+          "orientation_p95_rad": 0.042275965213775635
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08420762024440402,
+            "p95_m": 0.09268962305655089,
+            "executed_fragment_rmse_m": 0.0835931183792345,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.20830050692630578,
+            "orientation_p95_rad": 0.2467038631439209,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2146.5556675291064,
+            "base_displacement_m": 0.31777942180633545,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 0,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08884895430346516,
+            "p95_m": 0.0936335251295444,
+            "executed_fragment_rmse_m": 0.08830246468571933,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2739670177157583,
+            "orientation_p95_rad": 0.28897982835769653,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 656.1534363925728,
+            "base_displacement_m": 0.35734447836875916,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_00",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_01",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08650198936330271,
+            "position_p95_m": 0.0894038962133734,
+            "orientation_rmse_rad": 0.22185087421449243,
+            "orientation_p95_rad": 0.2438439428806305
+          },
+          "after": {
+            "position_rmse_m": 0.0891523269587167,
+            "position_p95_m": 0.09146154728720533,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.08826810996377026,
+              "position_p95_m": 0.08863519123682372,
+              "orientation_rmse_rad": 0.23364076367020448,
+              "orientation_p95_rad": 0.2342246651649475
+            },
+            "after": {
+              "position_rmse_m": 0.08983931693949691,
+              "position_p95_m": 0.08986188682868464,
+              "orientation_rmse_rad": 0.2835466613006346,
+              "orientation_p95_rad": 0.28363149613142014
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.0015712069757266578,
+            "position_p95_m": 0.0012266955918609213,
+            "orientation_rmse_rad": 0.04990589763043013,
+            "orientation_p95_rad": 0.04940683096647264
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.0026503375954139846,
+          "position_p95_m": 0.0020576510738319342,
+          "orientation_rmse_rad": 0.05399513235201983,
+          "orientation_p95_rad": 0.046892523765563965
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08650198936330271,
+            "p95_m": 0.0894038962133734,
+            "executed_fragment_rmse_m": 0.08583059094168145,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.22185087421449243,
+            "orientation_p95_rad": 0.2438439428806305,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1271.155099966526,
+            "base_displacement_m": 0.322894424200058,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 1,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.0891523269587167,
+            "p95_m": 0.09146154728720533,
+            "executed_fragment_rmse_m": 0.08859765215344789,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27584600656651226,
+            "orientation_p95_rad": 0.29073646664619446,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 606.1890093569402,
+            "base_displacement_m": 0.3591974973678589,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_01",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.0847498817918794,
+            "position_p95_m": 0.0920338091043028,
+            "orientation_rmse_rad": 0.20429927991890975,
+            "orientation_p95_rad": 0.23908871412277222
+          },
+          "after": {
+            "position_rmse_m": 0.08877647452803963,
+            "position_p95_m": 0.09531035523316077,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.0859533881730587,
+              "position_p95_m": 0.09074774867187387,
+              "orientation_rmse_rad": 0.20664854642218866,
+              "orientation_p95_rad": 0.218048919737339
+            },
+            "after": {
+              "position_rmse_m": 0.0891374848561366,
+              "position_p95_m": 0.0894345025329302,
+              "orientation_rmse_rad": 0.279755522918682,
+              "orientation_p95_rad": 0.2815502494573593
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.003184096683077897,
+            "position_p95_m": -0.0013132461389436662,
+            "orientation_rmse_rad": 0.07310697649649334,
+            "orientation_p95_rad": 0.06350132972002029
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.004026592736160239,
+          "position_p95_m": 0.003276546128857971,
+          "orientation_rmse_rad": 0.07028885344584881,
+          "orientation_p95_rad": 0.06509280204772949
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.0847498817918794,
+            "p95_m": 0.0920338091043028,
+            "executed_fragment_rmse_m": 0.08411517120422014,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.20429927991890975,
+            "orientation_p95_rad": 0.23908871412277222,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2104.4621131813524,
+            "base_displacement_m": 0.3326800465583801,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 2,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08877647452803963,
+            "p95_m": 0.09531035523316077,
+            "executed_fragment_rmse_m": 0.08823194358434173,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.27458813336475857,
+            "orientation_p95_rad": 0.3041815161705017,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 649.7760449785594,
+            "base_displacement_m": 0.35706642270088196,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_02",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "near_03",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.08702611550317922,
+            "position_p95_m": 0.09765214653572613,
+            "orientation_rmse_rad": 0.22398090111118296,
+            "orientation_p95_rad": 0.296495646238327
+          },
+          "after": {
+            "position_rmse_m": 0.08751334813247515,
+            "position_p95_m": 0.09490539830558861,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1501,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 1500,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.08923777312446866,
+              "position_p95_m": 0.08954026708149605,
+              "orientation_rmse_rad": 0.2322306841479569,
+              "orientation_p95_rad": 0.23381485044956207
+            },
+            "after": {
+              "position_rmse_m": 0.08715931828840502,
+              "position_p95_m": 0.08726785632367694,
+              "orientation_rmse_rad": 0.21695010991392238,
+              "orientation_p95_rad": 0.21704722866415976
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.0020784548360636423,
+            "position_p95_m": -0.0022724107578191155,
+            "orientation_rmse_rad": -0.015280574234034505,
+            "orientation_p95_rad": -0.01676762178540231
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.00048723262929592503,
+          "position_p95_m": -0.0027467482301375135,
+          "orientation_rmse_rad": 0.00524674148084564,
+          "orientation_p95_rad": -0.01776367425918579
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.08702611550317922,
+            "p95_m": 0.09765214653572613,
+            "executed_fragment_rmse_m": 0.08634990133191295,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.22398090111118296,
+            "orientation_p95_rad": 0.296495646238327,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 1585.2919543480873,
+            "base_displacement_m": 0.34319251775741577,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 3,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.08751334813247515,
+            "p95_m": 0.09490539830558861,
+            "executed_fragment_rmse_m": 0.0870031485592996,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.2292276425920286,
+            "orientation_p95_rad": 0.27873197197914124,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 650.6869884701891,
+            "base_displacement_m": 0.313978910446167,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "near_03",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 30.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "train_local_03",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "near"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_low",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.1116332509685166,
+            "position_p95_m": 0.11995388650177659,
+            "orientation_rmse_rad": 0.6580903513787232,
+            "orientation_p95_rad": 0.7063107490539551
+          },
+          "after": {
+            "position_rmse_m": 0.13701615116940213,
+            "position_p95_m": 0.1481127265265,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.11928604712856676,
+              "position_p95_m": 0.11989532425832844,
+              "orientation_rmse_rad": 0.705933483431278,
+              "orientation_p95_rad": 0.7063165426254272
+            },
+            "after": {
+              "position_rmse_m": 0.14772763883938328,
+              "position_p95_m": 0.1480951487889011,
+              "orientation_rmse_rad": 0.7951064145759597,
+              "orientation_p95_rad": 0.7960912317037583
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.02844159171081652,
+            "position_p95_m": 0.028199824530572654,
+            "orientation_rmse_rad": 0.08917293114468161,
+            "orientation_p95_rad": 0.08977468907833108
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.02538290020088553,
+          "position_p95_m": 0.028158840024723422,
+          "orientation_rmse_rad": 0.09238899945055357,
+          "orientation_p95_rad": 0.09854996204376221
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.1116332509685166,
+            "p95_m": 0.11995388650177659,
+            "executed_fragment_rmse_m": 0.11036568837915318,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.6580903513787232,
+            "orientation_p95_rad": 0.7063107490539551,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 749.6931309998035,
+            "base_displacement_m": 0.2691498100757599,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 4,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.13701615116940213,
+            "p95_m": 0.1481127265265,
+            "executed_fragment_rmse_m": 0.13534234906148074,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.7504793508292767,
+            "orientation_p95_rad": 0.8048607110977173,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 584.0754214277758,
+            "base_displacement_m": 0.2844453454017639,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_low",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_high",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.052774172880295456,
+            "position_p95_m": 0.0938883556829573,
+            "orientation_rmse_rad": 0.1877332832956347,
+            "orientation_p95_rad": 0.2820791006088257
+          },
+          "after": {
+            "position_rmse_m": 0.05379687310873865,
+            "position_p95_m": 0.09949743462470478,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.046763218708489915,
+              "position_p95_m": 0.07401234531729352,
+              "orientation_rmse_rad": 0.18639395981222942,
+              "orientation_p95_rad": 0.28097077310085294
+            },
+            "after": {
+              "position_rmse_m": 0.04603782115476654,
+              "position_p95_m": 0.07404051433729282,
+              "orientation_rmse_rad": 0.2440296164814322,
+              "orientation_p95_rad": 0.36598293036222457
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.0007253975537233753,
+            "position_p95_m": 2.8169019999302325e-05,
+            "orientation_rmse_rad": 0.057635656669202784,
+            "orientation_p95_rad": 0.08501215726137162
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.0010227002284431963,
+          "position_p95_m": 0.005609078941747489,
+          "orientation_rmse_rad": 0.04977190756824107,
+          "orientation_p95_rad": 0.0738953948020935
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.052774172880295456,
+            "p95_m": 0.0938883556829573,
+            "executed_fragment_rmse_m": 0.053119209887594006,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.1877332832956347,
+            "orientation_p95_rad": 0.2820791006088257,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 7824.9491445922995,
+            "base_displacement_m": 0.016134127974510193,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 5,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.05379687310873865,
+            "p95_m": 0.09949743462470478,
+            "executed_fragment_rmse_m": 0.05440577923142157,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.23750519086387578,
+            "orientation_p95_rad": 0.3559744954109192,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 8421.540735579429,
+            "base_displacement_m": 0.024334745481610298,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_high",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "body_lateral",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.031393823337032715,
+            "position_p95_m": 0.06733896239819143,
+            "orientation_rmse_rad": 0.18706206816702672,
+            "orientation_p95_rad": 0.20538067817687988
+          },
+          "after": {
+            "position_rmse_m": 0.030185232241606533,
+            "position_p95_m": 0.06917920624479619,
+            "orientation_rmse_rad": 0.17348171218366631,
+            "orientation_p95_rad": 0.18333938717842102
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.021360790431222153,
+              "position_p95_m": 0.022034089147490474,
+              "orientation_rmse_rad": 0.20265754645961703,
+              "orientation_p95_rad": 0.2057286746799946
+            },
+            "after": {
+              "position_rmse_m": 0.01985300242231268,
+              "position_p95_m": 0.020270858698400916,
+              "orientation_rmse_rad": 0.18114315968659764,
+              "orientation_p95_rad": 0.18310413211584092
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": -0.0015077880089094733,
+            "position_p95_m": -0.0017632304490895583,
+            "orientation_rmse_rad": -0.021514386773019395,
+            "orientation_p95_rad": -0.022624542564153666
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.0012085910954261828,
+          "position_p95_m": 0.0018402438466047638,
+          "orientation_rmse_rad": -0.01358035598336041,
+          "orientation_p95_rad": -0.022041290998458862
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.031393823337032715,
+            "p95_m": 0.06733896239819143,
+            "executed_fragment_rmse_m": 0.03293363669491133,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.18706206816702672,
+            "orientation_p95_rad": 0.20538067817687988,
+            "reached": true,
+            "reach_time_s": 7.94,
+            "fallen": false,
+            "absolute_joint_work_j": 1525.1307819318768,
+            "base_displacement_m": 0.1305599957704544,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 6,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.030185232241606533,
+            "p95_m": 0.06917920624479619,
+            "executed_fragment_rmse_m": 0.032342450146239515,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.17348171218366631,
+            "orientation_p95_rad": 0.18333938717842102,
+            "reached": true,
+            "reach_time_s": 8.079999999999368,
+            "fallen": false,
+            "absolute_joint_work_j": 1557.4671730746027,
+            "base_displacement_m": 0.14116010069847107,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "body_lateral",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "body"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_00",
+        "common_start_tick": 100,
+        "common_end_tick": 809,
+        "common_samples": 710,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.11782993074739943,
+            "position_p95_m": 0.20052389806574036,
+            "orientation_rmse_rad": 0.4710870897047326,
+            "orientation_p95_rad": 0.9146092802286147
+          },
+          "after": {
+            "position_rmse_m": 0.1848414955734027,
+            "position_p95_m": 0.44156951250478366,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 809,
+          "common_samples": 0,
+          "metrics": {
+            "before": null,
+            "after": null
+          },
+          "after_minus_before": null
+        },
+        "after_minus_before": {
+          "position_rmse_m": 0.06701156482600328,
+          "position_p95_m": 0.2410456144390433,
+          "orientation_rmse_rad": 0.39396952429873905,
+          "orientation_p95_rad": 1.3767851918935774
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.06458719661707792,
+            "p95_m": 0.16519450651563786,
+            "executed_fragment_rmse_m": 0.0645545486303427,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.4016356875261294,
+            "orientation_p95_rad": 0.723581850528717,
+            "reached": true,
+            "reach_time_s": 7.5,
+            "fallen": false,
+            "absolute_joint_work_j": 5681.51333720684,
+            "base_displacement_m": 0.8912210464477539,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 7,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.1848414955734027,
+            "p95_m": 0.44156951250478366,
+            "executed_fragment_rmse_m": 0.17461717908369623,
+            "post_transient_samples": 710,
+            "orientation_rmse_rad": 0.8650566140034717,
+            "orientation_p95_rad": 2.291394472122192,
+            "reached": false,
+            "reach_time_s": 7.679999999999376,
+            "fallen": true,
+            "absolute_joint_work_j": 4082.0398702185803,
+            "base_displacement_m": 0.6880606412887573,
+            "requested_steps": 3000,
+            "actual_steps": 809,
+            "completed": false,
+            "termination_reason": "fall",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_00",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 16.18000000000191,
+            "fall_height": false,
+            "fall_tilt": true
+          }
+        }
+      },
+      {
+        "case_id": "step_01",
+        "common_start_tick": 100,
+        "common_end_tick": 573,
+        "common_samples": 474,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.19073514609456468,
+            "position_p95_m": 0.3696054876364304,
+            "orientation_rmse_rad": 0.45121385681987586,
+            "orientation_p95_rad": 0.9896077334880827
+          },
+          "after": {
+            "position_rmse_m": 0.1671208471386313,
+            "position_p95_m": 0.34539853274106386,
+            "orientation_rmse_rad": 0.31557604457114263,
+            "orientation_p95_rad": 0.5624967366456985
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 573,
+          "common_samples": 0,
+          "metrics": {
+            "before": null,
+            "after": null
+          },
+          "after_minus_before": null
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.023614298955933394,
+          "position_p95_m": -0.02420695489536656,
+          "orientation_rmse_rad": -0.13563781224873322,
+          "orientation_p95_rad": -0.4271109968423842
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.19073514609456468,
+            "p95_m": 0.3696054876364304,
+            "executed_fragment_rmse_m": 0.17550016000996949,
+            "post_transient_samples": 474,
+            "orientation_rmse_rad": 0.45121385681987586,
+            "orientation_p95_rad": 0.9896077334880827,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": true,
+            "absolute_joint_work_j": 1300.1239259147637,
+            "base_displacement_m": 0.6677430868148804,
+            "requested_steps": 3000,
+            "actual_steps": 573,
+            "completed": false,
+            "termination_reason": "fall",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 11.46,
+            "batch_index": 0,
+            "env_index": 8,
+            "fall_height": false,
+            "fall_tilt": true
+          },
+          "after": {
+            "rmse_m": 0.35802389188722583,
+            "p95_m": 0.3936489404016752,
+            "executed_fragment_rmse_m": 0.35226652680750375,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 1.6578911765006854,
+            "orientation_p95_rad": 1.840980052947998,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 2081.8146551512373,
+            "base_displacement_m": 0.4028867781162262,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_01",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      },
+      {
+        "case_id": "step_02",
+        "common_start_tick": 100,
+        "common_end_tick": 3000,
+        "common_samples": 2901,
+        "common_post2": {
+          "before": {
+            "position_rmse_m": 0.038032466561695004,
+            "position_p95_m": 0.07251668340970523,
+            "orientation_rmse_rad": 0.18335117282446628,
+            "orientation_p95_rad": 0.27969759702682495
+          },
+          "after": {
+            "position_rmse_m": 0.03541103575175323,
+            "position_p95_m": 0.07427871554049725,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727
+          }
+        },
+        "common_hold": {
+          "planned_tick_interval_inclusive": [
+            1001,
+            3000
+          ],
+          "common_end_tick": 3000,
+          "common_samples": 2000,
+          "metrics": {
+            "before": {
+              "position_rmse_m": 0.026420326646767505,
+              "position_p95_m": 0.040413121924903886,
+              "orientation_rmse_rad": 0.1905422574713602,
+              "orientation_p95_rad": 0.2803457364439964
+            },
+            "after": {
+              "position_rmse_m": 0.026747222347252752,
+              "position_p95_m": 0.03540740923073179,
+              "orientation_rmse_rad": 0.14773266314372405,
+              "orientation_p95_rad": 0.2049687437713146
+            }
+          },
+          "after_minus_before": {
+            "position_rmse_m": 0.00032689570048524685,
+            "position_p95_m": -0.005005712694172097,
+            "orientation_rmse_rad": -0.04280959432763615,
+            "orientation_p95_rad": -0.0753769926726818
+          }
+        },
+        "after_minus_before": {
+          "position_rmse_m": -0.0026214308099417744,
+          "position_p95_m": 0.0017620321307920267,
+          "orientation_rmse_rad": -0.03378018998579696,
+          "orientation_p95_rad": -0.07453051209449768
+        },
+        "original_executed_window_metrics": {
+          "before": {
+            "rmse_m": 0.038032466561695004,
+            "p95_m": 0.07251668340970523,
+            "executed_fragment_rmse_m": 0.03909376002821577,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.18335117282446628,
+            "orientation_p95_rad": 0.27969759702682495,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 6437.51081309318,
+            "base_displacement_m": 1.0092235803604126,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "PhysX",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "elapsed_seconds": 60.0,
+            "batch_index": 0,
+            "env_index": 9,
+            "fall_height": false,
+            "fall_tilt": false
+          },
+          "after": {
+            "rmse_m": 0.03541103575175323,
+            "p95_m": 0.07427871554049725,
+            "executed_fragment_rmse_m": 0.03676501878551635,
+            "post_transient_samples": 2901,
+            "orientation_rmse_rad": 0.14957098283866932,
+            "orientation_p95_rad": 0.20516708493232727,
+            "reached": false,
+            "reach_time_s": null,
+            "fallen": false,
+            "absolute_joint_work_j": 5290.836081120007,
+            "base_displacement_m": 1.0432108640670776,
+            "requested_steps": 3000,
+            "actual_steps": 3000,
+            "completed": true,
+            "termination_reason": "completed",
+            "engine": "MuJoCo",
+            "trajectory": {
+              "case_id": "step_02",
+              "duration_s": 60.0,
+              "family": "smooth",
+              "hardware_validation": false,
+              "hold_start_s": 20.0,
+              "reachability_screened": false,
+              "scope": "provisional endpoint geometry only; interpolated path not dynamics or collision validated",
+              "source_id": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+              "split": "train",
+              "task_frame": "fixed world frame; one reset-only position alignment; no moving base reanchor",
+              "task_kind": "world_tcp_pose",
+              "training_group": "step"
+            },
+            "policy_sha256": "57b39322e594a856a7c6031aa5a557864f235332b211b317353ed5d2722ce454",
+            "diagnostic": true,
+            "trained": false,
+            "elapsed_seconds": 60.00000000002736,
+            "fall_height": false,
+            "fall_tilt": false
+          }
+        }
+      }
+    ],
+    "cases_without_common_post2": [],
+    "equal_case_common_window_means": {
+      "before": {
+        "position_rmse_m": 0.08848843974922692,
+        "position_p95_m": 0.12956067486047546,
+        "orientation_rmse_rad": 0.2996969384361351,
+        "orientation_p95_rad": 0.44038173049688334
+      },
+      "after": {
+        "position_rmse_m": 0.09626627389062312,
+        "position_p95_m": 0.15533469541378447,
+        "orientation_rmse_rad": 0.354529869552916,
+        "orientation_p95_rad": 0.556586267054081
+      }
+    },
+    "scope": "Each delta uses identical 50Hz post2 ticks ending at the earlier stop. All failures and original unequal-duration metrics retained; no raw-duration delta. A missing common window makes group means null.",
+    "orientation_acceptance": null
   }
 }
