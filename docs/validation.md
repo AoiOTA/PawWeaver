@@ -4,20 +4,22 @@
 
 用户于2026-09-10明确强调防跌倒的重要性，担心未来实机跌倒损坏四足与机械臂。后续工程方案取舍优先保住稳定支撑，同时保留末端跟踪与全身协同要求；这不改变下述原验收数值，也不构成实机部署授权或硬件安全证明。
 
-**当前新增证据**：[支撑配方](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/README.md)记录336轮后因持续退化中断，33,030,144 transitions／6720更新全部有限，5618跌倒／11942重置；末50轮非终止奖励99.872%裁零，平均位置／朝向误差.25451m／1.44972rad。最新301轮检查点不含后35轮更新，按保存时间选取而非选优；SIGINT后OS退出0不代表完成1000轮。其独立64、workspace4、static16各双引擎六项后测已全部退出0，四段保存状态视频及解码已完成。下表保留[原2000轮结果](../artifacts/runs/diagnostic_pose_learning/wbc_random_training/evaluation_summary.json)，与[支撑301结果](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/evaluation_summary.json)并列；前者训练196,608,000 transitions／40,000更新全部有限，累计22,938跌倒／76,267重置。
+**支撑配方与最终低噪声结果**：[支撑配方](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/README.md)记录336轮后因持续退化中断，33,030,144 transitions／6720更新全部有限，5618跌倒／11942重置；末50轮非终止奖励99.872%裁零，平均位置／朝向误差.25451m／1.44972rad。最新301轮检查点不含后35轮更新，按保存时间选取而非选优；SIGINT后OS退出0不代表完成1000轮。其独立64、workspace4、static16各双引擎六项后测已全部退出0，四段保存状态视频及解码已完成。下表并列[原2000](../artifacts/runs/diagnostic_pose_learning/wbc_random_training/evaluation_summary.json)、[支撑301](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/evaluation_summary.json)和[低噪声251](../artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/evaluation_summary.json)；前者训练196,608,000 transitions／40,000更新全部有限，累计22,938跌倒／76,267重置。
 
-| 测试 | 原2000 PhysX | 支撑301 PhysX | 原2000 MuJoCo | 支撑301 MuJoCo |
-|---|---|---|---|---|
-| 独立64例，各请求60秒 | 位置通过11；跌倒24 | 位置通过0；跌倒4 | 位置通过12；跌倒36 | 位置通过0；跌倒7 |
-| 静态16例，各请求12秒 | 位置到达3；跌倒13 | 位置到达0；跌倒6 | 位置到达2；跌倒14 | 位置到达1；跌倒4 |
-| 设计workspace4 | 位置通过3；跌倒1 | 位置通过1；跌倒0 | 位置通过4；跌倒0 | 位置通过0；跌倒0 |
-| 历史test8／far_return60 | test8跌倒1；far跌倒 | 本轮未测 | test8跌倒1；far跌倒 | 本轮未测 |
+| 测试 | PhysX：原2000 → 支撑301 → 低噪声251 | MuJoCo：原2000 → 支撑301 → 低噪声251 |
+|---|---|---|
+| 独立64例，各请求60秒 | 位置通过11→0→0；跌倒24→4→16 | 位置通过12→0→0；跌倒36→7→27 |
+| 静态16例，各请求12秒 | 位置到达3→0→0；跌倒13→6→12 | 位置到达2→1→0；跌倒14→4→9 |
+| 设计workspace4 | 位置通过3→1→0；跌倒1→0→0 | 位置通过4→0→0；跌倒0→0→0 |
+| 历史test8／far_return60 | 原2000：test8跌倒1、far跌倒；后两轮未测 | 原2000：test8跌倒1、far跌倒；后两轮未测 |
 
 支撑301跌倒减少，但独立64共同窗位置RMSE为PhysX .088912→.268596m、MuJoCo .087910→.274374m，朝向.735211→1.383604rad／.817120→1.410807rad；位置仅4／5例改善，朝向仅1／4例改善。workspace4两引擎位置与朝向全退步，far虽完整60秒却分别有.554800／.413055m全程位置RMSE。[运动读出](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/motion_readout/)与连续回放还显示高目标升身能力丢失、低目标卸载足更高、两引擎far保持段每个采样行FL大腿净力均超过5N；净力不能区分地面与自接触，不能把少跌倒等同于合理足支撑或全身任务成功。视频是保存的PhysX状态使用MuJoCo几何回放，不是训练录像、独立MuJoCo rollout或视觉控制。
 
 位置到达仍用10秒内进入5cm并保持1秒，位置跟踪沿用原条件，朝向验收仍未定义。设计workspace4不是独立holdout，static16与holdout64共享测试几何池；设计far和历史far_return60分别记录。所有跌倒和实际时长保留，前后误差按共同时间窗比较；static16有12个PhysX、13个MuJoCo配对无2秒后共同窗，相关组统计保持null，不筛掉失败。静态目标跳变失败仍未解决。上述整套配方加额外预算不支持单变量归因，临时参数、单种子与`trained=false`边界不变。
 
-**本阶段最后一轮正在运行**：[低噪声继续学习](../artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/README.md)于2026-09-10 06:25:54 UTC从原2000轮派生初始化真实启动，保留均值／Critic／normalizer，仅按实际scale将裁剪前腿／臂std重置为.25／.01rad；支撑配置仅改`entropy_coef=0`、`learn_std=false`，fresh Adam初始LR `1e-5`、4096×24、seed0、计划1000轮。既有固定状态PD噪声证据支持该候选选择，不证明探索导致训练退化或低探索能成功。当前训练及其后测未完成，不能预报结果。完成原定六项后测和四段视频后，提交并推送远程`main`并停止本阶段，不新增实验或速度分支；已授权速度＋EE比较在本阶段只做文献核实。
+**本阶段最后一轮已中断并完成后测，不采用新策略**：[低噪声继续学习](../artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/README.md)从原2000轮初始化，按实际scale将裁剪前腿／臂std重置为.25／.01rad；沿用支撑配置，仅设`entropy_coef=0`、`learn_std=false`，fresh Adam初始LR `1e-5`、4096×24、seed0。原定1000轮于2026-09-10 06:43:46 UTC因持续退化中断；实际274记录轮／26,935,296 transitions／5480更新全部有限，2185跌倒／8840重置，末50轮非终止奖励90.5817%裁零、位置／朝向均误差.117804m／.591215rad。最新251轮检查点仅包含24,674,304 transitions／5020更新，不含后23轮，按最近保存选取而非选优。SIGINT后的退出0不是正常完成1000轮；此次停止不要求等到上轮99.8%裁零，也不证明剩余预算必败。
+
+低噪声251六项后测于07:05:07 UTC全部退出0，四段PhysX状态视频完成，GPU／仿真已释放。独立64例PhysX／MuJoCo完整48／37例、位置均0通过；原2000→本轮逐例共同窗位置RMSE为.08671468→.15313607m／.08298025→.17285964m，朝向.70239258→.90711610rad／.75751669→.96137113rad。位置分别60／62例退步，朝向53／44例退步；共同窗覆盖全部64例，不丢失败。workspace4两引擎均完整但0通过，位置／朝向四例全退步。静态16例两引擎均0到达，PhysX仅4例完整、MuJoCo7例完整；与原2000比较仍有12／13对无2秒后共同窗，组均值保持null。[本轮运动读出](../artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/motion_readout/README.md)显示八个workspace案例共同窗关节余量代价均下降，但high悬足高度平方两引擎均上升；FL足保持高悬.65–.70m。far最大水平位移.962／1.167m，24–36秒保持段两引擎均无非足净力>5N记录；MuJoCo仍有明显少足承重与支撑间歇，不能称合理稳定步态，也不能沿用支撑301的大腿承重描述。本轮六项读出与两项workspace比较均实际退出0，无新仿真。固定状态噪声分析不证明随机训练退化的因果；整套配方与额外预算也不是单变量消融。少跌倒或单例完整不能抵消任务误差退化，原2000自身的支撑与跌倒问题仍未解决。原验收、目标坐标语义和`trained=false`不变。当前只做最终整理、提交并由root统一推送远程`main`后停止，不新增实验；速度＋EE路线仅完成参考核实，未实现。
 
 **历史UMI-inspired证据**：[UMI-inspired 训练方案](../artifacts/runs/diagnostic_pose_learning/umi_recipe/README.md) 的1000轮与四项双引擎后测已全部实际退出0。训练98,304,000 transitions／20,000次更新、全部有限，累计13,865跌倒／42,092重置／1,248,573非足碰撞控制样本；力矩饱和16,918,732／17,694,720,000子步关节样本。两引擎local4均完整20秒，位置／朝向RMSE均值为PhysX .006117m／.010725rad、MuJoCo .003630m／.010436rad，均优于既有背景控制；moving均3/4提前跌倒，far分别6.68秒／1.64秒跌倒。当前仅支持局部精度改善，不支持移动／远距任务成功或完整WBC。逐例比较使用共同2秒至较早终点窗口；MuJoCo far无post-2秒共同窗口，明确null。原标准如下，保持不变。
 
