@@ -163,7 +163,8 @@ class GoalBank:
 def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velocity,action,previous_action,
                  torque,effort,q,qd,previous_qd,lower,upper,gravity_b,foot_velocity,foot_contact,
                  collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5,
-                 joint_limit_margin_fraction=None,foot_clearance=None):
+                 joint_limit_margin_fraction=None,foot_force_z=None,foot_hip_delta_xy=None,
+                 feet_under_hips_distance_sigma=.5):
     if not np.isfinite(tracking_width) or tracking_width<=0:
         raise ValueError("Position reward width must be finite and positive")
     if not np.isfinite(orientation_tracking_width_rad) or orientation_tracking_width_rad<=0:
@@ -189,8 +190,17 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
         relative=(q-lower)/(upper-lower)
         terms["joint_limit"]=(((joint_limit_margin_fraction-relative).clamp_min(0)/joint_limit_margin_fraction).square()
             +((relative-(1-joint_limit_margin_fraction)).clamp_min(0)/joint_limit_margin_fraction).square()).sum(-1)
-    if foot_clearance is not None:
-        terms["unloaded_foot_height"]=(foot_clearance.clamp_min(0).square()*(~foot_contact.bool())).sum(-1)
+    # UMI-on-Legs d75c9c1: EvenMassDistribution and planar LinkPosePair.
+    if foot_force_z is not None:
+        force=foot_force_z.clamp_min(0)
+        distribution=force/(force.sum(-1,keepdim=True)+1e-8)
+        valid=distribution.sum(-1)>1e-8
+        terms["even_mass_distribution"]=torch.where(valid,distribution.std(-1,correction=1).square(),100.)
+    if foot_hip_delta_xy is not None:
+        if not np.isfinite(feet_under_hips_distance_sigma) or feet_under_hips_distance_sigma<=0:
+            raise ValueError("Feet-under-hips distance sigma must be finite and positive")
+        distance=foot_hip_delta_xy.norm(dim=-1)
+        terms["feet_under_hips"]=(1-torch.exp(-distance/feet_under_hips_distance_sigma)).sum(-1)
     return terms
 
 def sum_reward_terms(terms,weights,*,coupled_pose=False):

@@ -70,7 +70,7 @@ def test_optional_joint_margin_is_range_normalized_and_has_restoring_gradient(re
     q.requires_grad_()
     inputs=dict(reward_inputs,q=q)
     default=reward_terms(**inputs)
-    explicit=reward_terms(**inputs,joint_limit_margin_fraction=None,foot_clearance=None)
+    explicit=reward_terms(**inputs,joint_limit_margin_fraction=None,foot_force_z=None,foot_hip_delta_xy=None)
     assert default.keys()==explicit.keys()
     for name in default:
         assert torch.equal(default[name],explicit[name])
@@ -96,18 +96,42 @@ def test_invalid_optional_joint_margin_fails(reward_inputs,margin):
         reward_terms(**reward_inputs,joint_limit_margin_fraction=margin)
 
 
-def test_unloaded_foot_height_uses_clearance_not_contact_count(reward_inputs):
-    clearance=torch.tensor([[-.1,0.,.2,.3]]).repeat(3,1).requires_grad_()
-    contact=torch.tensor([[False,False,False,True]]).repeat(3,1)
-    terms=reward_terms(**dict(reward_inputs,foot_contact=contact),foot_clearance=clearance)
-    torch.testing.assert_close(terms['unloaded_foot_height'],torch.full((3,),.04))
-    terms['unloaded_foot_height'].sum().backward()
-    torch.testing.assert_close(clearance.grad,torch.tensor([[0.,0.,.4,0.]]).expand(3,-1))
-    # Old weight dictionaries still work because the optional term is absent by default.
+def test_positive_vertical_load_variance_and_flying_match_upstream(reward_inputs):
+    force=torch.tensor([[10.,10.,10.,10.],[40.,0.,-10.,0.],[0.,-10.,0.,0.]],requires_grad=True)
+    actual=reward_terms(**reward_inputs,foot_force_z=force)['even_mass_distribution']
+    torch.testing.assert_close(actual,torch.tensor([0.,.25,100.]))
+    actual.sum().backward()
+    assert torch.isfinite(force.grad).all()
+    assert force.grad[1,2]==0 and torch.count_nonzero(force.grad[2])==0
+    scaled=reward_terms(**reward_inputs,foot_force_z=force.detach()*5)['even_mass_distribution']
+    torch.testing.assert_close(scaled,actual)
+    # No contact threshold mask: zero-load feet remain in the four-way distribution.
+    loaded=reward_terms(**dict(reward_inputs,foot_contact=torch.ones(3,4)),foot_force_z=force)['even_mass_distribution']
+    assert torch.equal(loaded,actual)
+
+
+def test_planar_foot_preference_is_sum_of_upstream_exponential_costs(reward_inputs):
+    delta=torch.zeros(3,4,2)
+    delta[1,:,0]=.5
+    delta[2,0]=torch.tensor([.3,.4])
+    delta.requires_grad_()
+    actual=reward_terms(**reward_inputs,foot_hip_delta_xy=delta)['feet_under_hips']
+    unit=1-torch.exp(torch.tensor(-1.))
+    torch.testing.assert_close(actual,torch.tensor([0.,4*unit,unit]))
+    actual.sum().backward()
+    assert torch.isfinite(delta.grad).all() and torch.count_nonzero(delta.grad[0])==0
+    assert (delta.grad[1,:,0]>0).all()
     old=reward_terms(**reward_inputs)
-    assert 'unloaded_foot_height' not in old
-    weights={name:1. for name in old}
-    assert torch.isfinite(sum_reward_terms(old,weights)).all()
+    assert 'even_mass_distribution' not in old and 'feet_under_hips' not in old
+    assert torch.isfinite(sum_reward_terms(old,{name:1. for name in old})).all()
+
+
+@pytest.mark.parametrize('sigma',[0.,-.1,float('nan'),float('inf')])
+def test_planar_foot_sigma_rejects_invalid_values(reward_inputs,sigma):
+    with pytest.raises(ValueError,match='distance sigma'):
+        reward_terms(**reward_inputs,foot_hip_delta_xy=torch.zeros(3,4,2),feet_under_hips_distance_sigma=sigma)
+
+
 
 
 @pytest.mark.parametrize("width",[0.,-.1,float("nan"),float("inf"),-float("inf")])

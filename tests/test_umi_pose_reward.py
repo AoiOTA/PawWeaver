@@ -105,42 +105,36 @@ def test_actual_step_clips_nonterminal_but_preserves_fall_cost(fixed_env):
     assert extras["collision_control_samples"]==2
 
 
-def test_actual_step_optional_foot_height_is_surface_relative_and_dt_scaled(fixed_env):
+def test_actual_step_support_costs_use_world_fz_and_world_xy_with_dt(fixed_env):
+    from pawweaver.contracts import FOOT_NAMES
     env=fixed_env
     env.contacts.zero_()
     env.state().base_pos_w[:,2]=.3
-    # The untouched configuration must not access newly optional geometry.
     _,baseline,_,_=env.step(torch.zeros(2,18),auto_reset=False)
-    pose=torch.zeros(2,2,7);pose[:,:,6]=1.
-    pose[:,0,2]=torch.tensor([.528,.728])
+    names=list(FOOT_NAMES)+[name.replace('_foot','_thigh') for name in FOOT_NAMES]
+    env.robot.body_names=names
+    env.foot_ids=[0,1,2,3];env.thigh_ids=[4,5,6,7]
+    pose=torch.zeros(2,8,7);pose[:,:,6]=1.
+    pose[1,0,0]=.5
+    pose[:,:,2]=torch.arange(8)  # Vertical differences must not affect planar preference.
     env.robot.data.body_link_pose_w=SimpleNamespace(torch=pose)
-    env.foot_sphere_centers=torch.zeros(1,3)
-    env.foot_sphere_radii=torch.tensor([.028])
-    env.ground_height_m=.5
-    env.config['reward_weights']['unloaded_foot_height']=-2.
-    _,with_cost,_,_=env.step(torch.zeros(2,18),auto_reset=False)
-    torch.testing.assert_close(baseline-with_cost,torch.tensor([0.,2*.2**2*.02]),atol=1e-7,rtol=0)
-
-
-def test_foot_surface_uses_actual_collision_sphere_and_link_rotation():
-    from pawweaver.isaac_env import WholeBodyEnv,foot_sphere_geometry
-    from pawweaver.assets.model import RobotTree
-    from pawweaver.contracts import FOOT_NAMES
-    tree=RobotTree.load(Path(__file__).resolve().parents[1]/'assets/generated/diagnostic/robot.urdf')
-    centers,radii=foot_sphere_geometry(tree,'cpu')
+    env.robot.data.body_link_lin_vel_w=SimpleNamespace(torch=torch.zeros(2,8,3))
+    env.contacts=torch.zeros(2,8)
+    class Scene(dict):
+        pass
+    scene=Scene();scene.sensors={};scene.env_origins=torch.zeros(2,3)
     for i,name in enumerate(FOOT_NAMES):
-        assert radii[i].item()==pytest.approx(float(tree.links[name].find('collision/geometry/sphere').get('radius')))
-    env=WholeBodyEnv.__new__(WholeBodyEnv)
-    env.num_envs=1;env.foot_ids=[0,1,2,3]
-    env.foot_sphere_centers=centers+torch.tensor([.1,0.,0.])
-    env.foot_sphere_radii=radii
-    env.ground_height_m=.5
-    pose=torch.zeros(1,4,7)
-    pose[:,:,4]=pose[:,:,6]=2**-.5  # XYZW: +90 deg about Y rotates local +X toward -Z.
-    expected=torch.tensor([[-.1,0.,.2,.3]])
-    pose[:,:,2]=expected+.5+radii+.1
-    env.robot=SimpleNamespace(data=SimpleNamespace(body_link_pose_w=SimpleNamespace(torch=pose)))
-    torch.testing.assert_close(env.foot_clearance(),expected,atol=1e-7,rtol=0)
+        forces=torch.tensor([[[1000.,0.,10.]],[[1000.,0.,40. if i==0 else 0.]]])
+        sensor=SimpleNamespace(data=SimpleNamespace(net_forces_w=SimpleNamespace(torch=forces)))
+        scene['contact_'+name]=sensor;scene.sensors['contact_'+name]=sensor
+    env.scene=scene
+    env.config['reward_weights'].update(even_mass_distribution=-1.,feet_under_hips=-1.)
+    _,reward,_,_=env.step(torch.zeros(2,18),auto_reset=False)
+    torch.testing.assert_close(baseline-reward,torch.tensor([0.,(.25+1-torch.exp(torch.tensor(-1.)))*.02]),atol=1e-7,rtol=0)
+    # The legacy contacts field still contains full vector norms, not Fz.
+    assert (env.contacts[:,:4]>=1000).all()
+
+
 
 
 @pytest.mark.parametrize('height,tilt,fallen', [(.18,False,False),(.14,False,True),(.3,True,True),(.14,True,True)])
