@@ -53,7 +53,8 @@ class WholeBodyEnv:
         self.reference=GoalBank(num_envs,self.max_episode_length,device,seed,
             config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()),
             static_goal_offsets_m=config.get("static_goal_offsets_m"),
-            demonstrations_only=config.get("demonstrations_only",False))
+            demonstrations_only=config.get("demonstrations_only",False),
+            demonstration_group_weights=config.get("demonstration_group_weights"))
         self.previous_action=torch.zeros(num_envs,18,device=device)
         self.previous_qd=torch.zeros_like(self.previous_action)
         self.previous_tcp=torch.zeros(num_envs,3,device=device)
@@ -228,9 +229,16 @@ class WholeBodyEnv:
             foot_velocity=self.robot.data.body_link_lin_vel_w.torch[:,self.foot_ids],
             foot_contact=self.contacts[:,self.foot_ids]>1.,collision=collision,fallen=fallen)
         if self.config.get("umi_pose_reward",False):
-            nonterminal=self.umi_pose_reward.nonterminal_reward(terms,self.config["reward_weights"],
-                error.norm(dim=-1),orientation_error)
-            reward=nonterminal.clamp_min(0)*.02
+            reward_diagnostics=self.config.get("reward_diagnostics",False)
+            result=self.umi_pose_reward.nonterminal_reward(terms,self.config["reward_weights"],
+                error.norm(dim=-1),orientation_error,return_terms=reward_diagnostics)
+            if reward_diagnostics:
+                nonterminal,weighted_terms=result
+            else:
+                nonterminal=result
+            clip_nonnegative=self.config.get("umi_clip_nonnegative",True)
+            postclip=nonterminal.clamp_min(0) if clip_nonnegative else nonterminal
+            reward=postclip*.02
             self.umi_pose_reward.update(error.norm(dim=-1),orientation_error)
         else:
             reward=sum_reward_terms(terms,self.config["reward_weights"],
@@ -252,8 +260,13 @@ class WholeBodyEnv:
                 "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item(),
                 "fall_height":fall_height,"fall_tilt":fall_tilt,"base_up_z":base_up_z}
         if self.config.get("umi_pose_reward",False):
-            extras.update(umi_nonterminal_clipped_fraction=(nonterminal<0).float().mean().item(),
+            extras.update(umi_nonterminal_clipped_fraction=(nonterminal<0).float().mean().item() if clip_nonnegative else 0.,
                 umi_nonterminal_preclip_mean=nonterminal.mean().item())
+            if reward_diagnostics:
+                # Current-step tensors only: the collector owns any aggregation.
+                # All values precede the .02 control dt and the fall penalty.
+                extras["reward_diagnostics"]={"weighted_nonterminal_terms":weighted_terms,
+                    "nonterminal_preclip":nonterminal,"nonterminal_postclip":postclip}
         if self.diagnostic:
             # One boolean per environment at 50 Hz; not substep contact pairs.
             extras.update(falls=int(fallen.sum().item()),resets=len(ids) if auto_reset else 0,

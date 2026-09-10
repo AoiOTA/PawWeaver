@@ -56,17 +56,40 @@ def load_suite(root:Path):
         result.append(Trajectory.load(path))
     return result
 
+def completion_status(requested_steps, actual_steps, fallen):
+    """Use executed control steps, never accumulated floating-point simulator time."""
+    completed=actual_steps==requested_steps and requested_steps>0
+    return dict(requested_steps=int(requested_steps),actual_steps=int(actual_steps),
+                completed=bool(completed),
+                termination_reason="fall" if fallen else "completed" if completed else "incomplete")
+
+
+def _completed(result):
+    requested=result.get("requested_steps",0)
+    return (requested>0 and result.get("actual_steps")==requested
+            and result.get("completed") is True)
+
+
 def summarize(results):
     reach=[r for r in results if r["trajectory"]["family"]=="reach"]
     tracking=[r for r in results if r["trajectory"]["family"]!="reach"]
+    completed=[r for r in tracking if _completed(r) and not r["fallen"]]
+    incomplete=[r for r in tracking if not _completed(r) or r["fallen"]]
+    def mean(rows,key):
+        return float(np.mean([r[key] for r in rows])) if rows and all(r.get(key) is not None for r in rows) else None
     return {"episodes":len(results),"reach_episodes":len(reach),"tracking_episodes":len(tracking),
-        "reach_success_rate":float(np.mean([r["reached"] for r in reach])) if reach else None,
-        "tracking_pass_rate":float(np.mean([r["rmse_m"]<=.08 and r["p95_m"]<=.15 and not r["fallen"] for r in tracking])) if tracking else None,
-        "no_fall_rate":float(np.mean([not r["fallen"] for r in results])),
-        "mean_rmse_m":float(np.mean([r["rmse_m"] for r in tracking])) if tracking else None,
+        "reach_success_rate":float(np.mean([r["reached"] and not r["fallen"] and _completed(r) for r in reach])) if reach else None,
+        "tracking_pass_rate":float(np.mean([_completed(r) and not r["fallen"] and r.get("rmse_m") is not None and r.get("p95_m") is not None and r["rmse_m"]<=.08 and r["p95_m"]<=.15 for r in tracking])) if tracking else None,
+        "completion_rate":float(np.mean([_completed(r) for r in results])) if results else None,
+        "no_fall_rate":float(np.mean([not r["fallen"] for r in results])) if results else None,
+        "mean_rmse_m":mean(tracking,"rmse_m"),
+        "mean_rmse_scope":"Legacy mixed executed-window statistic; not full-duration task performance.",
+        "completed_tracking_mean_rmse_m":mean(completed,"rmse_m"),
+        "failed_tracking_executed_window_mean_rmse_m":mean(incomplete,"rmse_m"),
+        "completed_tracking_episodes":len(completed),"failed_tracking_episodes":len(incomplete),
         "success_rates_scope":"position_criteria_only",
-        "mean_orientation_rmse_rad":float(np.mean([r["orientation_rmse_rad"] for r in results])) if results and all(r.get("orientation_rmse_rad") is not None for r in results) else None,
-        "mean_orientation_p95_rad":float(np.mean([r["orientation_p95_rad"] for r in results])) if results and all(r.get("orientation_p95_rad") is not None for r in results) else None,
+        "mean_orientation_rmse_rad":mean(results,"orientation_rmse_rad"),
+        "mean_orientation_p95_rad":mean(results,"orientation_p95_rad"),
         "pose_acceptance_passed":None,
         "pose_acceptance_note":"Orientation acceptance thresholds have not been specified; existing success/pass rates describe position criteria only."}
 
@@ -97,6 +120,11 @@ def compare(physx:Path,mujoco:Path):
 
 def save_run(output,suite,asset_manifest,bundle,seed,engine,results,*,evaluation=None):
     suite_manifest=json.loads((suite/"manifest.json").read_text())
+    entries=suite_manifest.get("cases",[])
+    expected=([entry["case_id"] for entry in entries] if all("case_id" in entry for entry in entries)
+              else [trajectory.metadata["case_id"] for trajectory in load_suite(suite)])
+    if expected and [r["trajectory"]["case_id"] for r in results]!=expected:
+        raise ValueError("Evaluation results must retain every specified case in suite order")
     report={"task_kind":suite_manifest.get("task_kind","position_only"),"engine":engine,"seed":seed,"asset_hash":asset_manifest["asset_hash"],
         "policy_sha256":bundle["policy_sha256"],"suite_sha256":hashlib.sha256((suite/"manifest.json").read_bytes()).hexdigest(),
         "reachability_screened":suite_manifest["reachability_screened"],

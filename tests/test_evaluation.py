@@ -74,7 +74,7 @@ def test_position_only_suite_is_not_upgraded(tmp_path):
 def test_orientation_does_not_invent_acceptance_thresholds():
     from pawweaver.evaluation import summarize
     rows=[dict(trajectory={"family":"line"},rmse_m=.08,p95_m=.15,fallen=False,
-               orientation_rmse_rad=2.,orientation_p95_rad=3.)]
+               orientation_rmse_rad=2.,orientation_p95_rad=3.,requested_steps=3000,actual_steps=3000,completed=True)]
     summary=summarize(rows)
     assert summary["tracking_pass_rate"]==1.
     assert summary["mean_orientation_rmse_rad"]==2.
@@ -111,6 +111,7 @@ def test_pose_metrics_flow_into_report_without_full_pose_pass(tmp_path):
     metrics=episode_metrics(times,np.full(4,.04),np.zeros((4,3)),np.ones((4,18)),
                             np.ones((4,18)),False,orientation_errors=np.array([0.,0.,.3,.4]))
     metrics["trajectory"]={"case_id":"one","family":"line"}
+    metrics.update(requested_steps=150,actual_steps=150,completed=True)
     suite=tmp_path/"suite";suite.mkdir()
     (suite/"manifest.json").write_text(json.dumps({"task_kind":"world_tcp_pose","reachability_screened":False}))
     report=save_run(tmp_path/"report",suite,{"asset_hash":"asset"},{"policy_sha256":"policy"},0,"MuJoCo",[metrics])
@@ -156,3 +157,59 @@ def test_pairing_dynamic_only_and_mixed_suites(tmp_path,reach_rates,reach_count,
     b.write_text(json.dumps(dict(common,engine="MuJoCo",summary=summaries[1])))
     with pytest.raises(KeyError,match="reach_success_rate"):
         compare(a,b)
+
+
+@pytest.mark.parametrize("actual,fallen,passed",[(2999,False,0.),(3000,False,1.),(3000,True,0.)])
+def test_tracking_requires_requested_control_steps(actual,fallen,passed):
+    from pawweaver.evaluation import summarize,completion_status
+    row=dict(trajectory={"family":"line"},rmse_m=.01,p95_m=.01,fallen=fallen)
+    row.update(completion_status(3000,actual,fallen))
+    assert summarize([row])["tracking_pass_rate"]==passed
+    assert row["termination_reason"]==("fall" if fallen else "completed" if actual==3000 else "incomplete")
+    # Missing metadata in an old or partial record cannot establish completion.
+    row.pop("requested_steps")
+    assert summarize([row])["tracking_pass_rate"]==0.
+
+
+def test_failure_denominator_and_completed_error_are_separate():
+    from pawweaver.evaluation import summarize,completion_status
+    rows=[]
+    for actual,fallen,error in [(3000,False,.04),(12,True,.001),(50,False,.001)]:
+        row=dict(trajectory={"family":"line"},rmse_m=error,p95_m=error,fallen=fallen)
+        row.update(completion_status(3000,actual,fallen)); rows.append(row)
+    summary=summarize(rows)
+    assert summary["tracking_pass_rate"]==pytest.approx(1/3)
+    assert summary["completion_rate"]==pytest.approx(1/3)
+    assert summary["completed_tracking_mean_rmse_m"]==.04
+    assert summary["failed_tracking_episodes"]==2
+    rows[0].update(trajectory={"family":"reach"},reached=True,fallen=True)
+    assert summarize(rows)["reach_success_rate"]==0.
+
+
+def test_short_fragment_has_no_post_transient_metric():
+    from pawweaver.task import episode_metrics
+    from pawweaver.evaluation import summarize,completion_status
+    result=episode_metrics([.02,.04],[.01,.01],np.zeros((2,3)),np.zeros((2,18)),np.zeros((2,18)),False,orientation_errors=[0.,0.])
+    assert result["rmse_m"] is None
+    assert result["orientation_rmse_rad"] is None
+    assert result["executed_fragment_rmse_m"]==.01
+    result.update(trajectory={"family":"line"},**completion_status(3000,2,False))
+    assert summarize([result])["tracking_pass_rate"]==0.
+    assert summarize([result])["mean_rmse_m"] is None
+
+
+def test_report_rejects_missing_suite_cases(tmp_path):
+    from pawweaver.evaluation import save_run
+    (tmp_path/"manifest.json").write_text(json.dumps({"cases":[{"case_id":"missing"}]}))
+    with pytest.raises(ValueError,match="every specified case"):
+        save_run(tmp_path/"out",tmp_path,{}, {},0,"MuJoCo",[])
+    assert not (tmp_path/"out").exists()
+
+
+def test_reach_hold_can_finish_after_ten_second_entry_deadline():
+    from pawweaver.task import episode_metrics
+    times=np.array([9.,10.,10.5,11.])
+    args=(times,[.1,.04,.04,.04],np.zeros((4,3)),np.zeros((4,18)),np.zeros((4,18)))
+    result=episode_metrics(*args,False,orientation_errors=np.zeros(4))
+    assert result['reached'] and result['reach_time_s']==10.
+    assert not episode_metrics(*args,True,orientation_errors=np.zeros(4))['reached']

@@ -38,7 +38,7 @@ def main():
     from isaaclab.app import AppLauncher
     from pawweaver.training_inputs import training_inputs,check_training_identity
     from pawweaver.bundle import load_bundle
-    from pawweaver.evaluation import load_suite,save_run
+    from pawweaver.evaluation import load_suite,save_run,completion_status
     parser=argparse.ArgumentParser(description=__doc__)
     for name in ("asset","bundle","suite","output"):
         parser.add_argument("--"+name,type=Path,required=True)
@@ -119,6 +119,7 @@ def main():
             for slot,(trajectory,record) in enumerate(zip(batch,rows)):
                 result=episode_metrics(record["times"],record["errors"],record["base"],record["torques"],record["velocities"],fallen[slot],
                                        orientation_errors=record["orientation_errors_rad"])
+                result.update(completion_status(batch_lengths[slot],len(record["times"]),fallen[slot]))
                 result.update(engine="PhysX",trajectory=trajectory.metadata,policy_sha256=bundle["policy_sha256"],
                               diagnostic=args.diagnostic,elapsed_seconds=record["times"][-1],batch_index=len(layout)-1,env_index=slot,
                               fall_height=bool(record["fall_height"][-1]),fall_tilt=bool(record["fall_tilt"][-1]))

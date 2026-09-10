@@ -37,6 +37,7 @@ def test_demonstrations_only_samples_uniform_files_and_preserves_loaded_pose(tmp
     bank.reset(torch.arange(count),starts,torch.tensor([[0.,1.,0.,0.]]).repeat(count,1))
     # Each reset makes exactly one uniform file draw, without a family draw.
     selected=np.random.default_rng(17).integers(3,size=count)
+    np.testing.assert_array_equal(bank.demonstration_index,selected)
     assert set(selected)=={0,1,2}
     for index,file_index in enumerate(selected):
         trajectory=Trajectory.load(paths[file_index]).align(starts[index].numpy())
@@ -65,6 +66,61 @@ def test_explicit_false_keeps_old_family_sampling(tmp_path):
     torch.testing.assert_close(old.orientations_wxyz,explicit.orientations_wxyz,rtol=0,atol=0)
     np.testing.assert_array_equal(old.family,explicit.family)
     assert len(set(old.family))>1
+    np.testing.assert_array_equal(old.demonstration_index,np.where(old.family==len(old.sampler.families)-1,0,-1))
+
+
+def test_group_weights_select_group_mass_then_uniform_file_and_keep_pose(tmp_path):
+    paths=[]
+    for index,group in enumerate(['local','local','far','excluded']):
+        path=tmp_path/f'group{index}.npz'
+        Trajectory([0,1],[[2,3,4],[3+index,3,4]],
+                   [[1,0,0,0],[np.cos(.2),0,0,np.sin(.2)]],
+                   {'split':'train','training_group':group}).save(path)
+        paths.append(path)
+    bank=GoalBank(80,10,'cpu',seed=42,demonstrations=paths,demonstrations_only=True,
+                  demonstration_group_weights={'local':1.,'far':3.,'absent_zero':0.})
+    ids=torch.arange(80)
+    starts=torch.tensor([[8.,9.,10.]]).repeat(80,1)
+    bank.reset(ids,starts,torch.tensor([[0.,1.,0.,0.]]).repeat(80,1))
+    rng=np.random.default_rng(42)
+    expected=[]
+    for _ in ids:
+        group=[[0,1],[2]][rng.choice(2,p=[.25,.75])]
+        expected.append(group[rng.integers(len(group))])
+    np.testing.assert_array_equal(bank.demonstration_index,expected)
+    assert set(expected)=={0,1,2}
+    for index,selected in enumerate(expected):
+        trajectory=Trajectory.load(paths[selected]).align(starts[index].numpy())
+        np.testing.assert_allclose(bank.positions[index],trajectory.sample(np.arange(15)*.02),atol=1e-6)
+        np.testing.assert_allclose(bank.orientations_wxyz[index],trajectory.sample_orientation(np.arange(15)*.02),atol=1e-7)
+    # A partial reset updates only its selected environments, and synthetic
+    # references must clear a previous imported-file index.
+    previous=bank.demonstration_index.copy()
+    bank.demonstrations_only=False
+    bank.static_goal_offsets_m=np.zeros((1,3))
+    bank.reset(torch.tensor([3]),starts[[3]],torch.tensor([[1.,0.,0.,0.]]))
+    previous[3]=-1
+    np.testing.assert_array_equal(bank.demonstration_index,previous)
+
+
+@pytest.mark.parametrize('weights',[{},[],{'a':-1},{'a':float('nan')},{'a':float('inf')},
+                                     {'a':0},{'missing':1},{'':1},{'a':True},{'a':'1'}])
+def test_invalid_demonstration_group_weights_rejected(tmp_path,weights):
+    path=tmp_path/'group.npz'
+    Trajectory([0,1],[[0,0,0],[1,0,0]],[[1,0,0,0]]*2,
+               {'split':'train','training_group':'a'}).save(path)
+    with pytest.raises(ValueError,match='group|weight'):
+        GoalBank(1,10,'cpu',demonstrations=[path],demonstration_group_weights=weights)
+
+
+@pytest.mark.parametrize('group',[None,'',3])
+def test_group_metadata_required_only_when_group_sampling_enabled(tmp_path,group):
+    path=tmp_path/'group.npz'
+    Trajectory([0,1],[[0,0,0],[1,0,0]],[[1,0,0,0]]*2,
+               {'split':'train','training_group':group}).save(path)
+    GoalBank(1,10,'cpu',demonstrations=[path])
+    with pytest.raises(ValueError,match='training_group'):
+        GoalBank(1,10,'cpu',demonstrations=[path],demonstration_group_weights={'a':1})
 
 
 @pytest.mark.parametrize('minimum', [.2,.15])

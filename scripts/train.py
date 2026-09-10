@@ -16,6 +16,7 @@ parser.add_argument("--config",type=Path,default=Path("configs/training.json"))
 parser.add_argument("--output",type=Path,required=True)
 parser.add_argument("--num-envs",type=int,default=1024)
 parser.add_argument("--iterations",type=int,default=1000)
+parser.add_argument("--stop-file",type=Path,help="Create this file during training to save and stop after a complete PPO update; SIGINT still stops immediately")
 parser.add_argument("--seed",type=int,default=0)
 parser.add_argument("--diagnostic",action="store_true",help="Engineering probe only; never a trained acceptance bundle")
 parser.add_argument("--provisional-spec",type=Path,help="Required explicit provisional spec with sources for diagnostic mode")
@@ -25,6 +26,10 @@ AppLauncher.add_app_launcher_args(parser)
 args=parser.parse_args()
 if args.resume and args.initialize_from:
     parser.error("Choose resume or initialize-from")
+if args.iterations<1:
+    parser.error("iterations must be positive")
+if args.stop_file is not None and args.stop_file.exists():
+    parser.error("stop-file already exists; choose a fresh path or remove the previous request")
 manifest,spec,provisional=training_inputs(args.asset,diagnostic=args.diagnostic,provisional_spec=args.provisional_spec)  # Fail before GPU startup.
 if manifest["robot"]!="as2_edu_piper_h_rgbd":
     raise ValueError("Formal training requires the verified AS2 EDU + Piper-H + selected RGB-D asset")
@@ -137,6 +142,7 @@ try:
     for iteration in range(start_iteration,start_iteration+args.iterations):
         begin=time.perf_counter()
         umi_stats={"umi_nonterminal_clipped_fraction":0.,"umi_nonterminal_preclip_mean":0.}
+        reward_stats={}
         if args.diagnostic:
             before=[p.detach().clone() for p in actor.parameters()]
             steps_before=len(optimizer_steps)
@@ -148,6 +154,13 @@ try:
             for _ in range(config["rollout_steps"]):
                 actions=algorithm.act(obs)
                 obs,reward,done,extras=env.step(actions)
+                if "reward_diagnostics" in extras:
+                    diagnostics=extras["reward_diagnostics"]
+                    components={"weighted_"+key:value for key,value in diagnostics["weighted_nonterminal_terms"].items()}
+                    components.update({key:diagnostics[key] for key in ("nonterminal_preclip","nonterminal_postclip")})
+                    for key,value in components.items():
+                        name="reward_"+key+"_mean"
+                        reward_stats[name]=reward_stats.get(name,0.)+float(value.mean())/config["rollout_steps"]
                 if env.umi_pose_reward is not None:
                     for key in umi_stats:
                         umi_stats[key]+=extras[key]/config["rollout_steps"]
@@ -182,7 +195,10 @@ try:
         seconds=time.perf_counter()-begin
         stats=dict(losses,iteration=iteration,steps_per_second=args.num_envs*config["rollout_steps"]/seconds,
             tracking_error_m=extras["tracking_error_m"],orientation_error_rad=extras["orientation_error_rad"],
-            fall_fraction=extras["fall_fraction"])
+            fall_fraction=extras["fall_fraction"],learning_rate=algorithm.optimizer.param_groups[0]["lr"],
+            leg_action_std_mean=float(actor.distribution.std_param[:12].detach().mean()),
+            arm_action_std_mean=float(actor.distribution.std_param[12:].detach().mean()))
+        stats.update(reward_stats)
         if args.diagnostic:
             stats.update(probe)
         if env.umi_pose_reward is not None:
@@ -193,7 +209,16 @@ try:
         for key,value in stats.items():
             writer.add_scalar(key,value,iteration)
         print(json.dumps(stats),flush=True)
-        if iteration%50==0 or iteration==start_iteration+args.iterations-1:
+        stop_requested=args.stop_file is not None and args.stop_file.exists()
+        completed_iterations=iteration-start_iteration+1
+        budget_complete=completed_iterations==args.iterations
+        metadata["training_progress"]={
+            "status":"completed" if budget_complete else "stopped_early" if stop_requested else "running",
+            "stop_reason":"stop_file" if stop_requested else "iteration_budget" if budget_complete else None,
+            "requested_iterations":args.iterations,"completed_iterations":completed_iterations,
+            "start_iteration":start_iteration,"last_completed_iteration":iteration,
+            "completed_transitions":completed_iterations*args.num_envs*config["rollout_steps"]}
+        if iteration%50==0 or budget_complete or stop_requested:
             checkpoint={"algorithm":algorithm.save(),"iteration":iteration,"metadata":metadata,
                         "sampler":env.reference.sampler.state_dict(),"reference_rng":env.reference.rng.bit_generator.state,
                         "torch_rng":torch.get_rng_state(),"cuda_rng":torch.cuda.get_rng_state_all(),
@@ -202,6 +227,9 @@ try:
                 checkpoint["umi_pose_reward"]=env.umi_pose_reward.state_dict()
             torch.save(checkpoint,args.output/f"checkpoint_{iteration:06d}.pt")
             export_bundle(actor,env.spec,manifest,config,args.output/"bundle",trained=not args.diagnostic,metadata=metadata)
+        (args.output/"run.json").write_text(json.dumps(metadata,indent=2)+"\n")
+        if stop_requested:
+            break
     writer.close()
     env.close()
 except BaseException:

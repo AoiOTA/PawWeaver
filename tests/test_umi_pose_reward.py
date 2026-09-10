@@ -103,6 +103,47 @@ def test_actual_step_clips_nonterminal_but_preserves_fall_cost(fixed_env):
     assert extras["umi_nonterminal_preclip_mean"]==pytest.approx(4*torch.exp(torch.tensor(-.5)).item()-10)
     assert extras["falls"]==1 and extras["resets"]==0
     assert extras["collision_control_samples"]==2
+    assert "reward_diagnostics" not in extras
+
+
+@pytest.mark.parametrize("clip",[True,False])
+def test_umi_diagnostics_match_actual_reward_and_fall_semantics(fixed_env,clip):
+    env=fixed_env
+    env.config.update(reward_diagnostics=True,umi_clip_nonnegative=clip)
+    _,reward,done,extras=env.step(torch.zeros(2,18),auto_reset=False)
+    diagnostics=extras["reward_diagnostics"]
+    weighted=diagnostics["weighted_nonterminal_terms"]
+    assert not {"tracking","orientation_tracking","termination"}&weighted.keys()
+    torch.testing.assert_close(weighted["umi_pose"],torch.full((2,),4*torch.exp(torch.tensor(-.5))))
+    torch.testing.assert_close(weighted["collision"],torch.full((2,),-10.))
+    torch.testing.assert_close(sum(weighted.values()),diagnostics["nonterminal_preclip"])
+    preclip=diagnostics["nonterminal_preclip"]
+    expected=preclip.clamp_min(0) if clip else preclip
+    torch.testing.assert_close(diagnostics["nonterminal_postclip"],expected)
+    torch.testing.assert_close(reward,expected*.02+torch.tensor([0.,-5.]))
+    assert done.tolist()==[False,True]
+    assert extras["umi_nonterminal_clipped_fraction"]==(1. if clip else 0.)
+    assert (preclip<0).all()
+    if not clip:
+        assert (reward<0).all()
+
+
+def test_umi_weighted_terms_preserve_default_formula():
+    course=UmiPoseReward()
+    position=torch.tensor([0.,.2,1.])
+    orientation=torch.tensor([0.,.8,2.])
+    terms={"tracking":torch.ones(3),"orientation_tracking":torch.ones(3),
+           "termination":torch.ones(3),"collision":torch.tensor([0.,1.,0.]),
+           "action_rate":torch.tensor([.1,.2,.3])}
+    weights={"tracking":99.,"orientation_tracking":88.,"termination":-5.,
+             "collision":-10.,"action_rate":-.02}
+    legacy=4*torch.exp(-position.square()/2.)*torch.exp(-orientation/8.)+sum(
+        weights[name]*value for name,value in terms.items()
+        if name not in ("tracking","orientation_tracking","termination"))
+    actual,weighted=course.nonterminal_reward(terms,weights,position,orientation,return_terms=True)
+    assert torch.equal(actual,legacy)
+    assert torch.equal(course.nonterminal_reward(terms,weights,position,orientation),legacy)
+    torch.testing.assert_close(sum(weighted.values()),legacy)
 
 
 def test_actual_step_support_costs_use_world_fz_and_world_xy_with_dt(fixed_env):

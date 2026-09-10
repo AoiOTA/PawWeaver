@@ -232,6 +232,8 @@ def test_diagnostic_evaluation_archives_elapsed_pose_and_early_fall(diagnostic_b
         unchanged.update(engine='MuJoCo', trajectory=trajectory.metadata,
             policy_sha256=runner.bundle['policy_sha256'], diagnostic=True, trained=False,
             elapsed_seconds=float(runner.data.time),fall_height=fall,fall_tilt=False)
+        unchanged.update(requested_steps=3,actual_steps=1 if fall else 3,completed=not fall,
+                         termination_reason='fall' if fall else 'completed')
         assert result == unchanged
         assert trace['fall_height'][-1]==fall and not trace['fall_tilt'].any()
         np.testing.assert_allclose(trace['base_up_z'],1.)

@@ -194,6 +194,8 @@ class MujocoRunner:
                 break
         result=episode_metrics(rows["times"],rows["errors"],rows["base"],rows["torques"],rows["velocities"],fallen,
             orientation_errors=rows["orientation_errors_rad"])
+        from .evaluation import completion_status
+        result.update(completion_status(steps,len(rows["times"]),fallen))
         result.update(engine="MuJoCo",trajectory=trajectory.metadata,
             policy_sha256=self.bundle["policy_sha256"],diagnostic=self.diagnostic,
             trained=bool(self.bundle["trained"]),elapsed_seconds=float(self.data.time),

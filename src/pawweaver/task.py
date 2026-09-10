@@ -45,11 +45,16 @@ class UmiPoseReward:
             if self.orientation_ema_rad.item()<threshold:
                 self.orientation_sigma_rad=sigma
 
-    def nonterminal_reward(self,terms,weights,position_error,orientation_error):
+    def nonterminal_reward(self,terms,weights,position_error,orientation_error,*,return_terms=False):
+        """Return the actual unscaled reward, optionally with its weighted terms."""
         pose=4*torch.exp(-position_error.square()/self.position_sigma_m2)*torch.exp(
             -orientation_error/self.orientation_sigma_rad)
-        return pose+sum(weights[name]*value for name,value in terms.items()
-                        if name not in ("tracking","orientation_tracking","termination"))
+        weighted={name:weights[name]*value for name,value in terms.items()
+                  if name not in ("tracking","orientation_tracking","termination")}
+        reward=pose+sum(weighted.values())
+        if return_terms:
+            return reward,{"umi_pose":pose,**weighted}
+        return reward
 
     def state_dict(self):
         return {"position_ema_m":self.position_ema_m.item(),
@@ -75,7 +80,7 @@ class UmiPoseReward:
 
 class GoalBank:
     def __init__(self,batch,steps,device,seed=0,stage=0,adaptive=False,demonstrations=(),static_goal_offsets_m=None,
-                 demonstrations_only=False):
+                 demonstrations_only=False,demonstration_group_weights=None):
         self.batch,self.steps,self.device=batch,steps,device
         self.rng=np.random.default_rng(seed)
         self.stage,self.adaptive=stage,adaptive
@@ -91,11 +96,40 @@ class GoalBank:
             raise ValueError("demonstrations_only requires a nonempty training demonstration collection")
         if any(t.metadata.get("split")!="train" for t in self.demonstrations):
             raise ValueError("Only pre-split training demonstrations can enter the training GoalBank")
+        self.demonstration_groups=None
+        if demonstration_group_weights is not None:
+            if not isinstance(demonstration_group_weights,dict) or not demonstration_group_weights:
+                raise ValueError("demonstration_group_weights requires a nonempty group weight dictionary")
+            groups={}
+            for index,trajectory in enumerate(self.demonstrations):
+                group=trajectory.metadata.get("training_group")
+                if not isinstance(group,str) or not group.strip():
+                    raise ValueError("Grouped demonstrations require a nonempty training_group string")
+                groups.setdefault(group,[]).append(index)
+            active=[]
+            masses=[]
+            for group,weight in demonstration_group_weights.items():
+                if (not isinstance(group,str) or not group.strip()
+                        or isinstance(weight,bool) or not isinstance(weight,(int,float))
+                        or not np.isfinite(weight) or weight<0):
+                    raise ValueError("demonstration_group_weights requires named finite nonnegative weights")
+                if weight>0:
+                    if group not in groups:
+                        raise ValueError(f"Positive training group {group!r} has no demonstrations")
+                    active.append(groups[group])
+                    masses.append(weight)
+            if not masses:
+                raise ValueError("demonstration_group_weights requires positive total weight")
+            masses=np.asarray(masses,dtype=np.float64)
+            masses/=masses.max()
+            self.demonstration_group_probabilities=masses/masses.sum()
+            self.demonstration_groups=active
         families=FAMILIES+(('fastumi',) if self.demonstrations else ())
         self.sampler=AdaptiveSampler(families)
         self.positions=torch.zeros(batch,steps+5,3,device=device)
         self.orientations_wxyz=torch.zeros(batch,steps+5,4,device=device)
         self.family=np.zeros(batch,dtype=int)
+        self.demonstration_index=np.full(batch,-1,dtype=int)
 
     def reset(self,ids,start_w,start_quat_w):
         starts=start_w.detach().cpu().numpy()
@@ -115,6 +149,7 @@ class GoalBank:
             self.positions[ids]=torch.as_tensor(targets,device=self.device,dtype=torch.float32)[:,None,:]
             self.orientations_wxyz[ids]=torch.as_tensor(start_orientations,device=self.device,dtype=torch.float32)[:,None,:]
             self.family[indices]=0
+            self.demonstration_index[indices]=-1
             return
         for index,start,start_orientation in zip(ids.cpu().tolist(),starts,start_orientations):
             if self.demonstrations_only:
@@ -124,11 +159,19 @@ class GoalBank:
             else:
                 family=int(self.sampler.sample(self.rng,1)[0] if self.adaptive else self.rng.integers(len(self.sampler.families)))
             self.family[index]=family
+            self.demonstration_index[index]=-1
             # Synthetic positions explicitly hold the actual reset TCP world
             # orientation. Combining them does not establish pose reachability.
             orientations=np.repeat(start_orientation[None,:],self.steps+5,axis=0)
             if family==len(FAMILIES):
-                trajectory=self.demonstrations[int(self.rng.integers(len(self.demonstrations)))].align(start)
+                if self.demonstration_groups is None:
+                    selected=int(self.rng.integers(len(self.demonstrations)))
+                else:
+                    group=self.demonstration_groups[int(self.rng.choice(
+                        len(self.demonstration_groups),p=self.demonstration_group_probabilities))]
+                    selected=group[int(self.rng.integers(len(group)))]
+                self.demonstration_index[index]=selected
+                trajectory=self.demonstrations[selected].align(start)
                 positions=trajectory.sample(np.arange(self.steps+5)*.02)
                 orientations=trajectory.sample_orientation(np.arange(self.steps+5)*.02)
             elif family==0:
@@ -221,8 +264,6 @@ def episode_metrics(times,errors,base_positions,torques,velocities,fallen,transi
             or (orientation_errors<0).any() or (orientation_errors>np.pi+1e-6).any()):
         raise ValueError("Metrics require one finite shortest orientation angle in radians per sample")
     selection=times>=transient_s
-    if not selection.any():
-        selection=np.ones(len(times),dtype=bool)
     selected=errors[selection]
     selected_orientation=orientation_errors[selection]
     hold_start=None; reach_time=None
@@ -234,9 +275,11 @@ def episode_metrics(times,errors,base_positions,torques,velocities,fallen,transi
         else:
             hold_start=None
     energy=float(np.trapezoid(np.abs(np.asarray(torques)*velocities).sum(-1),times))
-    return {"rmse_m":float(np.sqrt(np.mean(selected**2))),"p95_m":float(np.quantile(selected,.95)),
-        "orientation_rmse_rad":float(np.sqrt(np.mean(selected_orientation**2))),
-        "orientation_p95_rad":float(np.quantile(selected_orientation,.95)),
+    return {"rmse_m":float(np.sqrt(np.mean(selected**2))) if len(selected) else None,"p95_m":float(np.quantile(selected,.95)) if len(selected) else None,
+        "executed_fragment_rmse_m":float(np.sqrt(np.mean(errors**2))),
+        "post_transient_samples":int(selection.sum()),
+        "orientation_rmse_rad":float(np.sqrt(np.mean(selected_orientation**2))) if len(selected_orientation) else None,
+        "orientation_p95_rad":float(np.quantile(selected_orientation,.95)) if len(selected_orientation) else None,
         "reached":reach_time is not None and not fallen,"reach_time_s":None if reach_time is None else float(reach_time),
         "fallen":bool(fallen),"absolute_joint_work_j":energy,
         "base_displacement_m":float(np.linalg.norm(np.asarray(base_positions)[-1,:2]-np.asarray(base_positions)[0,:2]))}
