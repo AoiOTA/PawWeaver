@@ -19,7 +19,7 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def build(evaluation,bundle_path):
+def build(evaluation,bundle_path,*,include_hip_height=False):
     report=geometry.read(evaluation/"report.json")
     bundle=geometry.read(bundle_path/"manifest.json")
     asset=geometry.REPO/"assets/generated/diagnostic"
@@ -60,7 +60,7 @@ def build(evaluation,bundle_path):
             raise ValueError(f"Episode/report identity differs: {case}")
         trace=evaluation/case/"trace.npz"
         if actual>=2:
-            row=geometry.case_result(trace,episode,engine,tree,q0,spheres,actuators["physics_dt"])
+            row=geometry.case_result(trace,episode,engine,tree,q0,spheres,actuators["physics_dt"],include_hip_height=include_hip_height)
         else:
             # A first-step fall has no next observation to align; retain it.
             with np.load(trace,allow_pickle=False) as data:
@@ -70,6 +70,8 @@ def build(evaluation,bundle_path):
                  "aligned_samples":0,"excluded_final_poststep_samples":1,"alignment_checks":None,
                  "status":"No next observation; support reconstruction unavailable",
                  "windows":dict(all_aligned=None,post2=None,designed_middle_hold=None)}
+            if include_hip_height:
+                row["hip_height"]={"windows":dict(all_aligned=None,post2=None,designed_middle_hold=None)}
         rows.append(row)
     return {"evaluation":str(evaluation),"bundle":str(bundle_path),"engine":report["engine"],
             "policy_sha256":report["policy_sha256"],"asset_hash":report["asset_hash"],
@@ -86,10 +88,11 @@ if __name__=="__main__":
     parser.add_argument("--evaluation",type=Path,required=True)
     parser.add_argument("--bundle",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
+    parser.add_argument("--include-hip-height",action="store_true")
     args=parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"Refusing to overwrite {args.output}")
-    result=build(args.evaluation.resolve(),args.bundle.resolve())
+    result=build(args.evaluation.resolve(),args.bundle.resolve(),include_hip_height=args.include_hip_height)
     text=json.dumps(result,indent=2,allow_nan=False)+"\n"
     with args.output.open("x") as stream:
         stream.write(text)

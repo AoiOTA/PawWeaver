@@ -96,7 +96,35 @@ def summarize(mask,times,bottoms,forces,nonfoot,ground_pairs):
     return result
 
 
-def case_result(path,episode,engine,tree,q0,spheres,physics_dt):
+def height_distribution(values):
+    return {"min":float(values.min()),"p05":float(np.quantile(values,.05)),
+            "median":float(np.median(values)),"mean":float(values.mean()),
+            "p95":float(np.quantile(values,.95)),"max":float(values.max())}
+
+
+def hip_height_window(mask,times,base_z,thigh_z,center_z,bottom_z):
+    if not mask.any():
+        return None
+    time=times[mask]
+    feet={}
+    for index,name in enumerate(FOOT_NAMES):
+        center_delta=center_z[mask,index]-thigh_z[mask,index]
+        bottom_delta=bottom_z[mask,index]-thigh_z[mask,index]
+        feet[name]={"thigh_link":name.replace("_foot","_thigh"),
+                    "thigh_world_z_m":height_distribution(thigh_z[mask,index]),
+                    "sphere_center_world_z_m":height_distribution(center_z[mask,index]),
+                    "sphere_bottom_world_z_m":height_distribution(bottom_z[mask,index]),
+                    "sphere_center_minus_thigh_world_z_m":height_distribution(center_delta),
+                    "sphere_bottom_minus_thigh_world_z_m":height_distribution(bottom_delta),
+                    "center_above_thigh_fraction":float((center_delta>0.).mean()),
+                    "bottom_above_thigh_fraction":float((bottom_delta>0.).mean()),
+                    "longest_center_above_thigh":longest(center_delta>0.,time),
+                    "longest_bottom_above_thigh":longest(bottom_delta>0.,time)}
+    return {"samples":len(time),"first_sample_s":float(time[0]),"last_sample_s":float(time[-1]),
+            "base_world_z_m":height_distribution(base_z[mask]),"feet":feet}
+
+
+def case_result(path,episode,engine,tree,q0,spheres,physics_dt,*,include_hip_height=False):
     with np.load(path,allow_pickle=False) as saved:
         data={key:saved[key] for key in saved.files}
     if any(not np.isfinite(value).all() for value in data.values() if value.dtype.kind in "fiu"):
@@ -119,10 +147,15 @@ def case_result(path,episode,engine,tree,q0,spheres,physics_dt):
         q-=physics_dt*data["velocities"][:-1]
     n=len(q)
     center_local=np.empty((n,4,3));tcp_local=np.empty((n,3))
+    if include_hip_height:
+        thigh_local=np.empty((n,4,3))
     for index,joints in enumerate(q):
         fk=tree.forward(dict(zip(JOINT_NAMES,joints)))
         center_local[index]=[(fk[name]@col)[:3,3] for name,(col,_) in zip(FOOT_NAMES,spheres)]
         tcp_local[index]=fk["tcp"][:3,3]
+        if include_hip_height:
+            # Match isaac_env.thigh_ids, the actual feet_under_hips XY origins.
+            thigh_local[index]=[fk[name.replace("_foot","_thigh")][:3,3] for name in FOOT_NAMES]
     # R_world_from_base's third row is -gravity_base. No yaw/XY recovery.
     bottoms=data["base"][:-1,2,None]-np.einsum("ni,nfi->nf",gravity,center_local)-np.array([r for _,r in spheres])
     tcp_z=data["base"][:-1,2]-np.einsum("ni,ni->n",gravity,tcp_local)
@@ -146,14 +179,23 @@ def case_result(path,episode,engine,tree,q0,spheres,physics_dt):
     duration=episode["requested_steps"]*DT
     windows={"all_aligned":np.ones(n,dtype=bool),"post2":ticks[:-1]>=100,
              "designed_middle_hold":(ticks[:-1]>=round(duration*.4/DT))&(ticks[:-1]<=round(duration*.6/DT))}
-    return {"case_id":episode["trajectory"]["case_id"],"trace":str(path),"original_episode_metrics":episode,
+    result={"case_id":episode["trajectory"]["case_id"],"trace":str(path),"original_episode_metrics":episode,
             "aligned_samples":n,"excluded_final_poststep_samples":1,
             "mujoco_hinge_kinematic_offset_s":-physics_dt if engine=="mujoco" else 0.,"alignment_checks":checks,
             "designed_middle_hold_planned_s":[duration*.4,duration*.6],
             "windows":{key:summarize(mask,times,bottoms,foot_force,nonfoot,pairs) for key,mask in windows.items()}}
+    if include_hip_height:
+        base_z=data["base"][:-1,2]
+        thigh_z=base_z[:,None]-np.einsum("ni,nfi->nf",gravity,thigh_local)
+        center_z=bottoms+np.array([r for _,r in spheres])
+        result["hip_height"]={
+            "definition":"Foot collision sphere center/bottom world Z minus same-side thigh link-origin world Z. The thigh origin is the actual feet_under_hips reward reference, not the root or hip link origin.",
+            "zero_boundary":"Positive means geometrically above that same-side origin; not acceptance, a penalty margin, or proof of invalid support. Absolute base/thigh heights are retained to distinguish body lifting from foot folding above the hip.",
+            "windows":{key:hip_height_window(mask,times,base_z,thigh_z,center_z,bottoms) for key,mask in windows.items()}}
+    return result
 
 
-def build():
+def build(*,include_hip_height=False):
     asset=REPO/"assets/generated/diagnostic"
     manifest=read(asset/"manifest.json")
     urdf=asset/"robot.urdf"
@@ -181,7 +223,7 @@ def build():
             if report["case_ids"]!=["low","high","lateral","far"]:
                 raise ValueError("Missing or reordered workspace cases")
             results[f"{side}_{engine}"]=[case_result(folder/e["trajectory"]["case_id"]/"trace.npz",e,engine,
-                                                       tree,q0,spheres,actuators["physics_dt"]) for e in report["episodes"]]
+                                                       tree,q0,spheres,actuators["physics_dt"],include_hip_height=include_hip_height) for e in report["episodes"]]
     return {"default_fk_self_check":default,"evaluations":results,"foot_order":list(FOOT_NAMES),
             "height_definition":"World Z of the modeled foot collision sphere bottom relative to the flat z=0 ground. Projected gravity determines vertical only; world XY/yaw are not reconstructed.",
             "thresholds":"3cm sphere-bottom clearance and net force >1N / robot nonfoot net force >5N are engineering descriptions, not added acceptance standards.",
@@ -194,8 +236,9 @@ def build():
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output",type=Path,default=ROOT/"support_geometry.json")
+    parser.add_argument("--include-hip-height",action="store_true")
     args=parser.parse_args()
-    result=build()
+    result=build(include_hip_height=args.include_hip_height)
     args.output.write_text(json.dumps(result,indent=2,allow_nan=False)+"\n")
     print(json.dumps({key:{row["case_id"]:{name:row["windows"]["all_aligned"]["feet"][name]["above3cm_fraction"]
                             for name in FOOT_NAMES} for row in rows} for key,rows in result["evaluations"].items()},indent=2))

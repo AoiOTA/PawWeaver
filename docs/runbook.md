@@ -1,6 +1,6 @@
 # 运行手册
 
-**E2当前状态**：第一轮课程实际78/1000轮后因持续退化完整保存退出0，checkpoint50在MuJoCo低高侧远四例全部1.62–2.38秒跌倒。不是1000轮完成。当前运行只降低adaptive LR下限至1e-7的同起点、同数据候选；初始LR仍1e-5，其余奖励与优化设置不变。默认下限仍1e-5，真实PPO CPU回归32项通过。保留初次失败与matched checkpoint50比较，见[E2记录](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)。
+**E2当前状态**：第一轮课程实际78/1000轮后因持续退化完整保存退出0，checkpoint50在MuJoCo低高侧远四例全部1.62–2.38秒跌倒。不是1000轮完成。当前运行只降低adaptive LR下限至1e-7的同起点、同数据候选；初始LR仍1e-5，其余奖励与优化设置不变。默认下限仍1e-5，真实PPO CPU回归32项通过。同为51次完整迭代的checkpoint50，低下限候选四项MuJoCo均完整无跌倒，控制四项均跌倒；当前继续连续学习，悬足尚未改善。保留初次失败与matched checkpoint50比较，见[E2记录](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)。
 
 **v3 E1最新结果（2026-09-10）**：两组各100轮及8项双引擎后测已实际退出0；每组983万交互／2000更新。取消非负裁零后，workspace4每例位置改善，位置单项计数两引擎均1/4→3/4；test8均0/8→8/8，全部20秒完整且无跌倒。MuJoCo test8朝向均值.34549→.40566 rad退步，足部受力仍不合理，不能称完整位姿或WBC完成。详见[v3逐例比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_reward_signal/README.md)。已选择candidate100权重进入仅训练来源的10条固定near/body/step课程（40/30/30），连续1000轮后按实际任务与足几何选择下一步。
 
