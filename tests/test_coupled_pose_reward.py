@@ -77,9 +77,10 @@ def test_optional_joint_margin_is_range_normalized_and_has_restoring_gradient(re
     assert torch.equal(default['joint_limit'],
         ((inputs['lower']+.02-q).clamp_min(0)+(q-inputs['upper']+.02).clamp_min(0)).sum(-1))
     result=reward_terms(**inputs,joint_limit_margin_fraction=.1)
-    torch.testing.assert_close(result['joint_limit'],torch.full((3,),.06))
+    # At each hard bound the corresponding soft-margin penalty is one.
+    torch.testing.assert_close(result['joint_limit'],torch.full((3,),6.))
     result['joint_limit'].sum().backward()
-    torch.testing.assert_close(q.grad[:,:6],torch.tensor([-.2,-.1,0.,0.,0.,.1]).expand(3,-1),atol=1e-7,rtol=0)
+    torch.testing.assert_close(q.grad[:,:6],torch.tensor([-20.,-10.,0.,0.,0.,10.]).expand(3,-1),atol=1e-5,rtol=0)
     assert torch.count_nonzero(q.grad[:,6:])==0
     changed=reward_terms(**dict(inputs,q=q.detach()*3+.7,
         lower=inputs['lower']*3+.7,upper=inputs['upper']*3+.7),joint_limit_margin_fraction=.1)

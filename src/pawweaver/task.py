@@ -187,8 +187,8 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
         "collision":collision.float(),"termination":fallen.float()}
     if joint_limit_margin_fraction is not None:
         relative=(q-lower)/(upper-lower)
-        terms["joint_limit"]=((joint_limit_margin_fraction-relative).clamp_min(0).square()
-            +(relative-(1-joint_limit_margin_fraction)).clamp_min(0).square()).sum(-1)
+        terms["joint_limit"]=(((joint_limit_margin_fraction-relative).clamp_min(0)/joint_limit_margin_fraction).square()
+            +((relative-(1-joint_limit_margin_fraction)).clamp_min(0)/joint_limit_margin_fraction).square()).sum(-1)
     if foot_clearance is not None:
         terms["unloaded_foot_height"]=(foot_clearance.clamp_min(0).square()*(~foot_contact.bool())).sum(-1)
     return terms
