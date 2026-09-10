@@ -27,3 +27,9 @@ env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
 ```
 
 输出已存在时脚本拒绝覆盖 manifest。`case_id` 标识本批任务，`source_id` 则保留原始训练来源：near 沿用原轨迹 `source_id`（缺失时用原训练路径），body/step 使用原训练池路径加 `#pool_id`，避免把增强数据误作独立来源。准备后已仅更正此身份元数据和相关哈希；CPU 逐数组精确检查确认时间、位置和四元数未变，检查记录在 `consumer_check.json`。后续课程需要明确选择实际配比并运行学习和独立评估；本批准备结果本身不证明训练收益。
+
+## E2 selected for continuous learning
+
+E1 completed with reproducible position improvement and remaining orientation/support failures. `decision.json` selects the candidate100 checkpoint and a fixed reset sampling mixture near40%/body30%/step30%; config changes only training demonstrations and their group selection. The first continuous budget is1000 iterations,98,304,000 interactions/20,000 updates, using the existing transfer interface once and later same-config resume. No additional reward coefficient is changed. Actual group exposure, errors, episode outcomes and rewards are logged.
+
+The initial MuJoCo train10 readout exited0: every case completed60s with no fall. Position RMSE near4=.0665–.0673m, body low/high/lateral=.1281/.0365/.0413m, step3=.0368/.0657/.0370m; orientation and support remain separate. This establishes the starting point on these training tasks, not independent generalization.

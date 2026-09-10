@@ -1,0 +1,70 @@
+{
+  "capture_attempt1": {
+    "exit_code": 1,
+    "completed_report": false,
+    "global_seconds_logged": 60
+  },
+  "capture_retry": {
+    "exit_code": 0,
+    "summary": "low_noise251_retry/summary.json"
+  },
+  "control100": {
+    "exit_code": 0,
+    "training_progress": {
+      "status": "completed",
+      "stop_reason": "iteration_budget",
+      "requested_iterations": 100,
+      "completed_iterations": 100,
+      "start_iteration": 0,
+      "last_completed_iteration": 99,
+      "completed_transitions": 9830400
+    }
+  },
+  "candidate100": {
+    "exit_code": 0,
+    "training_progress": {
+      "status": "completed",
+      "stop_reason": "iteration_budget",
+      "requested_iterations": 100,
+      "completed_iterations": 100,
+      "start_iteration": 0,
+      "last_completed_iteration": 99,
+      "completed_transitions": 9830400
+    }
+  },
+  "control_mujoco_workspace4": {
+    "exit_code": 0
+  },
+  "control_mujoco_test8": {
+    "exit_code": 0,
+    "device": "CPU, CUDA_VISIBLE_DEVICES empty",
+    "concurrency": "Root evaluates immutable completed control bundle while candidate trains on GPU; separate outputs."
+  },
+  "control_physx_workspace4": {
+    "exit_code": 0
+  },
+  "candidate_mujoco_workspace4": {
+    "exit_code": 0
+  },
+  "candidate_mujoco_test8": {
+    "exit_code": 0
+  },
+  "candidate_physx_workspace4": {
+    "exit_code": 0
+  },
+  "control_physx_test8": {
+    "exit_code": 0,
+    "log": "control_physx_test8_retry_console.log"
+  },
+  "control_physx_test8_attempt1": {
+    "exit_code": 1,
+    "reason": "Incorrect suite path references/test; rejected before AppLauncher, no simulation or report."
+  },
+  "candidate_physx_test8": {
+    "exit_code": 0
+  },
+  "comparison": {
+    "exit_code": 0,
+    "all_eight_reports_validated": true
+  }
+}

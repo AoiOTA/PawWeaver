@@ -45,3 +45,26 @@ The first capture reached60 global seconds, then exited1 without a report; its s
 Negative reward may incentivize earlier termination; assess task errors, full duration and contacts on fixed development workspace4 and test8, with both engines. No automatic extension follows merely because training is finite. The first two new-control metric rows exactly matched the historical low-noise numerical task/KL/clipping fields, providing a limited actual default-path check.
 
 The fixed-group GoalBank consumer is also implemented and CPU-tested, with opt-in `demonstration_group_weights` and trajectory `training_group` labels. Unconfigured selection preserves the old RNG path; `demonstration_index` exposes the actual sampled ID. It is not enabled in E1, and its code checks do not establish a learned curriculum.
+
+## E1 completed: controlled clipping comparison
+
+Both arms completed 100 iterations (0–99), 9,830,400 transitions and 2,000 optimizer updates. Actual exit codes were 0, final checkpoints include update99, and all diagnostic finite checks passed. Training falls were570/611; measured training loop times365.09/364.84 seconds. This is not a comparison against a fresh/untrained policy. Both arms use the same historical initializer.
+
+All eight valid evaluation commands exited0. Workspace cases low/high/lateral ran20s, far60s; test8 ran20s per case. All cases in both arms and engines completed without falls. Paired trace ticks, requested/actual durations, suite and policy hashes were validated by `compare.py`; exact case metrics and contact descriptors are in `comparison.json`.
+
+| Engine / development suite | Control position RMSE mean (m) | Candidate | Control orientation RMSE mean (rad) | Candidate | Position-only counts |
+|---|---:|---:|---:|---:|---|
+| physx_workspace4 | 0.101397 | 0.064397 | 0.279948 | 0.271309 | 1/4 → 3/4 |
+| physx_test8 | 0.100590 | 0.066775 | 0.339532 | 0.349998 | 0/8 → 8/8 |
+| mujoco_workspace4 | 0.099617 | 0.067238 | 0.279708 | 0.320631 | 1/4 → 3/4 |
+| mujoco_test8 | 0.102825 | 0.067972 | 0.345486 | 0.405657 | 0/8 → 8/8 |
+
+These are means of per-case common post2s metrics, not combined training errors. Both engines improve position in every workspace case, while orientation is mixed. The twenty-second cases are development checks, not formal sixty-second tracking acceptance. Formal orientation thresholds remain unspecified; the user indicated they were unsure, so none was invented.
+
+The candidate is a useful initialization for task-curriculum learning, not an accepted WBC result. Foot support remains problematic: in MuJoCo far, zero/one foot with net force >1N occurs in12.47%/49.77% of50Hz samples versus6.83%/38.07% in control. Small nonfoot ground-contact pairs also exist despite low net-force counts. Saved-observation FK reconstruction is being used to distinguish prolonged raised feet from force-threshold effects; a net-force magnitude is neither vertical load nor a contact pair.
+
+The first PhysX test8 attempt used an incorrect shortened suite path and exited1 before AppLauncher, producing no evaluation. The corrected path `artifacts/runs/diagnostic_pose_learning/references/test` completed with exit0; original error log retained. This entry-point error is not counted as policy failure.
+
+E2 preparation and initial-training-suite readout are recorded in `../plan_v3_task_curriculum/`; no training-suite result is presented as held-out validation. Original route, PD, fall rules, provisional hardware and `trained=false` remain unchanged.
+
+CPU foot geometry reconstruction (`support_geometry.py/json`) completed all16 workspace traces; independent read-only review found no substantive issue. Next-observation alignment, final-row exclusion and the MuJoCo last2ms hinge integration offset are explicit. FK TCP agreement is within2 micrometers. Candidate low FL sphere bottom>3cm with net force≤1N occupies81.58%/88.59% of PhysX/MuJoCo aligned samples, longest11.26/11.36 seconds. These are prolonged raised feet, not just load-threshold effects;3cm is a descriptive engineering cut, not acceptance. Similar problems exist in control. This motivates continued task/support learning and checkpoint assessment, not another unsupported weight scan.
