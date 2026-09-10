@@ -1,6 +1,6 @@
-# E2 第一批固定组训练目标：仅 CPU 准备
+# E2 固定任务课程与连续学习
 
-2026-09-10 准备完成 10 条 schema-2、60 秒、50 Hz **世界系 TCP 位置＋朝向**轨迹；没有运行训练、GPU、MuJoCo 或 `mj_step`，默认配方未启用。`training_group` 为 `near/body/step`，供现有 `demonstration_group_weights` 消费。组名是训练候选用途，不是已学会的行为标签。
+2026-09-10 准备完成 10 条 schema-2、60 秒、50 Hz **世界系 TCP 位置＋朝向**轨迹；准备阶段未运行训练、GPU、MuJoCo 或 `mj_step`；之后执行记录见下方，项目默认配方未改。`training_group` 为 `near/body/step`，供现有 `demonstration_group_weights` 消费。组名是训练候选用途，不是已学会的行为标签。
 
 | 组 | 数量与训练来源 | 时间安排 |
 |---|---|---|
@@ -39,3 +39,9 @@ The initial MuJoCo train10 readout exited0: every case completed60s with no fall
 The original1000 request completed78 iterations0–77,7,667,712 transitions and1,560 updates, then stopped normally through the stop file (actual exit0). This saved checkpoint77 including the final completed update; it is not1000 completed. All numerical checks were finite, but28,058 falls and zero timeouts occurred. Ended episodes averaged4.27/3.93/3.84s for near/body/step. Frozen checkpoint50 independently failed low/high/lateral/far at2.38/1.62/2.06/2.32s. The high case has no post2s samples and correctly retains null post-transition metrics.
 
 `first_attempt_result.json` preserves failures. KL drift was already large before the first falls; the existing adaptive optimizer could not reduce LR below1e-5. The selected next controlled setting exposes that lower bound and uses1e-7, with initialLR still1e-5. Reward structure, std, tasks, initializer and seed remain identical. High negative no-positive-foot-load cost is a competing hypothesis if reducing update amplitude does not help. This change is an experiment, not an assertion of causality or a reason to abandon continuous skill learning. See `decision_lr_floor.json`; checkpoint50 matches51 iterations per arm before any unequal-budget extension.
+
+## Matched checkpoint50: feedback recovery supported
+
+`matched_checkpoint50.json` verifies only the effective LR floor differs and each snapshot follows51 actual iterations,5,013,504 transitions/1,020 optimizer updates. The lower-floor MuJoCo evaluation exited0 and completed all4 requested cases without falls; control failed all4. Lower-floor low/high/lateral/far position RMSE=.09769/.06933/.04362/.05663m; orientation=.38453/.32720/.21787/.32262rad. This preserves most initializer task performance and supports update amplitude as a collapse contributor. It does not establish purposeful support or full pose success. Continuous training remains active; no new reward parameter is selected.
+
+The checkpoint50 support readout also exited0. Lower-floor low/high/lateral held-task elevated feet remain close to the initializer (low FL mean sphere-bottom height~.297m, high RR~.460m, lateral FL~.205m). No claim of support recovery follows from restored survival. `read_workspace_support.py` reuses the earlier verified FK method; E1 self-check output matches all four original cases exactly.

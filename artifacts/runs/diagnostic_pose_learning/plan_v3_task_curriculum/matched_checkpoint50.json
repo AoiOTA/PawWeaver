@@ -1,0 +1,120 @@
+{
+  "only_effective_setting_difference": "adaptive LR floor1e-5 ->1e-7; initialLR remains1e-5",
+  "matched_checkpoint_iteration": 50,
+  "actual_iterations_per_arm": 51,
+  "transitions_per_arm": 5013504,
+  "optimizer_updates_per_arm": 1020,
+  "runs": {
+    "control": {
+      "checkpoint": {
+        "checkpoint": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train1000/checkpoint_000050.pt",
+        "checkpoint_sha256": "11f4ea91a840232ea416e38e82b076c90f828ebb7e0854fea990560ed4015056",
+        "iteration": 50,
+        "policy_sha256": "3d3bb03a90bfa33e9972d76578e69c592a79e62a76701be3ec70603490986e7b",
+        "device": "cpu",
+        "note": "JIT serialization hash can differ from another export; compare deterministic actions."
+      },
+      "training_first51": {
+        "falls": 19254,
+        "all_finite": true,
+        "last_learning_rate": 1e-05,
+        "last_kl": 1.268560935696587
+      },
+      "evaluation_exit_code": 0,
+      "cases": [
+        {
+          "case_id": "low",
+          "completed": false,
+          "fallen": true,
+          "actual_steps": 119,
+          "requested_steps": 1000,
+          "rmse_m": 0.5340709650611608,
+          "orientation_rmse_rad": 2.46548444199374
+        },
+        {
+          "case_id": "high",
+          "completed": false,
+          "fallen": true,
+          "actual_steps": 81,
+          "requested_steps": 1000,
+          "rmse_m": null,
+          "orientation_rmse_rad": null
+        },
+        {
+          "case_id": "lateral",
+          "completed": false,
+          "fallen": true,
+          "actual_steps": 103,
+          "requested_steps": 1000,
+          "rmse_m": 0.6525431332981743,
+          "orientation_rmse_rad": 1.0807162198889906
+        },
+        {
+          "case_id": "far",
+          "completed": false,
+          "fallen": true,
+          "actual_steps": 116,
+          "requested_steps": 3000,
+          "rmse_m": 0.2633590175381461,
+          "orientation_rmse_rad": 2.806400124920928
+        }
+      ]
+    },
+    "lower_floor": {
+      "checkpoint": {
+        "checkpoint": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train_lr_floor1000/checkpoint_000050.pt",
+        "checkpoint_sha256": "27c173777d2611e39c11bf9e6ebba06734345f0b1f49c5930ac6c93154aa11f6",
+        "iteration": 50,
+        "policy_sha256": "2d6ce118d5e0889ea2bb953bb8329a59223b0c9ba89cccf23451855dea20f665",
+        "device": "cpu",
+        "note": "JIT serialization hash can differ from another export; compare deterministic actions."
+      },
+      "training_first51": {
+        "falls": 0,
+        "all_finite": true,
+        "last_learning_rate": 1e-07,
+        "last_kl": 0.0138601737562567
+      },
+      "evaluation_exit_code": 0,
+      "cases": [
+        {
+          "case_id": "low",
+          "completed": true,
+          "fallen": false,
+          "actual_steps": 1000,
+          "requested_steps": 1000,
+          "rmse_m": 0.0976880733358282,
+          "orientation_rmse_rad": 0.3845273507054313
+        },
+        {
+          "case_id": "high",
+          "completed": true,
+          "fallen": false,
+          "actual_steps": 1000,
+          "requested_steps": 1000,
+          "rmse_m": 0.06932782893854386,
+          "orientation_rmse_rad": 0.3272005185524307
+        },
+        {
+          "case_id": "lateral",
+          "completed": true,
+          "fallen": false,
+          "actual_steps": 1000,
+          "requested_steps": 1000,
+          "rmse_m": 0.04362365294763596,
+          "orientation_rmse_rad": 0.2178652486716987
+        },
+        {
+          "case_id": "far",
+          "completed": true,
+          "fallen": false,
+          "actual_steps": 3000,
+          "requested_steps": 3000,
+          "rmse_m": 0.05663133600916976,
+          "orientation_rmse_rad": 0.322621368605626
+        }
+      ]
+    }
+  },
+  "conclusion": "Adaptive floor reduction restores completion on these matched51-update-development snapshots; supports update amplitude as a contributor to collapse. Does not establish reasonable support, full pose acceptance or1000-iteration success. Null metrics remain null; no unequal-window error deltas."
+}
