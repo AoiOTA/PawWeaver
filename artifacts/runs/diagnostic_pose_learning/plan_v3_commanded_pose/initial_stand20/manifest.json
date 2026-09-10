@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "initial_stand",
+      "path": "initial_stand.npz"
+    }
+  ],
+  "scope": "training development readout, not held-out or formal acceptance"
+}

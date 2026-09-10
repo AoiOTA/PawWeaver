@@ -1,5 +1,8 @@
 # PawWeaver：当前目标与推进依据
 
+**当前状态（E3）**：折足单项对照已完成且不采用：各100轮、983万交互，候选出现新的MuJoCo跌倒，任务与折足没有一致收益；见[负结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)。现进入已授权的[速度＋末端目标方法比较](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)：独立279输入、单18关节Actor，任务系跟随base XY/yaw并固定地面Z，速度来自预设命令。CPU合同已检查，初始双引擎站立与小规模入口验证进行中，随后fresh连续1000轮；不把本路线称为世界固定EE-only成功。
+
+
 **v3方案执行已恢复（2026-09-10）**：用户在新请求中明确要求执行 `/home/lyb/Desktop/PawWeaver_KISS_My_Agent_完整项目改进方案_2026-09-10_v3.md`。下文“本阶段最后一轮／整理后停止”保留为上一阶段历史边界，本次继续计划内开发与仿真；不是重新运行已完成的2000轮。先处理真实奖励信号、采样消费者、完整评估及完整更新保存，再按任务效果决定训练路线和预算。主代理唯一操作GPU，其他代理只做CPU或源码工作；本次不由文档内历史发布命令自动触发远程推送。世界系EE-only主路线、可选单Actor速度＋EE方法比较、下蹲／倾身／支撑移动目标、原验收和临时参数边界保留；正式朝向阈值仍未指定。
 
 当前实际下一步是[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)：E1两组各100轮及双引擎后测完成，候选有位置收益但朝向与悬足问题未解决。按near40%/body30%/step30%的低LR下限候选已完整学习1000轮并完成双引擎开发复测；支撑移动仍不稳定。实际PhysX训练分布已确认足球底长期高于同侧髋，当前执行[单项折足奖励对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)：同checkpoint500起点、各100轮、仅新项0/−10不同。全身支撑目标仍未完成，依后测决定采用与后续连续学习。

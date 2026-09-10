@@ -1,5 +1,8 @@
 # PawWeaver · 四足机械臂全身协同
 
+**当前状态（E3）**：折足单项对照已完成且不采用：各100轮、983万交互，候选出现新的MuJoCo跌倒，任务与折足没有一致收益；见[负结果](artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)。现进入已授权的[速度＋末端目标方法比较](artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)：独立279输入、单18关节Actor，任务系跟随base XY/yaw并固定地面Z，速度来自预设命令。CPU合同已检查，初始双引擎站立与小规模入口验证进行中，随后fresh连续1000轮；不把本路线称为世界固定EE-only成功。
+
+
 目标：世界系末端位姿轨迹（位置和朝向）→ 单一 18 关节强化学习 Actor → 12 腿＋6 臂统一关节位置目标 → 显式 PD。不输入底盘速度指令，策略自主协调腿、臂和底盘运动；需要时下蹲、倾身、调整支撑，原地全身够不到时稳定地走过去完成末端任务。Isaac Lab/PhysX 训练，独立 MuJoCo 验证，再接入图像目标。当前选用 **RealSense D435** 和松灵 Piper-H 腕部支架；原 DC1 配置保留在 `configs/cameras/dabai_dc1.json`。见[当前目标与推进依据](docs/plan.md)：原plan是参考，具体方法按已有进展和实际收益选择。
 
 ## 当前状态

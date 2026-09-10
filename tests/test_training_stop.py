@@ -11,7 +11,7 @@ import pytest
 import torch
 
 
-def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False,group_steps=None):
+def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False,group_steps=None,command_steps=None):
     source=Path(__file__).resolve().parents[1]/"scripts/train.py"
     tree=ast.parse(source.read_text())
     loop=next(node for node in ast.walk(tree) if isinstance(node,ast.For)
@@ -46,6 +46,8 @@ def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False,gr
     def step(actions):
         if group_steps is not None:
             extras["demonstration_group_stats"]=group_steps[len(steps)%len(group_steps)]
+        if command_steps is not None:
+            extras.update(command_steps[len(steps)%len(command_steps)])
         steps.append(1)
         return {},0.,False,extras
     env=SimpleNamespace(umi_pose_reward=None,reference=reference,spec=None,step=step)
@@ -90,6 +92,7 @@ def test_stop_saves_complete_update_and_actual_budget(tmp_path,stop_after,comple
         assert row["reward_weighted_tracking_mean"]==2.
         assert row["reward_nonterminal_preclip_mean"]==1.
         assert row["reward_nonterminal_postclip_mean"]==1.5
+        assert "base_linear_velocity_error_mps_mean" not in row
     assert (tmp_path/"stop").exists()==bool(stop_after)  # Do not consume requests silently.
 
 
@@ -117,10 +120,13 @@ def test_group_training_statistics_weight_samples_and_ended_episodes(tmp_path):
         groups.append({"near":{"transitions":samples,"position_error_sum_m":error,
             "orientation_error_sum_rad":error/2,"falls":ended,"resets":ended,"timeouts":0,
             "ended_episodes":ended,"ended_episode_seconds_sum":seconds,
+            "base_linear_velocity_error_sum_mps":error/5,"base_yaw_rate_error_sum_radps":error/10,
             "nonterminal_preclip_sum":-error,"nonterminal_postclip_sum":0.},
             "empty":{"transitions":0,"position_error_sum_m":0.,"orientation_error_sum_rad":0.,
                 "falls":0,"resets":0,"timeouts":0,"ended_episodes":0,"ended_episode_seconds_sum":0.}})
-    run,_,_,_=run_loop(tmp_path,stop_after=1,group_steps=groups)
+    command_steps=[{'base_linear_velocity_error_mps':linear,'base_yaw_rate_error_radps':yaw}
+                   for linear,yaw in [(1.,.1),(2.,.2),(6.,.6)]]
+    run,_,_,_=run_loop(tmp_path,stop_after=1,group_steps=groups,command_steps=command_steps)
     run()
     row=json.loads((tmp_path/"metrics.jsonl").read_text())
     assert row["demonstration_near_transitions"]==3
@@ -128,6 +134,10 @@ def test_group_training_statistics_weight_samples_and_ended_episodes(tmp_path):
     assert row["demonstration_near_position_error_mean_m"]==4.
     assert row["demonstration_near_orientation_error_mean_rad"]==2.
     assert row["demonstration_near_nonterminal_preclip_mean"]==-4.
+    assert row["demonstration_near_base_linear_velocity_error_mean_mps"]==pytest.approx(.8)
+    assert row["demonstration_near_base_yaw_rate_error_mean_radps"]==pytest.approx(.4)
+    assert row["base_linear_velocity_error_mps_mean"]==3.
+    assert row["base_yaw_rate_error_radps_mean"]==pytest.approx(.3)
     assert row["demonstration_near_ended_episode_seconds_mean"]==pytest.approx(10.1)
     assert row["demonstration_empty_transitions"]==0
     assert "demonstration_empty_position_error_mean_m" not in row

@@ -10,13 +10,19 @@ from .assets.build import verify_asset
 from .bundle import load_bundle
 from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,GoalSample
 from .control import JointPD
-from .observations import ObservationBuilder
+from .observations import ObservationBuilder,ObservationSpec
 from .trajectories import Trajectory
 from .task import episode_metrics,termination_config,fall_causes
 from .math import quat_angle_error
 from .training_inputs import training_inputs,check_training_identity
 
 class MujocoRunner:
+    def observation_spec(self):
+        return ObservationSpec()
+
+    def make_observations(self):
+        return ObservationBuilder(1,self.pd.default_pos)
+
     def __init__(self,asset:Path,bundle:Path,*,software_fixture=False,diagnostic=False,provisional_spec:Path|None=None):
         if diagnostic != (provisional_spec is not None):
             raise ValueError("--diagnostic requires --provisional-spec, which is diagnostic-only")
@@ -30,7 +36,8 @@ class MujocoRunner:
             self.manifest=verify_asset(asset)
         if software_fixture and self.manifest["robot"]!="synthetic_software_fixture":
             raise ValueError("Software test mode only accepts the synthetic box fixture")
-        self.policy,self.spec,self.bundle=load_bundle(bundle,self.manifest["asset_hash"],require_trained=not (software_fixture or diagnostic))
+        self.policy,self.spec,self.bundle=load_bundle(bundle,self.manifest["asset_hash"],require_trained=not (software_fixture or diagnostic),
+            observation_spec=self.observation_spec())
         self.termination=termination_config(self.bundle["training_config"])
         if diagnostic:
             check_training_identity(dict(self.bundle.get("training_metadata",{}),asset_hash=self.bundle["asset_hash"]),
@@ -67,7 +74,7 @@ class MujocoRunner:
             if self.model.opt.timestep!=self.spec.physics_dt:
                 raise ValueError("MuJoCo timestep differs from policy actuator spec")
         self.pd=JointPD(self.spec,1)
-        self.observations=ObservationBuilder(1,self.pd.default_pos)
+        self.observations=self.make_observations()
         self.action=torch.zeros(1,18)
         self.torque=np.zeros(18)
         self.physics_callback=None
@@ -92,16 +99,19 @@ class MujocoRunner:
     def reset(self,goal=None,*,goal_quat_w=None):
         if (goal is None)!=(goal_quat_w is None):
             raise ValueError("A goal requires both position and world-frame orientation")
+        state=self._reset_physics()
+        target=state.tcp_pos_w if goal is None else self.tensor(goal)
+        target_quat=state.tcp_quat_w if goal is None else self.tensor(goal_quat_w)
+        self.observations.reset(torch.tensor([0]),state,target,torch.zeros(1),goal_quat_w=target_quat)
+
+    def _reset_physics(self):
         mujoco.mj_resetData(self.model,self.data)
         self.data.qpos[self.q_indices]=self.spec.default_pos
         mujoco.mj_forward(self.model,self.data)
         self.pd.reset(torch.tensor([0]))
         self.action.zero_()
         self.holding=False
-        state=self.state()
-        target=state.tcp_pos_w if goal is None else self.tensor(goal)
-        target_quat=state.tcp_quat_w if goal is None else self.tensor(goal_quat_w)
-        self.observations.reset(torch.tensor([0]),state,target,torch.zeros(1),goal_quat_w=target_quat)
+        return self.state()
 
     @torch.no_grad()
     def step(self,goal=None,*,goal_quat_w=None,measurement:GoalSample|None=None,hold=False):
@@ -125,6 +135,12 @@ class MujocoRunner:
         else:
             self.action=self.policy(observation).clamp(-1,1)
         self.holding=hold
+        self._apply_action()
+        self.observations.push_state(self.state())
+        return observation.numpy()[0],self.action.numpy()[0]
+
+    def _apply_action(self):
+        """Execute the existing 18-joint PD target over one control tick."""
         self.pd.command(self.action)
         for _ in range(self.spec.decimation):
             torque=self.pd.torque(self.tensor(self.data.qpos[self.q_indices]),self.tensor(self.data.qvel[self.v_indices]))
@@ -133,8 +149,6 @@ class MujocoRunner:
             mujoco.mj_step(self.model,self.data)
             if self.physics_callback is not None:
                 self.physics_callback(self)
-        self.observations.push_state(self.state())
-        return observation.numpy()[0],self.action.numpy()[0]
 
     def _contact_snapshot(self):
         """Net body force magnitudes (N) from the current solver contact snapshot.
@@ -205,6 +219,105 @@ class MujocoRunner:
             **{key:np.asarray(value) for key,value in rows.items()})
         (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")
         return result
+
+class CommandedMujocoRunner(MujocoRunner):
+    """Separate 279-input route; reuse passive physics and the same 18-joint PD."""
+    def observation_spec(self):
+        from .observations import CommandObservationSpec
+        return CommandObservationSpec()
+
+    def make_observations(self):
+        from .observations import CommandObservationBuilder
+        if self.bundle['training_config'].get('task_mode')!='velocity_ee_pose':
+            raise ValueError('Commanded runtime requires velocity_ee_pose training config')
+        self.ground_z=torch.zeros(1)
+        return CommandObservationBuilder(1,self.pd.default_pos)
+
+    def reset(self,goal_t=None,*,goal_quat_t=None):
+        from .commanded_pose import yaw_quaternion
+        from .math import quat_apply_inverse,quat_conjugate,quat_mul
+        if (goal_t is None)!=(goal_quat_t is None):
+            raise ValueError('Commanded goal requires both task-frame position and orientation')
+        state=self._reset_physics()
+        if goal_t is None:
+            origin=state.base_pos_w.clone();origin[:,2]=self.ground_z
+            yaw=yaw_quaternion(state.base_quat_w)
+            target=quat_apply_inverse(yaw,state.tcp_pos_w-origin)
+            target_quat=quat_mul(quat_conjugate(yaw),state.tcp_quat_w)
+        else:
+            target=self.tensor(goal_t);target_quat=self.tensor(goal_quat_t)
+        self.observations.reset(torch.tensor([0]),state,target,torch.zeros(1),goal_quat_t=target_quat)
+
+    @torch.no_grad()
+    def step(self,goal_t,*,goal_quat_t,velocity_command):
+        state=self.state()
+        now=torch.tensor([self.data.time],dtype=torch.float32)
+        self.observations.push_goal(self.tensor(goal_t),now,torch.ones(1,dtype=torch.bool),torch.ones(1),
+            orientation_t=self.tensor(goal_quat_t))
+        observation=self.observations.build(state,self.action,now,
+            velocity_command=self.tensor(velocity_command),ground_z=self.ground_z)
+        self.action=self.policy(observation).clamp(-1,1)
+        self._apply_action()
+        self.observations.push_state(self.state())
+        return observation.numpy()[0],self.action.numpy()[0]
+
+    def evaluate(self,trajectory,output:Path):
+        from .commanded_pose import CommandedPoseTrajectory,task_pose_to_world,yaw_linear_velocity,yaw_rate
+        from .commanded_evaluation import commanded_metrics
+        if not isinstance(trajectory,CommandedPoseTrajectory):
+            raise ValueError('Commanded runtime requires an explicit commanded trajectory')
+        start=float(trajectory.timestamps[0])
+        steps=round((trajectory.timestamps[-1]-start)/.02)
+        if steps<1:
+            raise ValueError('Evaluation requires at least one control step')
+        self.reset(trajectory.sample(start),goal_quat_t=trajectory.sample_orientation(start))
+        keys=('times','errors','base','base_quat_w','tcp','goal','goal_task','goal_quat_task',
+            'velocity_commands_yaw','base_velocity_yaw','base_yaw_rate','joint_positions',
+            'torques','velocities','actions','observations','tcp_quat_w','goal_quat_w',
+            'orientation_errors_rad','contacts','nonfoot_ground_contact_count','base_up_z','fall_height','fall_tilt')
+        rows={key:[] for key in keys}
+        fallen=False
+        for k in range(steps):
+            # The same task-frame sample drives pre-state control and post-state scoring.
+            sample_time=start+k*.02
+            target_t=trajectory.sample(sample_time);quat_t=trajectory.sample_orientation(sample_time)
+            command=trajectory.sample_command(sample_time)
+            pre=self.state()
+            observation,action=self.step(target_t,goal_quat_t=quat_t,velocity_command=command)
+            state=self.state()
+            goal,goal_quat=task_pose_to_world(self.tensor(target_t),self.tensor(quat_t),
+                state.base_pos_w,state.base_quat_w,self.ground_z)
+            linear=yaw_linear_velocity(state.base_lin_vel_b,state.base_quat_w)
+            rate=yaw_rate(pre.base_quat_w,state.base_quat_w,.02)
+            contacts,pairs=self._contact_snapshot()
+            up=self.data.body('base_link').xmat.reshape(3,3)[2,2]
+            fall_height,fall_tilt=fall_causes(float(state.base_pos_w[0,2]),up,self.termination)
+            values=dict(times=(k+1)*.02,errors=float((state.tcp_pos_w-goal).norm(dim=-1)[0]),
+                base=state.base_pos_w.numpy()[0],base_quat_w=state.base_quat_w.numpy()[0],
+                tcp=state.tcp_pos_w.numpy()[0],goal=goal.numpy()[0],goal_task=target_t,goal_quat_task=quat_t,
+                velocity_commands_yaw=command,base_velocity_yaw=linear.numpy()[0],base_yaw_rate=float(rate[0]),
+                joint_positions=state.joint_pos.numpy()[0],torques=self.torque.copy(),
+                velocities=state.joint_vel.numpy()[0],actions=action,observations=observation,
+                tcp_quat_w=state.tcp_quat_w.numpy()[0],goal_quat_w=goal_quat.numpy()[0],
+                orientation_errors_rad=float(quat_angle_error(state.tcp_quat_w,goal_quat)[0]),
+                contacts=contacts,nonfoot_ground_contact_count=pairs,base_up_z=up,
+                fall_height=bool(fall_height),fall_tilt=bool(fall_tilt))
+            for key,value in values.items():
+                rows[key].append(value)
+            fallen=bool(fall_height or fall_tilt)
+            if fallen:
+                break
+        result=commanded_metrics(rows,steps,fallen)
+        result.update(engine='MuJoCo',trajectory=trajectory.metadata,policy_sha256=self.bundle['policy_sha256'],
+            diagnostic=self.diagnostic,trained=bool(self.bundle['trained']),
+            fall_height=bool(fall_height),fall_tilt=bool(fall_tilt))
+        output.mkdir(parents=True,exist_ok=True)
+        np.savez_compressed(output/'trace.npz',contact_body_names=np.asarray(
+            [self.model.body(i).name for i in range(self.model.nbody)],dtype=str),
+            **{key:np.asarray(value) for key,value in rows.items()})
+        (output/'metrics.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+        return result
+
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)

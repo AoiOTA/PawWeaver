@@ -44,9 +44,14 @@ class LegSoftsignGaussianDistribution(GaussianDistribution):
         return self.mean_transform
 
 class WholeBodyActor(MLPModel):
-    def __init__(self,*args,prediction=False,velocity=True,leg_mean_transform="identity",**kwargs):
+    def __init__(self,*args,prediction=False,velocity=True,leg_mean_transform="identity",observation_dim=276,**kwargs):
         # Flags are plain booleans and may be initialized before nn.Module.
         self.prediction,self.velocity = prediction,velocity
+        if observation_dim not in (276,279):
+            raise ValueError("Actor requires explicit 276 or 279 observation_dim")
+        if observation_dim==279 and (prediction or velocity):
+            raise ValueError("279 command actor requires prediction=false and velocity=false")
+        self.observation_dim=observation_dim
         mode = validate_leg_mean_config({"leg_mean_transform": leg_mean_transform})
         if mode == "softsign":
             cfg = kwargs.get("distribution_cfg")
@@ -54,18 +59,31 @@ class WholeBodyActor(MLPModel):
                 raise ValueError("Leg softsign requires the existing Gaussian distribution config")
             kwargs["distribution_cfg"] = dict(cfg, class_name="pawweaver.learning:LegSoftsignGaussianDistribution")
         super().__init__(*args,**kwargs)
-        if self.obs_dim != 276 or self.obs_groups != ["policy"]:
-            raise ValueError("Actor requires the 276-dimensional causal pose policy group; 246 position-only observations are incompatible")
-        self.features = CausalFeatures(prediction,velocity)
+        if self.obs_dim != observation_dim or self.obs_groups != ["policy"]:
+            raise ValueError(f"Actor requires the {observation_dim}-dimensional causal policy group; incompatible observations")
+        if observation_dim==279:
+            # Old 276 + velocity features also yield a 279-column first layer.
+            # A marker only on the new contract preserves every old state key.
+            self.register_buffer("observation_contract_dim",torch.tensor(279))
+        self.features = CausalFeatures(prediction,velocity,observation_dim)
 
     def _get_latent_dim(self):
-        return 276+int(self.velocity)*3+int(self.prediction)*12
+        return self.observation_dim+int(self.velocity)*3+int(self.prediction)*12
 
     def load_state_dict(self,state_dict,strict=True,assign=False):
+        marker=state_dict.get("observation_contract_dim")
+        if (self.observation_dim==279 and (marker is None or marker.numel()!=1 or marker.item()!=279)
+                or self.observation_dim==276 and marker is not None):
+            raise ValueError("Actor observation contract differs; 276 and 279 checkpoints cannot be migrated")
         first=state_dict.get("mlp.0.weight")
         legacy_dim=246+int(self.velocity)*3+int(self.prediction)*12
         if first is not None and first.shape[1]==legacy_dim:
             raise ValueError("Position-only 246-observation checkpoints are incompatible with the 276 pose contract")
+        if first is not None and first.shape[1]!=self._get_latent_dim():
+            raise ValueError("Actor first layer differs from its explicit observation contract")
+        for name in ("obs_normalizer._mean","obs_normalizer._std","obs_normalizer._var"):
+            if name in state_dict and state_dict[name].shape[-1]!=self.observation_dim:
+                raise ValueError("Actor normalizer differs from its observation contract")
         return super().load_state_dict(state_dict,strict=strict,assign=assign)
 
     def get_latent(self,obs,masks=None,hidden_state=None):
@@ -86,7 +104,35 @@ class WholeBodyActor(MLPModel):
 
     def as_jit(self):
         output = self.distribution.as_deterministic_output_module() if self.distribution else nn.Identity()
-        return ExportedPolicy(self.obs_normalizer,self.features,self.mlp,output)
+        return ExportedPolicy(self.obs_normalizer,self.features,self.mlp,output,self.observation_dim)
+
+
+def initialize_fresh_actor(actor,config,action_scale):
+    """Optional fresh-only initialization; caller must skip checkpoint loads."""
+    zero=config.get("zero_initial_actor_mean",False)
+    if not isinstance(zero,bool):
+        raise ValueError("zero_initial_actor_mean must be a boolean")
+    requested=config.get("initial_joint_std_rad")
+    std=None
+    if requested is not None:
+        std=torch.as_tensor(requested,dtype=actor.distribution.std_param.dtype,
+                            device=actor.distribution.std_param.device)
+        scale=torch.as_tensor(action_scale,dtype=std.dtype,device=std.device)
+        if std.shape!=(18,) or not torch.isfinite(std).all() or not (std>0).all():
+            raise ValueError("initial_joint_std_rad requires 18 finite positive values")
+        if scale.shape!=(18,) or not torch.isfinite(scale).all() or not (scale>0).all():
+            raise ValueError("Initial joint std requires 18 finite positive action scales")
+        std=std/scale
+        if not torch.isfinite(std).all():
+            raise ValueError("Initial action std must be finite after conversion from radians")
+    if zero and (not isinstance(actor.mlp[-1],nn.Linear) or actor.mlp[-1].out_features!=18):
+        raise ValueError("Zero mean initialization requires the final 18-output Linear")
+    with torch.no_grad():
+        if std is not None:
+            actor.distribution.std_param.copy_(std)
+        if zero:
+            actor.mlp[-1].weight.zero_()
+            actor.mlp[-1].bias.zero_()
 
 class AuxiliaryPPO(PPO):
     """Feed-forward, single-GPU PPO. Auxiliary labels stay in rollout storage, outside actor input."""

@@ -1,0 +1,80 @@
+{
+  "question": "Does explicit velocity plus mixed-frame EE task yield useful locomotion-manipulation coordination?",
+  "task_mode": "velocity_ee_pose",
+  "route": "B independent 279-input single 18-action Actor; A world-EE-only retained",
+  "task_frame": {
+    "origin": "current base world XY + fixed episode ground Z",
+    "rotation": "current base yaw only",
+    "excluded": [
+      "base height",
+      "base roll",
+      "base pitch"
+    ]
+  },
+  "command_source": {
+    "simulation": "preset trajectory",
+    "deployment": "future operator, not implemented"
+  },
+  "actor": {
+    "fresh": true,
+    "zero_initial_mean": true,
+    "initial_std_rad": [
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.02,
+      0.02,
+      0.02,
+      0.02,
+      0.02,
+      0.02
+    ],
+    "learn_std": false
+  },
+  "reward": {
+    "pose": "existing UMI peak4, no nonnegative clipping",
+    "base_linear_peak": 2.0,
+    "yaw_rate_peak": 1.0,
+    "linear_sigma_mps": 0.15,
+    "yaw_sigma_radps": 0.3,
+    "legacy_tcp_velocity_weight": 0.0,
+    "legacy_progress_weight": 0.0,
+    "foot_above_thigh_enabled": false
+  },
+  "budget": {
+    "smoke_iterations": 2,
+    "smoke_envs": 64,
+    "smoke_reused_for_learning": false,
+    "initial_training_iterations": 1000,
+    "num_envs": 4096,
+    "rollout_steps": 24,
+    "epochs": 5,
+    "minibatches": 4,
+    "planned_transitions": 98304000,
+    "planned_optimizer_updates": 20000,
+    "development_checkpoints": [
+      250,
+      500,
+      1000
+    ]
+  },
+  "stop": "Stop on nonfinite/internal error; after full-update save on sustained collapse across multiple windows with no task/support gains. A short fluctuation is not a stop. Do not mechanically extend or require all cases to improve.",
+  "evidence_limits": [
+    "Provisional hardware only",
+    "No new formal orientation or command thresholds",
+    "Development suites reuse train-source endpoints; not held-out tests",
+    "Method recipe comparison, not attribution to three inputs alone",
+    "No world-fixed EE-only success claim",
+    "No base pose or gait commands"
+  ],
+  "next": "CPU contract and zero-mean dual-engine stand20, then real training smoke and fresh continuous learning"
+}

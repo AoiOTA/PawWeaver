@@ -1,4 +1,4 @@
-"""Goal-only, 18-action vector task on Isaac Lab 3 + PhysX. Hardware gates are mandatory."""
+"""Single 18-action PhysX task; world EE-only and explicit commanded-pose modes."""
 import json
 from pathlib import Path
 import numpy as np
@@ -32,6 +32,12 @@ def _foot_sphere_radii_m(tree):
 
 class WholeBodyEnv:
     def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0,*,diagnostic=False,provisional_spec=None):
+        mode=config.get("task_mode","world_ee_pose")
+        if mode not in ("world_ee_pose","velocity_ee_pose"):
+            raise ValueError(f"Unknown task_mode: {mode}")
+        if mode=="velocity_ee_pose" and any(config.get(key,False) for key in
+                ("adaptive_sampling","trajectory_prediction","velocity_estimation")):
+            raise ValueError("Initial velocity/EE comparison uses fixed sampling and no auxiliary heads")
         from .isaac_robot import create_scene
         self.manifest,self.spec,_=training_inputs(asset,diagnostic=diagnostic,provisional_spec=provisional_spec)
         self.diagnostic=diagnostic
@@ -69,13 +75,26 @@ class WholeBodyEnv:
         self.tcp_rotation=torch.tensor(rpy_quat(numbers(tree.joints["tcp_mount"].find("origin").get("rpy","0 0 0"))),
             device=device,dtype=torch.float32)
         self.pd=JointPD(self.spec,num_envs,device)
-        self.observations=ObservationBuilder(num_envs,self.pd.default_pos)
         self.episode_length_buf=torch.zeros(num_envs,device=device,dtype=torch.long)
-        self.reference=GoalBank(num_envs,self.max_episode_length,device,seed,
-            config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()),
-            static_goal_offsets_m=config.get("static_goal_offsets_m"),
-            demonstrations_only=config.get("demonstrations_only",False),
-            demonstration_group_weights=config.get("demonstration_group_weights"))
+        mode=config.get("task_mode","world_ee_pose")
+        if mode=="velocity_ee_pose":
+            from .observations import CommandObservationBuilder
+            from .commanded_pose import CommandedPoseBank
+            if config["adaptive_sampling"] or config["trajectory_prediction"] or config["velocity_estimation"]:
+                raise ValueError("Initial velocity/EE comparison uses fixed sampling and no auxiliary heads")
+            self.observations=CommandObservationBuilder(num_envs,self.pd.default_pos)
+            self.reference=CommandedPoseBank(num_envs,self.max_episode_length,device,seed,
+                demonstrations=config.get("demonstrations",()),
+                demonstration_group_weights=config.get("demonstration_group_weights"))
+        elif mode=="world_ee_pose":
+            self.observations=ObservationBuilder(num_envs,self.pd.default_pos)
+            self.reference=GoalBank(num_envs,self.max_episode_length,device,seed,
+                config.get("curriculum_stage",0),config["adaptive_sampling"],config.get("demonstrations",()),
+                static_goal_offsets_m=config.get("static_goal_offsets_m"),
+                demonstrations_only=config.get("demonstrations_only",False),
+                demonstration_group_weights=config.get("demonstration_group_weights"))
+        else:
+            raise ValueError(f"Unknown task_mode: {mode}")
         self.previous_action=torch.zeros(num_envs,18,device=device)
         self.previous_qd=torch.zeros_like(self.previous_action)
         self.previous_tcp=torch.zeros(num_envs,3,device=device)
@@ -129,10 +148,18 @@ class WholeBodyEnv:
         self.sim.forward()
         self.scene.update(.002)
         state=self.state()
-        self.reference.reset(ids,state.tcp_pos_w[ids],state.tcp_quat_w[ids])
-        goal=self.reference.current(self.episode_length_buf)
-        self.observations.reset(ids,state,goal,self.episode_length_buf.float()*.02,
-            goal_quat_w=self.reference.current_orientation(self.episode_length_buf))
+        if self.config.get("task_mode")=="velocity_ee_pose":
+            from .commanded_pose import task_pose_to_world
+            self.reference.reset(ids)
+            target=self.reference.current(self.episode_length_buf)
+            orientation=self.reference.current_orientation(self.episode_length_buf)
+            self.observations.reset(ids,state,target,self.episode_length_buf.float()*.02,goal_quat_t=orientation)
+            goal,_=task_pose_to_world(target,orientation,state.base_pos_w,state.base_quat_w,self.scene.env_origins[:,2])
+        else:
+            self.reference.reset(ids,state.tcp_pos_w[ids],state.tcp_quat_w[ids])
+            goal=self.reference.current(self.episode_length_buf)
+            self.observations.reset(ids,state,goal,self.episode_length_buf.float()*.02,
+                goal_quat_w=self.reference.current_orientation(self.episode_length_buf))
         self.previous_tcp[ids]=state.tcp_pos_w[ids]
         self.previous_error[ids]=(goal-state.tcp_pos_w).norm(dim=-1)[ids]
         if self.umi_pose_reward is not None:
@@ -172,12 +199,23 @@ class WholeBodyEnv:
     def get_observations(self):
         state=self.state()
         now=self.episode_length_buf.float()*.02
-        policy=self.observations.build(state,self.previous_action,now)
+        commanded=self.config.get("task_mode")=="velocity_ee_pose"
+        if commanded:
+            policy=self.observations.build(state,self.previous_action,now,
+                velocity_command=self.reference.current_command(self.episode_length_buf),ground_z=self.scene.env_origins[:,2])
+        else:
+            policy=self.observations.build(state,self.previous_action,now)
         if self.config["domain_randomization"]:
             policy=policy.clone()
             policy[:,:210]+=torch.randn_like(policy[:,:210])*self.config["randomization"]["observation_noise"]
         future,valid=self.reference.future(self.episode_length_buf)
         current=self.reference.current(self.episode_length_buf)
+        if commanded:
+            from .commanded_pose import task_pose_to_world
+            orientation=self.reference.current_orientation(self.episode_length_buf)
+            future,_=task_pose_to_world(future,orientation[:,None,:].expand(-1,4,-1),
+                state.base_pos_w,state.base_quat_w,self.scene.env_origins[:,2])
+            current,_=task_pose_to_world(current,orientation,state.base_pos_w,state.base_quat_w,self.scene.env_origins[:,2])
         # Predict displacements in CURRENT base orientation, never future moving base coordinates.
         label=quat_apply_inverse(state.base_quat_w[:,None,:].expand(-1,4,-1),future-current[:,None,:]).flatten(1)
         privileged=torch.cat((policy,state.base_lin_vel_b,self.contacts/100.,self.mass_factor,self.com_offset,self.friction,
@@ -186,6 +224,17 @@ class WholeBodyEnv:
             "future_label":label,"future_valid":valid.flatten(1).float()},batch_size=[self.num_envs])
 
     def step(self,actions,*,auto_reset=True):
+        commanded=self.config.get("task_mode")=="velocity_ee_pose"
+        if commanded:
+            from .commanded_pose import task_pose_to_world,yaw_linear_velocity,yaw_rate
+            # Tick k controls and scores the same task-frame target and command.
+            target_t=self.reference.current(self.episode_length_buf)
+            target_quat_t=self.reference.current_orientation(self.episode_length_buf)
+            velocity_command=self.reference.current_command(self.episode_length_buf)
+            before=self.state()
+            previous_base_quat=before.base_quat_w.clone()
+            previous_target_w,_=task_pose_to_world(target_t,target_quat_t,before.base_pos_w,
+                before.base_quat_w,self.scene.env_origins[:,2])
         self.pd.command(actions)
         if self.config["domain_randomization"]:
             ids=((self.episode_length_buf>0)&(self.episode_length_buf%200==0)).nonzero(as_tuple=False).flatten()
@@ -212,12 +261,27 @@ class WholeBodyEnv:
                         raise FloatingPointError("Non-finite physics state")
         self.episode_length_buf+=1
         state=self.state()
-        goal=self.reference.current(self.episode_length_buf)
-        last_goal=self.reference.current(self.episode_length_buf-1)
-        self.observations.push_state(state)
-        self.observations.push_goal(goal,self.episode_length_buf.float()*.02,
-            torch.ones(self.num_envs,device=self.device,dtype=torch.bool),torch.ones(self.num_envs,device=self.device),
-            orientation_wxyz=self.reference.current_orientation(self.episode_length_buf))
+        if commanded:
+            goal,goal_quat=task_pose_to_world(target_t,target_quat_t,state.base_pos_w,state.base_quat_w,
+                self.scene.env_origins[:,2])
+            last_goal=previous_target_w
+            base_linear_velocity=yaw_linear_velocity(state.base_lin_vel_b,state.base_quat_w)
+            base_yaw_rate=yaw_rate(previous_base_quat,state.base_quat_w,.02)
+            base_linear_error=base_linear_velocity[:,:2]-velocity_command[:,:2]
+            base_yaw_error=base_yaw_rate-velocity_command[:,2]
+            self.observations.push_state(state)
+            self.observations.push_goal(self.reference.current(self.episode_length_buf),
+                self.episode_length_buf.float()*.02,torch.ones(self.num_envs,device=self.device,dtype=torch.bool),
+                torch.ones(self.num_envs,device=self.device),
+                orientation_t=self.reference.current_orientation(self.episode_length_buf))
+        else:
+            goal=self.reference.current(self.episode_length_buf)
+            goal_quat=self.reference.current_orientation(self.episode_length_buf)
+            last_goal=self.reference.current(self.episode_length_buf-1)
+            self.observations.push_state(state)
+            self.observations.push_goal(goal,self.episode_length_buf.float()*.02,
+                torch.ones(self.num_envs,device=self.device,dtype=torch.bool),torch.ones(self.num_envs,device=self.device),
+                orientation_wxyz=goal_quat)
         for i,name in enumerate(self.robot.body_names):
             key="contact_"+name
             if key in self.scene.sensors:
@@ -230,7 +294,7 @@ class WholeBodyEnv:
         nonfeet=[i for i in range(len(self.robot.body_names)) if i not in self.foot_ids]
         collision=(self.contacts[:,nonfeet]>5.).any(dim=-1)
         error=goal-state.tcp_pos_w
-        orientation_error=quat_angle_error(state.tcp_quat_w,self.reference.current_orientation(self.episode_length_buf))
+        orientation_error=quat_angle_error(state.tcp_quat_w,goal_quat)
         terms=reward_terms(error=error,orientation_error=orientation_error,previous_error=self.previous_error,
             tracking_width=self.config.get("tracking_width_m",.15),
             orientation_tracking_width_rad=self.config.get("orientation_tracking_width_rad",.5),
@@ -246,6 +310,10 @@ class WholeBodyEnv:
             foot_bottom_minus_thigh_z=(self.robot.data.body_link_pose_w.torch[:,self.foot_ids,2]
                 -self.foot_sphere_radii_m-self.robot.data.body_link_pose_w.torch[:,self.thigh_ids,2]
                 if self.config.get("reward_weights",{}).get("foot_above_thigh",0.)!=0 else None),
+            base_linear_velocity_error_yaw=base_linear_error if commanded else None,
+            base_yaw_rate_error=base_yaw_error if commanded else None,
+            base_linear_velocity_sigma_mps=self.config.get("base_linear_velocity_sigma_mps",.15),
+            base_yaw_rate_sigma_radps=self.config.get("base_yaw_rate_sigma_radps",.3),
             tcp_velocity=(state.tcp_pos_w-self.previous_tcp)/.02,goal_velocity=(goal-last_goal)/.02,
             action=self.pd.last_action,previous_action=self.previous_action,torque=self.torque,
             effort=self.pd.effort,q=state.joint_pos,qd=state.joint_vel,previous_qd=self.previous_qd,
@@ -283,6 +351,12 @@ class WholeBodyEnv:
         extras={"time_outs":timeout&~fallen,"tracking_error_m":self.previous_error.mean().item(),
                 "orientation_error_rad":orientation_error.mean().item(),"fall_fraction":fallen.float().mean().item(),
                 "fall_height":fall_height,"fall_tilt":fall_tilt,"base_up_z":base_up_z}
+        if commanded:
+            extras.update(velocity_command_yaw=velocity_command,base_linear_velocity_yaw=base_linear_velocity,
+                base_yaw_rate=base_yaw_rate,commanded_goal_w=goal,commanded_goal_quat_w=goal_quat,
+                commanded_position_t=target_t,commanded_orientation_t=target_quat_t,
+                base_linear_velocity_error_mps=float(base_linear_error.norm(dim=-1).mean()),
+                base_yaw_rate_error_radps=float(base_yaw_error.abs().mean()))
         if self.config.get("umi_pose_reward",False):
             extras.update(umi_nonterminal_clipped_fraction=(nonterminal<0).float().mean().item() if clip_nonnegative else 0.,
                 umi_nonterminal_preclip_mean=nonterminal.mean().item())
@@ -308,6 +382,9 @@ class WholeBodyEnv:
                      "timeouts":int((mask&timeout&~fallen).sum()),
                      "ended_episodes":int(ended.sum()),
                      "ended_episode_seconds_sum":float(self.episode_length_buf[ended].sum())*.02}
+                if commanded:
+                    row.update(base_linear_velocity_error_sum_mps=float(base_linear_error[mask].norm(dim=-1).sum()),
+                               base_yaw_rate_error_sum_radps=float(base_yaw_error[mask].abs().sum()))
                 if self.umi_pose_reward is not None:
                     row.update(nonterminal_preclip_sum=float(nonterminal[mask].sum()),
                                nonterminal_postclip_sum=float(postclip[mask].sum()))

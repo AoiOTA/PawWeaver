@@ -35,15 +35,21 @@ if manifest["robot"]!="as2_edu_piper_h_rgbd":
     raise ValueError("Formal training requires the verified AS2 EDU + Piper-H + selected RGB-D asset")
 config=json.loads(args.config.read_text())
 import torch
-from pawweaver.observations import ObservationSpec
+from pawweaver.observations import observation_spec
 from pawweaver.learning import validate_leg_mean_config
 from pawweaver.task import UmiPoseReward
 checkpoint=None
+obs_spec=observation_spec(config)
+if obs_spec.size==279:
+    if config.get("trajectory_prediction",False) or config.get("velocity_estimation",False):
+        raise ValueError("velocity_ee_pose currently requires prediction and velocity estimation disabled")
+    if args.initialize_from:
+        raise ValueError("velocity_ee_pose requires fresh initialization or same-contract resume")
 checkpoint_path=args.resume or args.initialize_from
 if checkpoint_path:
     checkpoint=torch.load(checkpoint_path,map_location="cpu",weights_only=False)
-    if checkpoint["metadata"].get("observation")!=ObservationSpec().to_dict():
-        raise ValueError("Checkpoint observation contract differs: pose-only training requires 276 inputs; legacy position-only checkpoints cannot be padded or loaded")
+    if checkpoint["metadata"].get("observation")!=obs_spec.to_dict():
+        raise ValueError("Checkpoint observation contract differs; 246, 276 and 279 inputs cannot be padded or migrated")
 leg_mean_transform=validate_leg_mean_config(config,
     checkpoint["metadata"]["config"] if checkpoint else None, resume=bool(args.resume))
 if args.resume and config.get("umi_pose_reward",False):
@@ -56,7 +62,7 @@ try:
     from rsl_rl.models import MLPModel
     from rsl_rl.storage import RolloutStorage
     from pawweaver.isaac_env import WholeBodyEnv
-    from pawweaver.learning import WholeBodyActor,AuxiliaryPPO,effective_pd_leg_mean_bounds
+    from pawweaver.learning import WholeBodyActor,AuxiliaryPPO,effective_pd_leg_mean_bounds,initialize_fresh_actor
     from pawweaver.bundle import export_bundle
     env=WholeBodyEnv(args.asset,config,args.num_envs,args.device,args.seed,
         diagnostic=args.diagnostic,provisional_spec=args.provisional_spec)
@@ -69,8 +75,10 @@ try:
     groups={"actor":["policy"],"critic":["critic"]}
     actor=WholeBodyActor(obs,groups,"actor",18,hidden_dims=config["actor_hidden_dims"],
         obs_normalization=True,prediction=config["trajectory_prediction"],velocity=config["velocity_estimation"],
-        leg_mean_transform=leg_mean_transform,
+        leg_mean_transform=leg_mean_transform,observation_dim=obs_spec.size,
         distribution_cfg={"class_name":"rsl_rl.modules.distribution:GaussianDistribution","init_std":.5})
+    if checkpoint is None:
+        initialize_fresh_actor(actor,config,env.spec.action_scale)
     critic=MLPModel(obs,groups,"critic",1,hidden_dims=[512,256,128],obs_normalization=True)
     storage=RolloutStorage("rl",args.num_envs,config["rollout_steps"],obs,[18],args.device)
     algorithm=AuxiliaryPPO(actor,critic,storage,device=args.device,num_learning_epochs=config["learning_epochs"],
@@ -86,7 +94,7 @@ try:
               "git_dirty":bool(subprocess.check_output(["git","status","--porcelain"],text=True).strip()),
               "versions":{name:importlib.metadata.version(name) for name in ("isaaclab","rsl-rl-lib","mujoco")},
               "initialize_from":str(args.initialize_from) if args.initialize_from else None,
-              "observation":ObservationSpec().to_dict()}
+              "observation":obs_spec.to_dict()}
     metadata.update(diagnostic=args.diagnostic,provisional_spec=provisional)
     if args.diagnostic:
         metadata.update(asset_manifest=manifest,
@@ -145,6 +153,7 @@ try:
         umi_stats={"umi_nonterminal_clipped_fraction":0.,"umi_nonterminal_preclip_mean":0.}
         reward_stats={}
         demonstration_stats={}
+        command_stats={}
         if args.diagnostic:
             before=[p.detach().clone() for p in actor.parameters()]
             steps_before=len(optimizer_steps)
@@ -156,6 +165,10 @@ try:
             for _ in range(config["rollout_steps"]):
                 actions=algorithm.act(obs)
                 obs,reward,done,extras=env.step(actions)
+                for key in ("base_linear_velocity_error_mps","base_yaw_rate_error_radps"):
+                    if key in extras:
+                        name=key+"_mean"
+                        command_stats[name]=command_stats.get(name,0.)+extras[key]/config["rollout_steps"]
                 for group,values in extras.get("demonstration_group_stats",{}).items():
                     total=demonstration_stats.setdefault(group,{})
                     for key,value in values.items():
@@ -205,6 +218,7 @@ try:
             leg_action_std_mean=float(actor.distribution.std_param[:12].detach().mean()),
             arm_action_std_mean=float(actor.distribution.std_param[12:].detach().mean()))
         stats.update(reward_stats)
+        stats.update(command_stats)
         for group,values in demonstration_stats.items():
             prefix="demonstration_"+group+"_"
             stats.update({prefix+key:value for key,value in values.items()})
@@ -212,6 +226,8 @@ try:
             if samples:
                 for summed,mean in (("position_error_sum_m","position_error_mean_m"),
                                     ("orientation_error_sum_rad","orientation_error_mean_rad"),
+                                    ("base_linear_velocity_error_sum_mps","base_linear_velocity_error_mean_mps"),
+                                    ("base_yaw_rate_error_sum_radps","base_yaw_rate_error_mean_radps"),
                                     ("nonterminal_preclip_sum","nonterminal_preclip_mean"),
                                     ("nonterminal_postclip_sum","nonterminal_postclip_mean")):
                     if summed in values:

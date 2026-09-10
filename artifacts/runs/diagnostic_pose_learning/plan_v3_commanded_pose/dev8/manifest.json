@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_stand",
+      "path": "../train/neutral_stand.npz",
+      "sha256": "dc614437bc58a320c2dd9e71355e057be2569fe159e154dc66682491cddeebe4"
+    },
+    {
+      "case_id": "neutral_forward",
+      "path": "../train/neutral_forward.npz",
+      "sha256": "9ebfb6148b9638b39215c6dbe6c1113e5d620d5ae2dc9ccf685123c01a766c59"
+    },
+    {
+      "case_id": "neutral_left",
+      "path": "../train/neutral_left.npz",
+      "sha256": "9e3e69c63033a9609f27449b927eeb4867d02e8726072fcc11e621b9e366c90f"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "path": "../train/neutral_yaw.npz",
+      "sha256": "68871e5f56534b256f909a07470b5e8e13f8e2131c56ff4f8d5334e2970ca086"
+    },
+    {
+      "case_id": "low_stand",
+      "path": "../train/low_stand.npz",
+      "sha256": "af0ecae6acbdab553bf63903ab56ec3917ce84f5dce6e49bc625170ce07efd14"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "../train/high_stand.npz",
+      "sha256": "6776acad7cec44380886e2b3ba19422921f0552e92c723d906120a8949f02e7f"
+    },
+    {
+      "case_id": "lateral_stand",
+      "path": "../train/lateral_stand.npz",
+      "sha256": "3d9ee7d74e70bd331a13d12bb203710213e3fcb7a735f468ea8e2dcd284c106b"
+    },
+    {
+      "case_id": "lateral_arc",
+      "path": "../train/lateral_arc.npz",
+      "sha256": "319acfafebd0878eac74470703c89df8efe6add1910a36da4d5e193042ae2161"
+    }
+  ],
+  "scope": "training development readout, not held-out or formal acceptance"
+}

@@ -207,7 +207,9 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
                  torque,effort,q,qd,previous_qd,lower,upper,gravity_b,foot_velocity,foot_contact,
                  collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5,
                  joint_limit_margin_fraction=None,foot_force_z=None,foot_hip_delta_xy=None,
-                 feet_under_hips_distance_sigma=.5,foot_bottom_minus_thigh_z=None):
+                 feet_under_hips_distance_sigma=.5,foot_bottom_minus_thigh_z=None,
+                 base_linear_velocity_error_yaw=None,base_yaw_rate_error=None,
+                 base_linear_velocity_sigma_mps=.15,base_yaw_rate_sigma_radps=.3):
     if not np.isfinite(tracking_width) or tracking_width<=0:
         raise ValueError("Position reward width must be finite and positive")
     if not np.isfinite(orientation_tracking_width_rad) or orientation_tracking_width_rad<=0:
@@ -247,6 +249,16 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
     if foot_bottom_minus_thigh_z is not None:
         # World-vertical same-side difference in meters; cost has units m².
         terms["foot_above_thigh"]=foot_bottom_minus_thigh_z.clamp_min(0).square().sum(-1)
+    if base_linear_velocity_error_yaw is not None or base_yaw_rate_error is not None:
+        if base_linear_velocity_error_yaw is None or base_yaw_rate_error is None:
+            raise ValueError("Velocity-command rewards require both horizontal and yaw-rate errors")
+        for sigma in (base_linear_velocity_sigma_mps,base_yaw_rate_sigma_radps):
+            if not np.isfinite(sigma) or sigma<=0:
+                raise ValueError("Velocity-command reward widths must be finite and positive")
+        # B-route task commands, separate from the legacy TCP velocity term.
+        terms["base_linear_velocity_tracking"]=torch.exp(
+            -base_linear_velocity_error_yaw.square().sum(-1)/base_linear_velocity_sigma_mps**2)
+        terms["base_yaw_rate_tracking"]=torch.exp(-base_yaw_rate_error.square()/base_yaw_rate_sigma_radps**2)
     return terms
 
 def sum_reward_terms(terms,weights,*,coupled_pose=False):

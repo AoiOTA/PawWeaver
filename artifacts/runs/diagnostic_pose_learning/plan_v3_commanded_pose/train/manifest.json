@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_stand",
+      "path": "neutral_stand.npz",
+      "sha256": "dc614437bc58a320c2dd9e71355e057be2569fe159e154dc66682491cddeebe4"
+    },
+    {
+      "case_id": "neutral_forward",
+      "path": "neutral_forward.npz",
+      "sha256": "9ebfb6148b9638b39215c6dbe6c1113e5d620d5ae2dc9ccf685123c01a766c59"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "neutral_backward.npz",
+      "sha256": "34e81cc3450b5a6f010b1411df12f1029eb57b2d592e08244ea5ebcefb5a6bdc"
+    },
+    {
+      "case_id": "neutral_left",
+      "path": "neutral_left.npz",
+      "sha256": "9e3e69c63033a9609f27449b927eeb4867d02e8726072fcc11e621b9e366c90f"
+    },
+    {
+      "case_id": "neutral_right",
+      "path": "neutral_right.npz",
+      "sha256": "43dd65205d9ad77d9a1cb05ccdcd6fc02209f8c0f4f41516a8de5d1d941ed40e"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "path": "neutral_yaw.npz",
+      "sha256": "68871e5f56534b256f909a07470b5e8e13f8e2131c56ff4f8d5334e2970ca086"
+    },
+    {
+      "case_id": "neutral_arc",
+      "path": "neutral_arc.npz",
+      "sha256": "8749d68428b78434914c5895f6841d85f5e3713cfa9a79672072161fe1f52f4b"
+    },
+    {
+      "case_id": "low_stand",
+      "path": "low_stand.npz",
+      "sha256": "af0ecae6acbdab553bf63903ab56ec3917ce84f5dce6e49bc625170ce07efd14"
+    },
+    {
+      "case_id": "low_forward",
+      "path": "low_forward.npz",
+      "sha256": "e6ee50d11716e57439f32f473c5db0a2bd79b9dea736676f31149865c2e52b48"
+    },
+    {
+      "case_id": "low_backward",
+      "path": "low_backward.npz",
+      "sha256": "a99f63afc388b63aec6a9428a0a6f6136ebc0c58714baff50428ce0084cb7665"
+    },
+    {
+      "case_id": "low_left",
+      "path": "low_left.npz",
+      "sha256": "adf2e23d7390bad066b433ccc66e6a7daae87ffaf3a822203ebf70216c737673"
+    },
+    {
+      "case_id": "low_right",
+      "path": "low_right.npz",
+      "sha256": "f09303e20a6cf58ebc95f053887bdf40093449c4147b5024cc552c07261f1257"
+    },
+    {
+      "case_id": "low_yaw",
+      "path": "low_yaw.npz",
+      "sha256": "dc12df0c73b5b38ea78086e8b1f845584805f8fb720b988a50444353bd582736"
+    },
+    {
+      "case_id": "low_arc",
+      "path": "low_arc.npz",
+      "sha256": "ecfdaada0ecf2bd706a782d6befa115fb1bac11ecadebb24e36080550969aeaa"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "high_stand.npz",
+      "sha256": "6776acad7cec44380886e2b3ba19422921f0552e92c723d906120a8949f02e7f"
+    },
+    {
+      "case_id": "high_forward",
+      "path": "high_forward.npz",
+      "sha256": "cf5b6db47612b486ae1ef3eca93179fb0720f9bdd07973cce23b254339e24726"
+    },
+    {
+      "case_id": "high_backward",
+      "path": "high_backward.npz",
+      "sha256": "bb2581cdaf9d7a1d08388e6cd844bd04161c01b691947fc15ca1a0ddb356ca69"
+    },
+    {
+      "case_id": "high_left",
+      "path": "high_left.npz",
+      "sha256": "5caf5cce11ef93bb296e994dfb547a8ea14322567a2f17d13a01c9ff00d348bf"
+    },
+    {
+      "case_id": "high_right",
+      "path": "high_right.npz",
+      "sha256": "01df4accba62efe5e3908be735e9355fa281fe8db274840e4a1ca31a1c9a7805"
+    },
+    {
+      "case_id": "high_yaw",
+      "path": "high_yaw.npz",
+      "sha256": "40a1b79585f92ad44779ead0cc31a98f19a8f2abc2750c599ac96cc54d6fcb18"
+    },
+    {
+      "case_id": "high_arc",
+      "path": "high_arc.npz",
+      "sha256": "72e8bdf4c7f3653919a7d5f005d07662aed03be8a9d07a8612d28362b801843d"
+    },
+    {
+      "case_id": "lateral_stand",
+      "path": "lateral_stand.npz",
+      "sha256": "3d9ee7d74e70bd331a13d12bb203710213e3fcb7a735f468ea8e2dcd284c106b"
+    },
+    {
+      "case_id": "lateral_forward",
+      "path": "lateral_forward.npz",
+      "sha256": "a906f00f64d7c6a6213403cf28689e8f94ea36c7b9280754225d1caaa69364cd"
+    },
+    {
+      "case_id": "lateral_backward",
+      "path": "lateral_backward.npz",
+      "sha256": "d6b32c191b5b50ca6ab28217458b51fcee231fdcb9f7b4ca838e9e3b57a37be3"
+    },
+    {
+      "case_id": "lateral_left",
+      "path": "lateral_left.npz",
+      "sha256": "f4a15c700597468cfc255d8f3b9a0507a1e1642ae2d1181289ea118c80a00217"
+    },
+    {
+      "case_id": "lateral_right",
+      "path": "lateral_right.npz",
+      "sha256": "f54c579615cf02d5e5c4c1a73ffb19959132d9b26f58995c7f31aa2436ee996a"
+    },
+    {
+      "case_id": "lateral_yaw",
+      "path": "lateral_yaw.npz",
+      "sha256": "fea3705cf3658e9e01323f87fcb16e131e2349150c31b651bf98b5e12d4ad17f"
+    },
+    {
+      "case_id": "lateral_arc",
+      "path": "lateral_arc.npz",
+      "sha256": "319acfafebd0878eac74470703c89df8efe6add1910a36da4d5e193042ae2161"
+    }
+  ],
+  "scope": "training development readout, not held-out or formal acceptance"
+}
