@@ -64,6 +64,43 @@ def ppo_for_update(algorithm_type=AuxiliaryPPO,leg_mean_transform="identity",**k
     return algorithm
 
 
+@pytest.mark.parametrize('config',[{}, {'learn_std':True}, {'learn_std':False}])
+def test_trainer_std_learning_switch_after_checkpoint_load(config):
+    import ast
+    import copy
+    from pathlib import Path
+    source=Path(__file__).resolve().parents[1]/'scripts/train.py'
+    tree=ast.parse(source.read_text())
+    body=next(node.body for node in tree.body if isinstance(node,ast.Try))
+    switch=next(node for node in body if isinstance(node,ast.Expr)
+                and 'std_param.requires_grad_' in ast.unparse(node))
+    for mode in ('args.initialize_from','args.resume'):
+        load=next(node for node in body if isinstance(node,ast.If) and ast.unparse(node.test)==mode)
+        assert body.index(switch)>body.index(load)
+    # Include real Adam moments so freezing cannot be mistaken for an empty optimizer.
+    prior=ppo_for_update(entropy_coef=0.)
+    prior.update()
+    checkpoint=copy.deepcopy(prior.save())
+    algorithm=ppo_for_update(entropy_coef=0.)
+    algorithm.load(checkpoint,None,True)
+    std=algorithm.actor.distribution.std_param
+    assert algorithm.optimizer.state[std]
+    before_std=std.detach().clone()
+    assert torch.equal(before_std,checkpoint['actor_state_dict']['distribution.std_param'])
+    before_mean=algorithm.actor.mlp[-1].weight.detach().clone()
+    exec(compile(ast.Module(body=[switch],type_ignores=[]),str(source),'exec'),
+         {'actor':algorithm.actor,'config':config})
+    losses=algorithm.update()
+    assert all(torch.isfinite(torch.tensor(value)) for value in losses.values())
+    assert not torch.equal(before_mean,algorithm.actor.mlp[-1].weight)
+    if config.get('learn_std',True):
+        assert std.requires_grad and std.grad is not None
+        assert not torch.equal(before_std,std)
+    else:
+        assert not std.requires_grad and std.grad is None
+        assert torch.equal(before_std,std)
+
+
 def test_zero_mean_bound_skips_mean_access_and_preserves_update(monkeypatch):
     default=ppo_for_update()
     zero=ppo_for_update(leg_mean_bound_coef=0.)

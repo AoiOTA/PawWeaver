@@ -116,6 +116,8 @@ try:
         if args.device.startswith("cuda"):
             torch.cuda.set_rng_state_all([state.cpu() for state in checkpoint["cuda_rng"]])
         start_iteration=checkpoint["iteration"]+1
+    # Checkpoint loading restores std values; this config controls subsequent learning.
+    actor.distribution.std_param.requires_grad_(config.get("learn_std",True))
     optimizer_steps=[]
     if args.diagnostic:
         def check_gradients(optimizer, *unused):
