@@ -4,6 +4,8 @@
 
 ## 当前状态
 
+**当前正在执行（2026-09-10）**：[UMI-inspired 训练方案](artifacts/runs/diagnostic_pose_learning/umi_recipe/README.md) 已启动一个固定1000轮训练进程，随后进行双引擎 test8／far60 四项后测。采用全新站立初始化、奖励课程与更充分的腿部探索，检验整套方案的任务表现；不是单变量消融或已取得学习收益。当前原验收及 `trained=false` 边界不变。
+
 世界末端位姿接口已实现：**276 维观测、单个 18 输出 Actor、schema-2 位姿轨迹与策略包**，贯通数据转换、因果位姿历史、Isaac/MuJoCo和视觉测量。1000轮工程训练已完成，独立测试显示位置改善、朝向退步；后续联合位姿奖励250轮及双引擎评估也已完成，平均位置／朝向RMSE为PhysX **3.85 cm／.129 rad**、MuJoCo **3.73 cm／.160 rad**。这仍不代表完整位姿任务或正式硬件验收成功，包为 `trained=false`，原验收数值保留，朝向验收阈值尚未确定。
 
 腿部初始std×3与控制组的等预算250轮及双引擎test8均已完成：PhysX朝向均值改善，但MuJoCo八例朝向全退步，当前不支持采用std×3，见 [对照记录](artifacts/runs/diagnostic_pose_learning/leg_std_comparison/README.md)。原coupled250的MuJoCo远目标60秒测试在22.94秒跌倒；std远目标补测及后续stage2＋60秒训练250轮和四项后测均已完成。新策略两引擎远目标均存活60秒，但位置RMSE仍约62.1 cm，尚未学会远目标跟踪；位置奖励宽度.45候选也已完成对照，位置多例退步且MuJoCo远目标8.24秒跌倒，不采用.45，默认.15未改。腿均值越界正则.001候选的250轮训练和四项后测已完成：两引擎远目标均存活60秒，但位置、朝向RMSE均退步，不采用该候选，默认系数0及位置奖励宽度.15未改。冻结±5 cm目标回放显示越界幅度降低，却未恢复远状态髋关节和后腿持续响应；这是条件响应证据，不是动态因果证明，见 [实验与回放记录](artifacts/runs/diagnostic_pose_learning/leg_mean_bound_comparison/README.md)。
