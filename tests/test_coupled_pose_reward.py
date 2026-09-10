@@ -64,6 +64,20 @@ def test_position_width_preserves_default_and_changes_only_position_kernel(rewar
     assert torch.all(wider["tracking"][1:]>default["tracking"][1:])
 
 
+def test_foot_above_thigh_is_one_sided_square_in_meters(reward_inputs):
+    baseline=reward_terms(**reward_inputs)
+    absent=reward_terms(**reward_inputs,foot_bottom_minus_thigh_z=None)
+    delta=torch.tensor([[-.3,-.2,-.1,0.],[0.,0.,0.,0.],[-.1,0.,.1,.2]],requires_grad=True)
+    terms=reward_terms(**reward_inputs,foot_bottom_minus_thigh_z=delta)
+    torch.testing.assert_close(terms['foot_above_thigh'],torch.tensor([0.,0.,.05]))
+    terms['foot_above_thigh'].sum().backward()
+    torch.testing.assert_close(delta.grad,torch.tensor([[0.,0.,0.,0.],[0.,0.,0.,0.],[0.,0.,.2,.4]]))
+    assert 'foot_above_thigh' not in baseline
+    for key,value in baseline.items():
+        assert torch.equal(value,absent[key])
+        assert torch.equal(value,terms[key])
+
+
 def test_optional_joint_margin_is_range_normalized_and_has_restoring_gradient(reward_inputs):
     q=reward_inputs['q'].clone()
     q[:,:6]=torch.tensor([-1.2,-1.,-.8,0.,.8,1.])

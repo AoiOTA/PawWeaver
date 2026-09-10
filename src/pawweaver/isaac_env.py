@@ -12,6 +12,24 @@ from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_qu
 from .task import GoalBank,reward_terms,sum_reward_terms,UmiPoseReward,termination_config,fall_causes
 from .training_inputs import training_inputs
 
+def _foot_sphere_radii_m(tree):
+    """The optional height cost uses link origins only for centered spheres."""
+    radii=[]
+    for name in FOOT_NAMES:
+        collisions=tree.links[name].findall("collision")
+        if len(collisions)!=1 or collisions[0].find("geometry/sphere") is None:
+            raise ValueError(f"foot_above_thigh requires one collision sphere for {name}")
+        collision=collisions[0]
+        pose=collision.find("origin")
+        if pose is not None and any(float(v)!=0 for key in ("xyz","rpy")
+                                    for v in pose.get(key,"0 0 0").split()):
+            raise ValueError(f"foot_above_thigh requires zero collision origin for {name}")
+        radius=float(collision.find("geometry/sphere").get("radius"))
+        if not np.isfinite(radius) or radius<=0:
+            raise ValueError(f"foot_above_thigh requires a finite positive sphere radius for {name}")
+        radii.append(radius)
+    return radii
+
 class WholeBodyEnv:
     def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0,*,diagnostic=False,provisional_spec=None):
         from .isaac_robot import create_scene
@@ -42,8 +60,11 @@ class WholeBodyEnv:
         self.foot_ids=named_indices(self.robot.body_names,FOOT_NAMES)
         self.gripper_id=self.robot.body_names.index("arm_gripper_base")
         tree=RobotTree.load(asset/"robot.urdf")
-        if config.get("reward_weights",{}).get("feet_under_hips",0.)!=0:
+        if any(config.get("reward_weights",{}).get(name,0.)!=0
+               for name in ("feet_under_hips","foot_above_thigh")):
             self.thigh_ids=named_indices(self.robot.body_names,tuple(name.replace("_foot","_thigh") for name in FOOT_NAMES))
+        if config.get("reward_weights",{}).get("foot_above_thigh",0.)!=0:
+            self.foot_sphere_radii_m=torch.tensor(_foot_sphere_radii_m(tree),device=device,dtype=torch.float32)
         self.tcp_offset=torch.tensor(numbers(tree.joints["tcp_mount"].find("origin").get("xyz")),device=device,dtype=torch.float32)
         self.tcp_rotation=torch.tensor(rpy_quat(numbers(tree.joints["tcp_mount"].find("origin").get("rpy","0 0 0"))),
             device=device,dtype=torch.float32)
@@ -222,6 +243,9 @@ class WholeBodyEnv:
                 -self.robot.data.body_link_pose_w.torch[:,self.thigh_ids,:2]
                 if self.config.get("reward_weights",{}).get("feet_under_hips",0.)!=0 else None),
             feet_under_hips_distance_sigma=self.config.get("feet_under_hips_distance_sigma",.5),
+            foot_bottom_minus_thigh_z=(self.robot.data.body_link_pose_w.torch[:,self.foot_ids,2]
+                -self.foot_sphere_radii_m-self.robot.data.body_link_pose_w.torch[:,self.thigh_ids,2]
+                if self.config.get("reward_weights",{}).get("foot_above_thigh",0.)!=0 else None),
             tcp_velocity=(state.tcp_pos_w-self.previous_tcp)/.02,goal_velocity=(goal-last_goal)/.02,
             action=self.pd.last_action,previous_action=self.previous_action,torque=self.torque,
             effort=self.pd.effort,q=state.joint_pos,qd=state.joint_vel,previous_qd=self.previous_qd,

@@ -107,6 +107,64 @@ def test_actual_step_clips_nonterminal_but_preserves_fall_cost(fixed_env):
     assert "demonstration_group_stats" not in extras
 
 
+def test_actual_step_foot_height_cost_uses_geometry_weight_and_dt_once(fixed_env):
+    from pawweaver.contracts import FOOT_NAMES,named_indices
+    from pawweaver.assets.model import RobotTree
+    from pawweaver.isaac_env import _foot_sphere_radii_m
+    env=fixed_env
+    env.contacts.zero_()
+    env.config['reward_diagnostics']=True
+    _,baseline,_,extras=env.step(torch.zeros(2,18),auto_reset=False)
+    assert 'foot_above_thigh' not in extras['reward_diagnostics']['weighted_nonterminal_terms']
+    # Runtime order need not match the canonical foot/thigh order.
+    names=list(reversed(FOOT_NAMES))+[n.replace('_foot','_thigh') for n in FOOT_NAMES]
+    env.robot.body_names=names
+    env.foot_ids=named_indices(names,FOOT_NAMES)
+    env.thigh_ids=named_indices(names,tuple(n.replace('_foot','_thigh') for n in FOOT_NAMES))
+    tree=RobotTree.load(Path(__file__).resolve().parents[1]/'assets/generated/diagnostic/robot.urdf')
+    env.foot_sphere_radii_m=torch.tensor(_foot_sphere_radii_m(tree))
+    pose=torch.zeros(2,8,7)
+    pose[:,env.thigh_ids,2]=torch.tensor([.3,.4,.5,.6])
+    delta=torch.tensor([[-.1,-.2,-.3,-.4],[-.1,0.,.1,.2]])
+    pose[:,env.foot_ids,2]=pose[:,env.thigh_ids,2]+env.foot_sphere_radii_m+delta
+    env.robot.data.body_link_pose_w=SimpleNamespace(torch=pose)
+    env.robot.data.body_link_lin_vel_w=SimpleNamespace(torch=torch.zeros(2,8,3))
+    env.contacts=torch.zeros(2,8)
+    env.config['reward_weights']['foot_above_thigh']=-10.
+    _,reward,_,extras=env.step(torch.zeros(2,18),auto_reset=False)
+    weighted=extras['reward_diagnostics']['weighted_nonterminal_terms']['foot_above_thigh']
+    torch.testing.assert_close(weighted,torch.tensor([0.,-.5]))
+    torch.testing.assert_close(baseline-reward,torch.tensor([0.,.01]),atol=1e-6,rtol=0)
+    # Common world-Z translation changes neither the unilateral cost nor reward.
+    pose[:,:,2]+=3.
+    _,translated,_,_=env.step(torch.zeros(2,18),auto_reset=False)
+    torch.testing.assert_close(translated,reward,atol=1e-6,rtol=0)
+    env.config['reward_weights']['foot_above_thigh']=0.
+    del env.foot_sphere_radii_m
+    _,disabled,_,extras=env.step(torch.zeros(2,18),auto_reset=False)
+    assert torch.equal(disabled,baseline)
+    assert 'foot_above_thigh' not in extras['reward_diagnostics']['weighted_nonterminal_terms']
+
+
+@pytest.mark.parametrize('invalid',['offset','radius','box'])
+def test_foot_height_geometry_reads_actual_spheres_and_rejects_unsupported(invalid):
+    pytest.importorskip('tensordict')
+    from pawweaver.assets.model import RobotTree
+    from pawweaver.contracts import FOOT_NAMES
+    from pawweaver.isaac_env import _foot_sphere_radii_m
+    tree=RobotTree.load(Path(__file__).resolve().parents[1]/'assets/generated/diagnostic/robot.urdf')
+    assert _foot_sphere_radii_m(tree)==[.028]*4
+    collision=tree.links[FOOT_NAMES[0]].find('collision')
+    if invalid=='offset':
+        collision.find('origin').set('xyz','0 0 .001')
+    elif invalid=='radius':
+        collision.find('geometry/sphere').set('radius','nan')
+    else:
+        collision.find('geometry/sphere').tag='box'
+    with pytest.raises(ValueError,match='foot_above_thigh requires'):
+        _foot_sphere_radii_m(tree)
+
+
 @pytest.mark.parametrize("second_index",[1,-1])
 def test_group_statistics_capture_pre_reset_identity_and_exclude_unimported(fixed_env,second_index):
     env=fixed_env

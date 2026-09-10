@@ -207,7 +207,7 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
                  torque,effort,q,qd,previous_qd,lower,upper,gravity_b,foot_velocity,foot_contact,
                  collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5,
                  joint_limit_margin_fraction=None,foot_force_z=None,foot_hip_delta_xy=None,
-                 feet_under_hips_distance_sigma=.5):
+                 feet_under_hips_distance_sigma=.5,foot_bottom_minus_thigh_z=None):
     if not np.isfinite(tracking_width) or tracking_width<=0:
         raise ValueError("Position reward width must be finite and positive")
     if not np.isfinite(orientation_tracking_width_rad) or orientation_tracking_width_rad<=0:
@@ -244,6 +244,9 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
             raise ValueError("Feet-under-hips distance sigma must be finite and positive")
         distance=foot_hip_delta_xy.norm(dim=-1)
         terms["feet_under_hips"]=(1-torch.exp(-distance/feet_under_hips_distance_sigma)).sum(-1)
+    if foot_bottom_minus_thigh_z is not None:
+        # World-vertical same-side difference in meters; cost has units m².
+        terms["foot_above_thigh"]=foot_bottom_minus_thigh_z.clamp_min(0).square().sum(-1)
     return terms
 
 def sum_reward_terms(terms,weights,*,coupled_pose=False):
