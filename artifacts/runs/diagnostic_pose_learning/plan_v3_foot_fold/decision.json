@@ -1,0 +1,28 @@
+{
+  "question": "Does a one-sided cost for foot sphere bottom above same-side thigh reduce the observed folded-leg behavior while retaining task progress?",
+  "initializer": "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train_lr_floor1000/checkpoint_000500.pt",
+  "initializer_reason": "Preserve checkpoint500 body_low improvement and stable step00 before subsequent1000 deterioration; this is a chosen repair starting point, not a scalar best-policy ranking. Latest999 and earlier250 retained.",
+  "transfer_semantics": "Both arms load the same actor/critic and normalizers using initialize-from; fresh Adam, seed0, fresh UMI EMA and restarted episodes. Not exact continuation. Initial LR copied from actual checkpoint500 metric; subsequent feedback remains adaptive.",
+  "initial_learning_rate": 3.375000000000001e-07,
+  "only_between_arm_difference": {
+    "reward_weights.foot_above_thigh": [
+      0,
+      -10
+    ]
+  },
+  "cost": "sum(relu(foot_collision_sphere_center_world_z - radius - same_side_thigh_origin_world_z)^2), m^2 before weight and existing control dt",
+  "weight_units": "m^-2; provisional engineering choice, no formal acceptance meaning",
+  "radius_source": "actual generated diagnostic URDF, validate zero sphere-origin offset when enabled",
+  "arm_budget": {
+    "iterations": 100,
+    "num_envs": 4096,
+    "rollout_steps": 24,
+    "epochs": 5,
+    "minibatches": 4,
+    "transitions": 9830400,
+    "optimizer_updates": 2000
+  },
+  "evaluation": "Same frozen workspace4 and training10 full-duration cases; retain failures, common-time task metrics and actual support geometry. Use test8 regression for candidate adoption. Development only, no Final claim.",
+  "stop": "Immediately stop numerical/physics invalidity; persistent severe degeneration may stop at a complete update with actual budget recorded. Otherwise complete100 per arm; extend symmetrically only if meaningful emerging signal warrants it, no coefficient sweep.",
+  "preserved": "World fixed EE pose, one18-joint Actor, no base/gait commands, original acceptance/fall thresholds, provisional hardware, trained=false; no four-feet-grounded requirement."
+}

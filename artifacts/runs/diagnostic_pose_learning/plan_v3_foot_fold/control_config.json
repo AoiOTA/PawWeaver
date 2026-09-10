@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "physics_dt": 0.002,
+  "decimation": 10,
+  "history_frames": 5,
+  "goal_history_frames": 4,
+  "future_frames": 4,
+  "episode_seconds": 60.0,
+  "num_envs": 4096,
+  "actor_hidden_dims": [
+    512,
+    256,
+    128
+  ],
+  "rollout_steps": 24,
+  "learning_epochs": 5,
+  "mini_batches": 4,
+  "gamma": 0.99,
+  "lam": 0.95,
+  "learning_rate": 3.375000000000001e-07,
+  "desired_kl": 0.01,
+  "entropy_coef": 0.0,
+  "clip_param": 0.2,
+  "velocity_estimation": false,
+  "trajectory_prediction": false,
+  "adaptive_sampling": false,
+  "domain_randomization": false,
+  "synthetic_orientation_source": "Hold actual reset TCP world orientation; synthetic pose reachability is not validated.",
+  "orientation_tracking_width_rad": 0.5,
+  "orientation_reward_source": "Opt-in umi_pose_reward owns a fixed peak4 pose kernel and global reset-triggered EMA curriculum; legacy orientation width .5 is inactive for this profile, not an acceptance threshold.",
+  "reward_weights": {
+    "tracking": 3.0,
+    "orientation_tracking": 1.0,
+    "progress": 0.0,
+    "velocity_tracking": 0.0,
+    "action_rate": -0.1,
+    "normalized_torque": -0.002,
+    "joint_acceleration": -2.5e-07,
+    "joint_limit": -0.08,
+    "saturation": -0.05,
+    "foot_slip": -0.1,
+    "body_tilt": 0.0,
+    "collision": -2.0,
+    "termination": -5.0,
+    "even_mass_distribution": -1.0,
+    "feet_under_hips": -1.0
+  },
+  "randomization": {
+    "mass_multiplier": [
+      0.9,
+      1.1
+    ],
+    "com_offset_m": 0.01,
+    "motor_strength": [
+      0.9,
+      1.1
+    ],
+    "gain_multiplier": [
+      0.9,
+      1.1
+    ],
+    "friction": [
+      0.5,
+      1.0
+    ],
+    "control_delay_physics_steps": [
+      0,
+      10
+    ],
+    "observation_noise": 0.01,
+    "push_velocity_m_s": 0.15
+  },
+  "demonstrations": [
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/near_00.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/near_01.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/near_02.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/near_03.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/body_low.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/body_high.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/body_lateral.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/step_00.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/step_01.npz",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/train/step_02.npz"
+  ],
+  "initial_base_height_m": 0.31762150697067526,
+  "initial_base_height_source": {
+    "experiment": "artifacts/runs/diagnostic_settling_seed0/result.json",
+    "asset_hash": "1fe12b296656e1684165d60cdfb36e5c003cbb777f4d0e8525d14516d4f9176a",
+    "q0_source": "configs/diagnostic_actuators.json",
+    "foot_collision_sphere_radius_m": 0.028,
+    "measured_clearance_at_base_0_5_m": 0.18337849302932477,
+    "initial_air_gap_m": 0.001,
+    "derivation": "0.5 - 0.18337849302932477 + 0.001",
+    "evidence_limit": "Reduces initial free fall; not a validated stance or controller.",
+    "q0_note": "Leg q0 unchanged for SDK zero arm reference; foot sphere geometry and 1 mm clearance rechecked in artifacts/preview/initial_pose_candidates/result.json zero_fold"
+  },
+  "curriculum_stage": 2,
+  "coupled_pose_reward": true,
+  "umi_pose_reward": true,
+  "leg_mean_transform": "identity",
+  "leg_mean_bound_coef": 0.01,
+  "demonstrations_only": true,
+  "minimum_base_height_m": 0.15,
+  "joint_limit_margin_fraction": 0.1,
+  "leg_mean_bound_effective_pd": true,
+  "feet_under_hips_distance_sigma": 0.5,
+  "learn_std": false,
+  "reward_diagnostics": true,
+  "umi_clip_nonnegative": false,
+  "demonstration_group_weights": {
+    "near": 0.4,
+    "body": 0.3,
+    "step": 0.3
+  },
+  "minimum_learning_rate": 1e-07
+}
