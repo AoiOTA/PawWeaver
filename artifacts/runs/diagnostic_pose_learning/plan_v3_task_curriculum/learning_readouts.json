@@ -1,0 +1,168 @@
+{
+  "engine": "MuJoCo",
+  "evidence_limit": "Development checkpoints on provisional hardware, same continuous training trajectory, not equal-budget algorithm comparison or formal acceptance. Position/orientation and foot support remain separate.",
+  "checkpoints": {
+    "50": {
+      "completed_iterations": 51,
+      "new_transitions": 5013504,
+      "evaluation_exit_code": 0,
+      "support_readout_exit_code": 0,
+      "policy_sha256": "2d6ce118d5e0889ea2bb953bb8329a59223b0c9ba89cccf23451855dea20f665",
+      "cases": [
+        {
+          "case_id": "low",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.0976880733358282,
+          "position_p95_m": 0.11892907455803613,
+          "orientation_rmse_rad": 0.3845273507054313,
+          "orientation_p95_rad": 0.5524894595146179,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0012761324875149485,
+            "FL_foot": 0.2971580558523476,
+            "RR_foot": -0.0007598908867713456,
+            "RL_foot": -0.0005598690818270351
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "high",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.06932782893854386,
+          "position_p95_m": 0.11647634915548469,
+          "orientation_rmse_rad": 0.3272005185524307,
+          "orientation_p95_rad": 0.5435054302215576,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0016035215391187936,
+            "FL_foot": 0.09034677219492086,
+            "RR_foot": 0.46024700761834064,
+            "RL_foot": -0.000514505800601222
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "lateral",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.04362365294763596,
+          "position_p95_m": 0.08694233820064536,
+          "orientation_rmse_rad": 0.2178652486716987,
+          "orientation_p95_rad": 0.40541771054267883,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": 0.004255715241680052,
+            "FL_foot": 0.20467557372157003,
+            "RR_foot": -0.0003875427091013499,
+            "RL_foot": -0.00048417057595591026
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "far",
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.05663133600916976,
+          "position_p95_m": 0.0782275914345852,
+          "orientation_rmse_rad": 0.322621368605626,
+          "orientation_p95_rad": 0.4818546772003174,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": 0.02792345540960555,
+            "FL_foot": 0.19359108190899138,
+            "RR_foot": 0.04681582448563635,
+            "RL_foot": 0.0186860182420031
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923
+        }
+      ]
+    },
+    "250": {
+      "completed_iterations": 251,
+      "new_transitions": 24674304,
+      "evaluation_exit_code": 0,
+      "support_readout_exit_code": 0,
+      "policy_sha256": "aee5ccfe7f5fc805a9d8c5a36ea2fe84d712465d39fbc0609b19a25f8437cecb",
+      "cases": [
+        {
+          "case_id": "low",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.08550110812239524,
+          "position_p95_m": 0.11398330033830487,
+          "orientation_rmse_rad": 0.2773826598197256,
+          "orientation_p95_rad": 0.4054531157016754,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0012906841152646941,
+            "FL_foot": 0.27144022799709083,
+            "RR_foot": -0.0008027031577374225,
+            "RL_foot": -0.0004919435888590208
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "high",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.06557509790445674,
+          "position_p95_m": 0.11914031251598642,
+          "orientation_rmse_rad": 0.31401017299019457,
+          "orientation_p95_rad": 0.5669571757316589,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0019050686514910427,
+            "FL_foot": -8.792748597872834e-05,
+            "RR_foot": 0.48550586003130236,
+            "RL_foot": -0.0005311506203763206
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "lateral",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.049477167713115805,
+          "position_p95_m": 0.09458426389245267,
+          "orientation_rmse_rad": 0.2377003799763007,
+          "orientation_p95_rad": 0.4512512683868408,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0010237232782221567,
+            "FL_foot": 0.15264381221540993,
+            "RR_foot": -0.0006292289839038834,
+            "RL_foot": -0.0006774515467304405
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0
+        },
+        {
+          "case_id": "far",
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.06295770819662048,
+          "position_p95_m": 0.0884867795586306,
+          "orientation_rmse_rad": 0.28760741384234345,
+          "orientation_p95_rad": 0.4805608093738556,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": 0.01970541359678649,
+            "FL_foot": 0.17127090047716248,
+            "RR_foot": 0.04314482081256032,
+            "RL_foot": 0.006023571801840614
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923
+        }
+      ]
+    }
+  }
+}
