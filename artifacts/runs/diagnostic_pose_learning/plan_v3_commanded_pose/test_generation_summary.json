@@ -1,0 +1,625 @@
+{
+  "count": 8,
+  "split": "test",
+  "frozen_at_utc": "2026-09-10T12:28:22.326296+00:00",
+  "duration_s": 60.0,
+  "control_dt_s": 0.02,
+  "task_frame": "base_xy_yaw_ground_z",
+  "ground_z": 0.0,
+  "thresholds": {
+    "low_height_upper_quantile_m": 0.34798258688333417,
+    "high_height_lower_quantile_m": 1.2865194978877805,
+    "lateral_abs_y_lower_quantile_m": 0.4881018986525837
+  },
+  "selection_rule": "In low/high/lateral/middle order, sort original test pool_id and take the first two not already selected. Middle excludes low, high and lateral eligibility. No training results used.",
+  "schedule": {
+    "initial_hold_end_s": 2.0,
+    "pose_arrival_s": 20.0,
+    "command_arrival_s": 8.0
+  },
+  "initial_tcp_position_t": [
+    0.2083460607339131,
+    1.1477813143442494e-08,
+    0.6462084193142115
+  ],
+  "initial_tcp_quat_t": [
+    0.7372773403925712,
+    -1.6968035447628303e-08,
+    0.675590203706104,
+    3.643719237343864e-08
+  ],
+  "endpoint_witnesses": [
+    {
+      "case_id": "low_stand",
+      "category": "low",
+      "source_id": "test_0003",
+      "source_endpoint_witness": {
+        "pool_id": "test_0003",
+        "body_source": "around_low",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.18
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -4.580675345818372e-12,
+          1.2544839416719378,
+          -2.410292709087975,
+          4.597212516807385e-12,
+          1.254483941671887,
+          -2.4102927090879174,
+          -4.519378976498026e-12,
+          1.254483941671918,
+          -2.4102927090879684,
+          4.519362775298844e-12,
+          1.2544839416719666,
+          -2.410292709087988,
+          -0.9231283214013333,
+          2.863397747547421,
+          -2.3467100942889565,
+          0.25956149709857534,
+          1.2066013594812677,
+          0.2730008578962942
+        ],
+        "tcp_xyz_m": [
+          0.3541977497666097,
+          -0.37326355375085224,
+          0.1274647482516194
+        ],
+        "tcp_quat_wxyz": [
+          0.007480381495284418,
+          0.5993471029094926,
+          0.7908796201725423,
+          0.12343630147739518
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.032910035441705475,
+        "com_projection_support_hull_margin_m": 0.1252981266836045,
+        "outside_fixed_stand_wrist_bound_m": 0.013367830639652412
+      },
+      "target_position_t": [
+        0.3541977497663372,
+        -0.37326355375081866,
+        0.1274647482514174
+      ],
+      "target_quat_t": [
+        0.007480381494866803,
+        0.5993471029095219,
+        0.790879620172585,
+        0.12343630147700435
+      ],
+      "velocity_command_yaw": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fk_position_error_m": 3.408702322964333e-13,
+      "fk_orientation_error_rad": 1.1486165343171718e-12,
+      "max_target_linear_speed_mps": 0.06828207008632299
+    },
+    {
+      "case_id": "low_forward",
+      "category": "low",
+      "source_id": "test_0005",
+      "source_endpoint_witness": {
+        "pool_id": "test_0005",
+        "body_source": "around_lateral",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.28
+        ],
+        "base_rpy_rad": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -0.257851244262281,
+          1.0078047906216683,
+          -1.9538371280859395,
+          -0.24301968589234482,
+          0.9175636868864488,
+          -1.7807382328828767,
+          -0.2578512442622763,
+          1.0078047906216792,
+          -1.9538371280859443,
+          -0.24301968589234482,
+          0.9175636868864491,
+          -1.7807382328828767,
+          -1.1257109856069218,
+          2.826247972460013,
+          -2.1317434500026953,
+          1.060726239927936,
+          -0.4050693118591544,
+          1.0077424301286104
+        ],
+        "tcp_xyz_m": [
+          0.23132684406841583,
+          -0.6696803620094026,
+          0.17147167188715146
+        ],
+        "tcp_quat_wxyz": [
+          0.44601017052677966,
+          0.8826218831808242,
+          -0.11548032950835455,
+          0.09336933443936644
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.0330356394710253,
+        "com_projection_support_hull_margin_m": 0.10690680542586498,
+        "outside_fixed_stand_wrist_bound_m": 0.03061899873878482
+      },
+      "target_position_t": [
+        0.23132684406826962,
+        -0.6696803620092837,
+        0.17147167188698714
+      ],
+      "target_quat_t": [
+        0.44601017052674663,
+        0.8826218831809213,
+        -0.11548032950808218,
+        0.09336933443894406
+      ],
+      "velocity_command_yaw": [
+        0.18,
+        0.0,
+        0.0
+      ],
+      "fk_position_error_m": 2.50032725702357e-13,
+      "fk_orientation_error_rad": 1.0258781700680057e-12,
+      "max_target_linear_speed_mps": 0.08554173123675621
+    },
+    {
+      "case_id": "high_stand",
+      "category": "high",
+      "source_id": "test_0001",
+      "source_endpoint_witness": {
+        "pool_id": "test_0001",
+        "body_source": "around_high",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          6.202417508123229e-14,
+          0.5248096311738303,
+          -1.0127551653009372,
+          -6.086679958200933e-14,
+          0.524809631173825,
+          -1.012755165300935,
+          6.197628700153319e-14,
+          0.5248096311738184,
+          -1.0127551653009204,
+          -6.19685891892696e-14,
+          0.5248096311738301,
+          -1.0127551653009488,
+          -0.6518482915760057,
+          1.7871074781299474,
+          -2.3754247659736865,
+          0.3332938152725603,
+          -0.6297976682900842,
+          0.1393521159559683
+        ],
+        "tcp_xyz_m": [
+          0.2515980653095948,
+          -0.24988296286094755,
+          1.2940313085287227
+        ],
+        "tcp_quat_wxyz": [
+          0.9759596434272977,
+          0.15601157741101565,
+          0.07625367052542845,
+          -0.1317138559392595
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03257410094136523,
+        "com_projection_support_hull_margin_m": 0.14847358807089478,
+        "outside_fixed_stand_wrist_bound_m": 0.05699633964931583
+      },
+      "target_position_t": [
+        0.2515980653101096,
+        -0.24988296286068595,
+        1.2940313085285957
+      ],
+      "target_quat_t": [
+        0.9759596434272754,
+        0.15601157741091695,
+        0.07625367052582968,
+        -0.13171385593930998
+      ],
+      "velocity_command_yaw": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "fk_position_error_m": 5.912645819541872e-13,
+      "fk_orientation_error_rad": 8.33716489542934e-13,
+      "max_target_linear_speed_mps": 0.07246763120065332
+    },
+    {
+      "case_id": "high_yaw",
+      "category": "high",
+      "source_id": "test_0009",
+      "source_endpoint_witness": {
+        "pool_id": "test_0009",
+        "body_source": "around_high",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          6.202417508123229e-14,
+          0.5248096311738303,
+          -1.0127551653009372,
+          -6.086679958200933e-14,
+          0.524809631173825,
+          -1.012755165300935,
+          6.197628700153319e-14,
+          0.5248096311738184,
+          -1.0127551653009204,
+          -6.19685891892696e-14,
+          0.5248096311738301,
+          -1.0127551653009488,
+          0.0751935247539988,
+          1.142071606539592,
+          -2.269349262220833,
+          -0.37251576497722205,
+          -0.5864567830360276,
+          -0.1347166704844453
+        ],
+        "tcp_xyz_m": [
+          -0.06314898013562967,
+          0.043478061468200865,
+          1.374587498791807
+        ],
+        "tcp_quat_wxyz": [
+          0.9708596595817672,
+          -0.07180388110944053,
+          -0.12105036417909013,
+          -0.19396528912799393
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03257410094136523,
+        "com_projection_support_hull_margin_m": 0.16511506804105203,
+        "outside_fixed_stand_wrist_bound_m": 0.06105668607831105
+      },
+      "target_position_t": [
+        -0.06314898013536566,
+        0.043478061468766524,
+        1.3745874987917663
+      ],
+      "target_quat_t": [
+        0.970859659581794,
+        -0.07180388110978755,
+        -0.12105036417887005,
+        -0.19396528912786826
+      ],
+      "velocity_command_yaw": [
+        0.0,
+        0.0,
+        -0.25
+      ],
+      "fk_position_error_m": 6.255578700589788e-13,
+      "fk_orientation_error_rad": 8.610996819807418e-13,
+      "max_target_linear_speed_mps": 0.0810984156534818
+    },
+    {
+      "case_id": "lateral_left",
+      "category": "lateral",
+      "source_id": "test_0008",
+      "source_endpoint_witness": {
+        "pool_id": "test_0008",
+        "body_source": "around_lateral",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.28
+        ],
+        "base_rpy_rad": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -0.257851244262281,
+          1.0078047906216683,
+          -1.9538371280859395,
+          -0.24301968589234482,
+          0.9175636868864488,
+          -1.7807382328828767,
+          -0.2578512442622763,
+          1.0078047906216792,
+          -1.9538371280859443,
+          -0.24301968589234482,
+          0.9175636868864491,
+          -1.7807382328828767,
+          -1.3702818942956723,
+          2.590026405010933,
+          -2.495086077989852,
+          1.1477317130950149,
+          0.040358990623104024,
+          0.6066167291311467
+        ],
+        "tcp_xyz_m": [
+          0.1590304821573437,
+          -0.8030600799698989,
+          0.4406726080240574
+        ],
+        "tcp_quat_wxyz": [
+          0.5885171771499156,
+          0.7949455129952813,
+          0.000663675893913554,
+          0.14733880379069134
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.0330356394710253,
+        "com_projection_support_hull_margin_m": 0.09790856343522471,
+        "outside_fixed_stand_wrist_bound_m": 0.04829343725583757
+      },
+      "target_position_t": [
+        0.15903048215747184,
+        -0.8030600799698119,
+        0.4406726080237683
+      ],
+      "target_quat_t": [
+        0.5885171771497287,
+        0.7949455129954793,
+        0.0006636758941862417,
+        0.1473388037903686
+      ],
+      "velocity_command_yaw": [
+        0.0,
+        0.1,
+        0.0
+      ],
+      "fk_position_error_m": 3.279908689601756e-13,
+      "fk_orientation_error_rad": 1.005349172685286e-12,
+      "max_target_linear_speed_mps": 0.08650086592136699
+    },
+    {
+      "case_id": "lateral_arc",
+      "category": "lateral",
+      "source_id": "test_0011",
+      "source_endpoint_witness": {
+        "pool_id": "test_0011",
+        "body_source": "around_lateral",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.28
+        ],
+        "base_rpy_rad": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -0.257851244262281,
+          1.0078047906216683,
+          -1.9538371280859395,
+          -0.24301968589234482,
+          0.9175636868864488,
+          -1.7807382328828767,
+          -0.2578512442622763,
+          1.0078047906216792,
+          -1.9538371280859443,
+          -0.24301968589234482,
+          0.9175636868864491,
+          -1.7807382328828767,
+          -2.0809241711277564,
+          2.354090276091835,
+          -2.9670597,
+          1.3668437244198435,
+          -0.4872562534314644,
+          0.7191270791340827
+        ],
+        "tcp_xyz_m": [
+          -0.3664427521514699,
+          -0.598591208061139,
+          0.8834579110089866
+        ],
+        "tcp_quat_wxyz": [
+          0.8672484507897508,
+          0.323586900703837,
+          -0.3506585840479325,
+          -0.142162582029033
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.0330356394710253,
+        "com_projection_support_hull_margin_m": 0.10914207257076662,
+        "outside_fixed_stand_wrist_bound_m": 0.0262754658061235
+      },
+      "target_position_t": [
+        -0.36644275215121336,
+        -0.5985912080614635,
+        0.8834579110087711
+      ],
+      "target_quat_t": [
+        0.8672484507896606,
+        0.3235869007041771,
+        -0.35065858404778083,
+        -0.14216258202918305
+      ],
+      "velocity_command_yaw": [
+        0.18,
+        0.0,
+        0.2
+      ],
+      "fk_position_error_m": 4.664234459460353e-13,
+      "fk_orientation_error_rad": 8.230249105914192e-13,
+      "max_target_linear_speed_mps": 0.08990832785585245
+    },
+    {
+      "case_id": "middle_backward",
+      "category": "middle",
+      "source_id": "test_0000",
+      "source_endpoint_witness": {
+        "pool_id": "test_0000",
+        "body_source": "previous_pitch",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.28
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.19999999999999996,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -1.9915937077134328e-11,
+          0.8700009498461986,
+          -2.109630634086463,
+          1.9871668877544498e-11,
+          0.8700009498462637,
+          -2.1096306340864865,
+          1.6773957268549938e-17,
+          0.6457708294163244,
+          -1.6138951935598216,
+          -2.105655584986768e-17,
+          0.6457708294163244,
+          -1.6138951935598216,
+          1.9039081011085557,
+          0.4636080690218148,
+          -1.782862483272348,
+          1.7671329681993933,
+          -0.16546010949905576,
+          -0.9152945121212983
+        ],
+        "tcp_xyz_m": [
+          0.26332583463544895,
+          -0.14720315086963093,
+          1.1171883564323248
+        ],
+        "tcp_quat_wxyz": [
+          0.183223189369697,
+          0.11768936631226608,
+          0.14417434685544425,
+          0.9652938586995256
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.032984547872444446,
+        "com_projection_support_hull_margin_m": 0.14139157517833964,
+        "outside_fixed_stand_wrist_bound_m": -0.0899780140411301
+      },
+      "target_position_t": [
+        0.2633258346349531,
+        -0.1472031508694992,
+        1.1171883564324157
+      ],
+      "target_quat_t": [
+        0.18322318936969012,
+        0.11768936631186587,
+        0.1441743468555662,
+        0.9652938586995573
+      ],
+      "velocity_command_yaw": [
+        -0.12,
+        0.0,
+        0.0
+      ],
+      "fk_position_error_m": 5.210017988417913e-13,
+      "fk_orientation_error_rad": 8.392621926764546e-13,
+      "max_target_linear_speed_mps": 0.05171872635332728
+    },
+    {
+      "case_id": "middle_right",
+      "category": "middle",
+      "source_id": "test_0002",
+      "source_endpoint_witness": {
+        "pool_id": "test_0002",
+        "body_source": "leg_range_level_4",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.26037721997767177
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          0.0,
+          0.99297,
+          -1.98594,
+          0.0,
+          0.99297,
+          -1.98594,
+          0.0,
+          0.99297,
+          -1.98594,
+          0.0,
+          0.99297,
+          -1.98594,
+          0.7678430256478292,
+          1.8817761548588883,
+          -0.2677509225359245,
+          1.1251055403731036,
+          1.2869385308399757,
+          1.8022033873734729
+        ],
+        "tcp_xyz_m": [
+          -0.10009087377437606,
+          0.19088962240766413,
+          0.41673578084545937
+        ],
+        "tcp_quat_wxyz": [
+          -0.4547896753075624,
+          0.7047121944233086,
+          0.3903647087151921,
+          -0.3796873298576476
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03303329794485218,
+        "com_projection_support_hull_margin_m": 0.15294072447877094,
+        "outside_fixed_stand_wrist_bound_m": -0.37605772676847415
+      },
+      "target_position_t": [
+        -0.10009087377449055,
+        0.19088962240745846,
+        0.4167357808452907
+      ],
+      "target_quat_t": [
+        -0.45478967530709724,
+        0.7047121944235372,
+        0.3903647087151695,
+        -0.3796873298578038
+      ],
+      "velocity_command_yaw": [
+        0.0,
+        -0.1,
+        0.0
+      ],
+      "fk_position_error_m": 2.895659551590644e-13,
+      "fk_orientation_error_rad": 1.0836601336691506e-12,
+      "max_target_linear_speed_mps": 0.04471027790981764
+    }
+  ],
+  "source_hashes": {
+    "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/test_geometry_pool.json": "520d0018ee71dffdfbdb66c3eda10161828a9a8cc272aa5cdd6dd4f1f035e49b",
+    "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/generation_summary.json": "97db469496fa31e96d29337d0947e78a09f10459d7c1e5002694cd3eef078ec3",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/generation_summary.json": "6783c0f30cdbaba59668fa900e51f82f67bb4731d5b7cf5844fd6f21b4de4d44",
+    "assets/generated/diagnostic/robot.urdf": "b02b5739444abfafc2bbdaf9fb59ac3822c0fc2e55e4b16c20fa8a09e33bcfa5",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/prepare_test.py": "288bee0479bb180f4866189f56db7393732c32fcb479e9bd11efaf10b5d5ffa4"
+  },
+  "consumer_check": {
+    "loader": "load_command_suite",
+    "cases": 8,
+    "unique_original_test_sources": 8,
+    "saved_arrays_and_metadata_match": true,
+    "initial_hold_and_final_pose_command_windows_verified": true
+  },
+  "evidence_limit": "CPU FK and real suite-loader validation only. Witness baseXY/yaw removed; no world far-target translation inherited. Preset velocity/EE settings differ from training; no simulation, hardware validity, formal acceptance or extra-input causal claim.",
+  "validation_note": "The initial loader check exited1 only because repeated quaternion normalization changed two components by2.220446049250313e-16, exceeding an overly strict2e-16 comparison tolerance. The same fixed sources and commands were regenerated and passed with1e-14 tolerance; no data, geometry, or simulation failure occurred."
+}

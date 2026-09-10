@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "test",
+  "cases": [
+    {
+      "case_id": "low_stand",
+      "path": "low_stand.npz",
+      "source_id": "test_0003",
+      "sha256": "3b6b1a57f88e4e716a41c8facb58a3d6ca768a769d5ca92ed358a5dcc1259b58"
+    },
+    {
+      "case_id": "low_forward",
+      "path": "low_forward.npz",
+      "source_id": "test_0005",
+      "sha256": "1bfc1a1e20ae30399be91d04d973b53c49fb57484ad92d211b7cb1e0c0f6a551"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "high_stand.npz",
+      "source_id": "test_0001",
+      "sha256": "7a01d58ec00fd392fe1f5e86b3f1a4908c81ea48c6a7b814a508e9de6cab257f"
+    },
+    {
+      "case_id": "high_yaw",
+      "path": "high_yaw.npz",
+      "source_id": "test_0009",
+      "sha256": "bf50c9d64f6ac75c0dac1051693bec11e9488b7575de6a6422b2fabfda5a1b8a"
+    },
+    {
+      "case_id": "lateral_left",
+      "path": "lateral_left.npz",
+      "source_id": "test_0008",
+      "sha256": "1acf33cdcb50bf84103e5bb7871cff12dea81ba3a67973428e57b4c1d6352a54"
+    },
+    {
+      "case_id": "lateral_arc",
+      "path": "lateral_arc.npz",
+      "source_id": "test_0011",
+      "sha256": "fcf3aadee5b16bebde61e7b47e67abb9615287b7578cfdcf5a30c2c99687f40b"
+    },
+    {
+      "case_id": "middle_backward",
+      "path": "middle_backward.npz",
+      "source_id": "test_0000",
+      "sha256": "e7095654e8d0badca574a23d6bf29eb4e6de4f104ae98a5031ecbeb106c259a2"
+    },
+    {
+      "case_id": "middle_right",
+      "path": "middle_right.npz",
+      "source_id": "test_0002",
+      "sha256": "c2d7edd98f1a4591b95509a8aec866eaff7aaf7f08f1d80ee0bd269e50898943"
+    }
+  ],
+  "scope": "Frozen independent commanded-pose generalization readout; no world-fixed EE-only acceptance."
+}
