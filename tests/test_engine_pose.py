@@ -8,7 +8,7 @@ import pytest
 import torch
 
 from pawweaver.assets.model import RobotTree
-from pawweaver.contracts import JOINT_NAMES
+from pawweaver.contracts import JOINT_NAMES, FOOT_NAMES
 from pawweaver.math import rpy_matrix,rpy_quat
 from pawweaver.mujoco_runtime import MujocoRunner
 
@@ -52,6 +52,38 @@ def test_runtime_rejects_position_without_orientation_before_stepping():
     for call in (runner.reset, runner.step):
         with pytest.raises(ValueError, match="both position and world-frame orientation"):
             call([0., 0., .5])
+
+
+@pytest.mark.parametrize('swapped', [False, True])
+def test_contact_snapshot_sums_world_vectors_and_counts_only_nonfoot_floor_pairs(monkeypatch, swapped):
+    runner = MujocoRunner.__new__(MujocoRunner)
+    # Deliberately different body/geom orders; two foot contacts cancel while
+    # an internal arm/base collision contributes force but no ground count.
+    names = ['world', 'arm_link', FOOT_NAMES[2], 'base_link']
+    runner.model = SimpleNamespace(nbody=4, geom_bodyid=np.array([1, 0, 3, 2]),
+        body=lambda index: SimpleNamespace(name=names[index]),
+        geom=lambda name: SimpleNamespace(id={'floor': 1}[name]))
+    frame = np.array([[0., 1., 0.], [0., 0., 1.], [1., 0., 0.]])
+    pairs = [(1, 3), (1, 3), (0, 2), (1, 2)]
+    world_forces = np.array([[3., 4., 0.], [-3., -4., 0.], [0., 0., 5.], [1., 2., 2.]])
+    if swapped:
+        pairs = [(b, a) for a, b in pairs]
+        world_forces *= -1
+    runner.data = SimpleNamespace(ncon=len(pairs), contact=[
+        SimpleNamespace(geom1=a, geom2=b, frame=frame.ravel()) for a, b in pairs])
+    calls = []
+    def contact_force(model, data, index, wrench):
+        assert model is runner.model and data is runner.data
+        calls.append(index)
+        wrench[:] = np.r_[frame @ world_forces[index], [100., 200., 300.]]
+    monkeypatch.setattr(mujoco, 'mj_contactForce', contact_force)
+    forces, count = runner._contact_snapshot()
+    np.testing.assert_allclose(forces, [3., 5., 0., np.sqrt(54.)])
+    assert count == 1 and calls == list(range(4))
+    runner.data.ncon = 0
+    forces, count = runner._contact_snapshot()
+    np.testing.assert_array_equal(forces, np.zeros(4))
+    assert count == 0
 
 
 def test_isaac_state_composes_xyzw_gripper_with_nonidentity_tcp_mount():
@@ -167,6 +199,14 @@ def test_diagnostic_evaluation_archives_elapsed_pose_and_early_fall(diagnostic_b
         mujoco.mj_forward(runner.model, runner.data)
         return np.zeros(276), np.zeros(18)
     monkeypatch.setattr(runner, 'step', step)
+    snapshots = []
+    def contact_snapshot():
+        # Persist a distinguishable value for every actual runtime body column
+        # at each control tick, including the early-fall tick.
+        values = np.arange(runner.model.nbody) + runner.data.time
+        snapshots.append(values)
+        return values, len(snapshots)
+    monkeypatch.setattr(runner, '_contact_snapshot', contact_snapshot)
     state = runner.state()
     trajectory = Trajectory(np.array([5., 5.06]), np.repeat(state.tcp_pos_w.numpy(), 2, axis=0),
                             np.repeat(state.tcp_quat_w.numpy(), 2, axis=0), {'family': 'reach', 'case_id': 'test'})
@@ -175,9 +215,24 @@ def test_diagnostic_evaluation_archives_elapsed_pose_and_early_fall(diagnostic_b
     assert result['elapsed_seconds'] == pytest.approx(expected)
     assert result['fallen'] == fall and result['diagnostic'] and not result['trained']
     assert json.loads((tmp_path / 'evaluation/metrics.json').read_text()) == result
-    with np.load(tmp_path / 'evaluation/trace.npz') as trace:
+    with np.load(tmp_path / 'evaluation/trace.npz', allow_pickle=False) as trace:
         assert trace['times'][-1] == pytest.approx(expected)
         assert trace['tcp_quat_w'].shape == (1 if fall else 3, 4)
+        np.testing.assert_array_equal(trace['contact_body_names'],
+            [runner.model.body(index).name for index in range(runner.model.nbody)])
+        np.testing.assert_array_equal(trace['contacts'], snapshots)
+        np.testing.assert_array_equal(trace['nonfoot_ground_contact_count'], np.arange(1, len(snapshots)+1))
+        for name in FOOT_NAMES:
+            index = runner.model.body(name).id
+            assert trace['contact_body_names'][index] == name
+            np.testing.assert_allclose(trace['contacts'][:, index], index + trace['times'])
+        from pawweaver.task import episode_metrics
+        unchanged = episode_metrics(trace['times'], trace['errors'], trace['base'], trace['torques'],
+            trace['velocities'], fall, orientation_errors=trace['orientation_errors_rad'])
+        unchanged.update(engine='MuJoCo', trajectory=trajectory.metadata,
+            policy_sha256=runner.bundle['policy_sha256'], diagnostic=True, trained=False,
+            elapsed_seconds=float(runner.data.time))
+        assert result == unchanged
 
 
 def test_mujoco_suite_cli_preserves_engineering_report(diagnostic_bundle, tmp_path, monkeypatch):

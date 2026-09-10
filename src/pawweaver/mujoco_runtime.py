@@ -8,7 +8,7 @@ import torch
 import mujoco
 from .assets.build import verify_asset
 from .bundle import load_bundle
-from .contracts import RobotState,JOINT_NAMES,GoalSample
+from .contracts import RobotState,JOINT_NAMES,FOOT_NAMES,GoalSample
 from .control import JointPD
 from .observations import ObservationBuilder
 from .trajectories import Trajectory
@@ -135,6 +135,29 @@ class MujocoRunner:
         self.observations.push_state(self.state())
         return observation.numpy()[0],self.action.numpy()[0]
 
+    def _contact_snapshot(self):
+        """Net body force magnitudes (N) from the current solver contact snapshot.
+
+        Called after the final mj_step at 50 Hz; this is not the full 2 ms
+        contact history. Count only floor pairs whose other body is not a foot.
+        """
+        forces=np.zeros((self.model.nbody,3))
+        floor_id=self.model.geom("floor").id
+        nonfoot_ground_contact_count=0
+        wrench=np.zeros(6)
+        for index in range(self.data.ncon):
+            contact=self.data.contact[index]
+            body1,body2=self.model.geom_bodyid[[contact.geom1,contact.geom2]]
+            mujoco.mj_contactForce(self.model,self.data,index,wrench)
+            force_world=contact.frame.reshape(3,3).T@wrench[:3]
+            forces[body1]-=force_world
+            forces[body2]+=force_world
+            if contact.geom1==floor_id or contact.geom2==floor_id:
+                other_body=body2 if contact.geom1==floor_id else body1
+                if self.model.body(other_body).name not in FOOT_NAMES:
+                    nonfoot_ground_contact_count+=1
+        return np.linalg.norm(forces,axis=1),nonfoot_ground_contact_count
+
     def evaluate(self,trajectory:Trajectory,output:Path):
         start_time=float(trajectory.timestamps[0])
         steps=round((trajectory.timestamps[-1]-start_time)/.02)
@@ -142,7 +165,8 @@ class MujocoRunner:
             raise ValueError("Evaluation requires a case lasting at least one control step")
         self.reset(trajectory.positions[0],goal_quat_w=trajectory.sample_orientation(trajectory.timestamps[0]))
         rows={key:[] for key in ("times","errors","base","tcp","goal","torques","velocities","actions","observations",
-            "tcp_quat_w","goal_quat_w","orientation_errors_rad")}
+            "tcp_quat_w","goal_quat_w","orientation_errors_rad","contacts","nonfoot_ground_contact_count")}
+        contact_body_names=np.asarray([self.model.body(index).name for index in range(self.model.nbody)],dtype=str)
         fallen=False
         for _ in range(steps):
             goal=trajectory.sample(start_time+self.data.time)
@@ -153,9 +177,10 @@ class MujocoRunner:
             target_quat=trajectory.sample_orientation(start_time+self.data.time)
             error=np.linalg.norm(state.tcp_pos_w.numpy()[0]-target)
             orientation_error=float(quat_angle_error(state.tcp_quat_w,self.tensor(target_quat))[0])
+            contacts,nonfoot_ground_contact_count=self._contact_snapshot()
             values=(self.data.time,error,state.base_pos_w.numpy()[0],state.tcp_pos_w.numpy()[0],target,
                     self.torque.copy(),self.data.qvel[self.v_indices].copy(),action,obs,
-                    state.tcp_quat_w.numpy()[0],target_quat,orientation_error)
+                    state.tcp_quat_w.numpy()[0],target_quat,orientation_error,contacts,nonfoot_ground_contact_count)
             for key,value in zip(rows,values):
                 rows[key].append(value)
             base=self.data.body("base_link")
@@ -168,7 +193,8 @@ class MujocoRunner:
             policy_sha256=self.bundle["policy_sha256"],diagnostic=self.diagnostic,
             trained=bool(self.bundle["trained"]),elapsed_seconds=float(self.data.time))
         output.mkdir(parents=True,exist_ok=True)
-        np.savez_compressed(output/"trace.npz",**{key:np.asarray(value) for key,value in rows.items()})
+        np.savez_compressed(output/"trace.npz",contact_body_names=contact_body_names,
+            **{key:np.asarray(value) for key,value in rows.items()})
         (output/"metrics.json").write_text(json.dumps(result,indent=2)+"\n")
         return result
 
