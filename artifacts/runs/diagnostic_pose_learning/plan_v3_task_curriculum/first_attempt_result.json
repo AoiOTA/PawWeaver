@@ -1,0 +1,63 @@
+{
+  "training_progress": {
+    "status": "stopped_early",
+    "stop_reason": "stop_file",
+    "requested_iterations": 1000,
+    "completed_iterations": 78,
+    "start_iteration": 0,
+    "last_completed_iteration": 77,
+    "completed_transitions": 7667712
+  },
+  "exit_code": 0,
+  "falls": 28058,
+  "all_finite": true,
+  "optimizer_updates": 1560,
+  "loop_seconds": 415.6848612050235,
+  "groups": {
+    "near": {
+      "transitions": 2802129,
+      "falls": 11396,
+      "timeouts": 0,
+      "mean_ended_episode_seconds": 4.267588627588628
+    },
+    "body": {
+      "transitions": 2705616,
+      "falls": 8180,
+      "timeouts": 0,
+      "mean_ended_episode_seconds": 3.932088019559902
+    },
+    "step": {
+      "transitions": 2159967,
+      "falls": 8482,
+      "timeouts": 0,
+      "mean_ended_episode_seconds": 3.8446804998821036
+    }
+  },
+  "checkpoint50_workspace": [
+    {
+      "case": "low",
+      "completed": false,
+      "fallen": true,
+      "seconds": 2.3799999999999595
+    },
+    {
+      "case": "high",
+      "completed": false,
+      "fallen": true,
+      "seconds": 1.6200000000000012
+    },
+    {
+      "case": "lateral",
+      "completed": false,
+      "fallen": true,
+      "seconds": 2.0599999999999947
+    },
+    {
+      "case": "far",
+      "completed": false,
+      "fallen": true,
+      "seconds": 2.319999999999966
+    }
+  ],
+  "evidence_limit": "Stopped for persistent severe loss of duration and task behavior; not1000 iterations completed and not a main-route infeasibility result. Prior original goals retained."
+}

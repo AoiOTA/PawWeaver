@@ -90,10 +90,16 @@ class WholeBodyActor(MLPModel):
 
 class AuxiliaryPPO(PPO):
     """Feed-forward, single-GPU PPO. Auxiliary labels stay in rollout storage, outside actor input."""
-    def __init__(self,*args,auxiliary_coef=1.,leg_mean_bound_coef=0.,leg_mean_bounds=None,**kwargs):
+    def __init__(self,*args,auxiliary_coef=1.,leg_mean_bound_coef=0.,leg_mean_bounds=None,
+                 minimum_learning_rate=1e-5,**kwargs):
         if not math.isfinite(leg_mean_bound_coef) or leg_mean_bound_coef<0:
             raise ValueError("Leg mean-bound coefficient must be finite and nonnegative")
+        if not math.isfinite(minimum_learning_rate) or minimum_learning_rate<=0:
+            raise ValueError("Minimum learning rate must be finite and positive")
         super().__init__(*args,**kwargs)
+        if minimum_learning_rate>self.learning_rate:
+            raise ValueError("Minimum learning rate must not exceed initial learning rate")
+        self.minimum_learning_rate=minimum_learning_rate
         self.auxiliary_coef = auxiliary_coef
         self.leg_mean_bound_coef = leg_mean_bound_coef
         self.leg_mean_bounds=None
@@ -122,7 +128,7 @@ class AuxiliaryPPO(PPO):
                 kl = self.actor.get_kl_divergence(batch.old_distribution_params,self.actor.output_distribution_params).mean()
                 if self.desired_kl is not None and self.schedule == "adaptive":
                     if kl > 2*self.desired_kl:
-                        self.learning_rate = max(1e-5,self.learning_rate/1.5)
+                        self.learning_rate = max(self.minimum_learning_rate,self.learning_rate/1.5)
                     elif 0 < kl < self.desired_kl/2:
                         self.learning_rate = min(1e-2,self.learning_rate*1.5)
                     for group in self.optimizer.param_groups:

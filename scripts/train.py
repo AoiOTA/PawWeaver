@@ -75,7 +75,8 @@ try:
     storage=RolloutStorage("rl",args.num_envs,config["rollout_steps"],obs,[18],args.device)
     algorithm=AuxiliaryPPO(actor,critic,storage,device=args.device,num_learning_epochs=config["learning_epochs"],
         num_mini_batches=config["mini_batches"],gamma=config["gamma"],lam=config["lam"],
-        learning_rate=config["learning_rate"],desired_kl=config["desired_kl"],entropy_coef=config["entropy_coef"],
+        learning_rate=config["learning_rate"],minimum_learning_rate=config.get("minimum_learning_rate",1e-5),
+        desired_kl=config["desired_kl"],entropy_coef=config["entropy_coef"],
         clip_param=config["clip_param"],leg_mean_bound_coef=config.get("leg_mean_bound_coef",0.),
         leg_mean_bounds=effective_pd_leg_mean_bounds(env.pd) if config.get("leg_mean_bound_effective_pd",False) else None)
     args.output.mkdir(parents=True,exist_ok=True)

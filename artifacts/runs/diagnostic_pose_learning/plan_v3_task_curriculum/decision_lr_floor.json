@@ -1,0 +1,31 @@
+{
+  "decision": "E2 controlled adaptive-LR-floor recovery with continuous1000 budget",
+  "reason": "Original E2 became persistently unstable and checkpoint50 failed all4 independent workspace cases at1.62\u20132.38s. Large KL policy drift precedes most falls; current adaptive LR is clamped at1e-5. Lower only the feedback floor before changing reward structure; early negative reward is a competing explanation, not proven intentional early termination.",
+  "initializer": "artifacts/runs/diagnostic_pose_learning/plan_v3_reward_signal/candidate100/checkpoint_000099.pt",
+  "initializer_sha256": "dd42fdb8af79bb7247591170f652572307e80a42c5523acb384dd78d8d33fe5c",
+  "initialization_semantics": "One initialize-from transfer: restore Actor/Critic/normalizers/fixed std, fresh Adam1e-5 and fresh UMI EMA widths; new reference RNG and simulator episodes. Subsequent same-config extension uses --resume with optimizer/EMA/sampler/RNG restored and simulator episodes restarted.",
+  "changed_config_keys": [
+    "minimum_learning_rate"
+  ],
+  "weights": {
+    "near": 0.4,
+    "body": 0.3,
+    "step": 0.3
+  },
+  "first_continuous_iterations": 1000,
+  "envs": 4096,
+  "rollout_steps": 24,
+  "transitions": 98304000,
+  "optimizer_updates": 20000,
+  "source_added_E1_transitions": 9830400,
+  "new_cumulative_selected_lineage_transitions_after_E2": 108134400,
+  "historical_initializer_transitions": 196608000,
+  "review": "First matched checkpoint50 MuJoCo workspace4 during continuous training; then250/500 as useful and1000 full development checks. Group exposure and duration remain active diagnostics.",
+  "stop": "NaN/input/simulation/resource invalidity immediately. If multiple group windows again show severe duration collapse and independent checkpoint50 reproduces it, save latest complete update and stop to examine reward structure. Do not stop solely for one noisy window or because one case worsens.",
+  "risk": "High Gaussian KL in existing low fixed-std recipe: per-update minibatch mean of action-dimension-summed KL, LR already at1e-5 floor; not an identified logging bug or a claim that KL is controlled.",
+  "evidence_limit": "All provisional parameters; trained=false; world TCP position+orientation targets only, single18-joint Actor, no base velocity/pose/gait commands. Curriculum names do not establish learned body/step capability. Train10 readouts are not held-out validation. Orientation formal threshold unspecified.",
+  "only_difference_from_first_E2_config": "minimum_learning_rate missing(default1e-5) ->1e-7; initialLR1e-5, reward, seed, initializer, tasks, std and update count unchanged",
+  "matched_readout": "Compare checkpoint50 after51 actual iterations for both control/candidate. Original control was stopped after78; never call a future1000 candidate versus78 control an equal-budget causal comparison.",
+  "adaptive_learning_rate_floor": 1e-07,
+  "failed_first_attempt": "first_attempt_result.json"
+}

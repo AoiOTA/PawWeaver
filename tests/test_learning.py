@@ -64,6 +64,44 @@ def ppo_for_update(algorithm_type=AuxiliaryPPO,leg_mean_transform="identity",**k
     return algorithm
 
 
+@pytest.mark.parametrize('minimum',[1e-5,1e-7])
+def test_adaptive_kl_update_reaches_configured_lr_floor(minimum):
+    algorithm=ppo_for_update(minimum_learning_rate=minimum,desired_kl=.01)
+    # Move the real current Gaussian away from the distribution stored during
+    # rollout, exercising KL measurement, adaptive scheduling and Adam together.
+    with torch.no_grad():
+        algorithm.actor.mlp[-1].bias.add_(2.)
+    algorithm.num_learning_epochs=8
+    rates=[]
+    algorithm.optimizer.register_step_pre_hook(lambda optimizer,args,kwargs:rates.append(optimizer.param_groups[0]['lr']))
+    losses=algorithm.update()
+    assert losses['kl']>.02
+    assert len(rates)==16
+    assert rates[-1]==algorithm.learning_rate==minimum
+    assert all(minimum<=rate<=1e-5 for rate in rates)
+    assert rates[0]==(1e-5 if minimum==1e-5 else 1e-5/1.5)
+    assert all(torch.isfinite(torch.tensor(value)) for value in losses.values())
+
+
+def test_default_learning_rate_floor_preserves_update():
+    default=ppo_for_update()
+    explicit=ppo_for_update(minimum_learning_rate=1e-5)
+    torch.manual_seed(612)
+    expected=default.update()
+    torch.manual_seed(612)
+    actual=explicit.update()
+    assert actual==expected
+    for left,right in ((default.actor,explicit.actor),(default.critic,explicit.critic)):
+        for name,value in left.state_dict().items():
+            assert torch.equal(value,right.state_dict()[name])
+
+
+@pytest.mark.parametrize('minimum',[0.,-1e-7,float('nan'),float('inf'),-float('inf'),2e-5])
+def test_invalid_learning_rate_floor_rejected(minimum):
+    with pytest.raises(ValueError,match='Minimum learning rate'):
+        ppo_for_update(minimum_learning_rate=minimum)
+
+
 @pytest.mark.parametrize('config',[{}, {'learn_std':True}, {'learn_std':False}])
 def test_trainer_std_learning_switch_after_checkpoint_load(config):
     import ast
