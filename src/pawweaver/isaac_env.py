@@ -267,6 +267,28 @@ class WholeBodyEnv:
                 # All values precede the .02 control dt and the fall penalty.
                 extras["reward_diagnostics"]={"weighted_nonterminal_terms":weighted_terms,
                     "nonterminal_preclip":nonterminal,"nonterminal_postclip":postclip}
+        if self.config.get("demonstration_group_weights") is not None:
+            # Capture the task identity before auto-reset selects another file.
+            group_stats={}
+            selected=self.reference.demonstration_index
+            for group in self.config["demonstration_group_weights"]:
+                members=[i for i,t in enumerate(self.reference.demonstrations)
+                         if t.metadata["training_group"]==group]
+                mask=torch.as_tensor((selected>=0)&np.isin(selected,members),device=self.device)
+                ended=mask&done
+                row={"transitions":int(mask.sum()),
+                     "position_error_sum_m":float(self.previous_error[mask].sum()),
+                     "orientation_error_sum_rad":float(orientation_error[mask].sum()),
+                     "falls":int((mask&fallen).sum()),
+                     "resets":int(ended.sum()) if auto_reset else 0,
+                     "timeouts":int((mask&timeout&~fallen).sum()),
+                     "ended_episodes":int(ended.sum()),
+                     "ended_episode_seconds_sum":float(self.episode_length_buf[ended].sum())*.02}
+                if self.umi_pose_reward is not None:
+                    row.update(nonterminal_preclip_sum=float(nonterminal[mask].sum()),
+                               nonterminal_postclip_sum=float(postclip[mask].sum()))
+                group_stats[group]=row
+            extras["demonstration_group_stats"]=group_stats
         if self.diagnostic:
             # One boolean per environment at 50 Hz; not substep contact pairs.
             extras.update(falls=int(fallen.sum().item()),resets=len(ids) if auto_reset else 0,

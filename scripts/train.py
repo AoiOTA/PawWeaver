@@ -143,6 +143,7 @@ try:
         begin=time.perf_counter()
         umi_stats={"umi_nonterminal_clipped_fraction":0.,"umi_nonterminal_preclip_mean":0.}
         reward_stats={}
+        demonstration_stats={}
         if args.diagnostic:
             before=[p.detach().clone() for p in actor.parameters()]
             steps_before=len(optimizer_steps)
@@ -154,6 +155,10 @@ try:
             for _ in range(config["rollout_steps"]):
                 actions=algorithm.act(obs)
                 obs,reward,done,extras=env.step(actions)
+                for group,values in extras.get("demonstration_group_stats",{}).items():
+                    total=demonstration_stats.setdefault(group,{})
+                    for key,value in values.items():
+                        total[key]=total.get(key,0)+value
                 if "reward_diagnostics" in extras:
                     diagnostics=extras["reward_diagnostics"]
                     components={"weighted_"+key:value for key,value in diagnostics["weighted_nonterminal_terms"].items()}
@@ -199,6 +204,19 @@ try:
             leg_action_std_mean=float(actor.distribution.std_param[:12].detach().mean()),
             arm_action_std_mean=float(actor.distribution.std_param[12:].detach().mean()))
         stats.update(reward_stats)
+        for group,values in demonstration_stats.items():
+            prefix="demonstration_"+group+"_"
+            stats.update({prefix+key:value for key,value in values.items()})
+            samples=values["transitions"]
+            if samples:
+                for summed,mean in (("position_error_sum_m","position_error_mean_m"),
+                                    ("orientation_error_sum_rad","orientation_error_mean_rad"),
+                                    ("nonterminal_preclip_sum","nonterminal_preclip_mean"),
+                                    ("nonterminal_postclip_sum","nonterminal_postclip_mean")):
+                    if summed in values:
+                        stats[prefix+mean]=values[summed]/samples
+            if values["ended_episodes"]:
+                stats[prefix+"ended_episode_seconds_mean"]=values["ended_episode_seconds_sum"]/values["ended_episodes"]
         if args.diagnostic:
             stats.update(probe)
         if env.umi_pose_reward is not None:

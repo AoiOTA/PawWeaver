@@ -11,7 +11,7 @@ import pytest
 import torch
 
 
-def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False):
+def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False,group_steps=None):
     source=Path(__file__).resolve().parents[1]/"scripts/train.py"
     tree=ast.parse(source.read_text())
     loop=next(node for node in ast.walk(tree) if isinstance(node,ast.For)
@@ -42,8 +42,13 @@ def run_loop(tmp_path, *, stop_after=None, failure=None, export_failure=False):
     extras={"tracking_error_m":.1,"orientation_error_rad":.2,"fall_fraction":0.}
     extras["reward_diagnostics"]={"weighted_nonterminal_terms":{"tracking":torch.tensor([1.,3.])},
         "nonterminal_preclip":torch.tensor([-1.,3.]),"nonterminal_postclip":torch.tensor([0.,3.])}
-    env=SimpleNamespace(umi_pose_reward=None,reference=reference,spec=None,
-        step=lambda actions: ({},0.,False,extras))
+    steps=[]
+    def step(actions):
+        if group_steps is not None:
+            extras["demonstration_group_stats"]=group_steps[len(steps)%len(group_steps)]
+        steps.append(1)
+        return {},0.,False,extras
+    env=SimpleNamespace(umi_pose_reward=None,reference=reference,spec=None,step=step)
     algorithm=SimpleNamespace(act=lambda obs:None,process_env_step=lambda *args:None,
         compute_returns=lambda obs:None,update=update,save=lambda:{"updates":len(updates)},
         optimizer=SimpleNamespace(param_groups=[{"lr":.001}]))
@@ -104,3 +109,26 @@ def test_export_failure_propagates_without_completed_run_status(tmp_path):
     assert len(updates)==len(saves)==1
     assert exports==[]
     assert not (tmp_path/"run.json").exists()
+
+
+def test_group_training_statistics_weight_samples_and_ended_episodes(tmp_path):
+    groups=[]
+    for samples,error,ended,seconds in [(1,10.,1,.2),(2,2.,1,20.),(0,0.,0,0.)]:
+        groups.append({"near":{"transitions":samples,"position_error_sum_m":error,
+            "orientation_error_sum_rad":error/2,"falls":ended,"resets":ended,"timeouts":0,
+            "ended_episodes":ended,"ended_episode_seconds_sum":seconds,
+            "nonterminal_preclip_sum":-error,"nonterminal_postclip_sum":0.},
+            "empty":{"transitions":0,"position_error_sum_m":0.,"orientation_error_sum_rad":0.,
+                "falls":0,"resets":0,"timeouts":0,"ended_episodes":0,"ended_episode_seconds_sum":0.}})
+    run,_,_,_=run_loop(tmp_path,stop_after=1,group_steps=groups)
+    run()
+    row=json.loads((tmp_path/"metrics.jsonl").read_text())
+    assert row["demonstration_near_transitions"]==3
+    assert row["demonstration_near_position_error_sum_m"]==12.
+    assert row["demonstration_near_position_error_mean_m"]==4.
+    assert row["demonstration_near_orientation_error_mean_rad"]==2.
+    assert row["demonstration_near_nonterminal_preclip_mean"]==-4.
+    assert row["demonstration_near_ended_episode_seconds_mean"]==pytest.approx(10.1)
+    assert row["demonstration_empty_transitions"]==0
+    assert "demonstration_empty_position_error_mean_m" not in row
+    assert "demonstration_empty_ended_episode_seconds_mean" not in row

@@ -104,6 +104,52 @@ def test_actual_step_clips_nonterminal_but_preserves_fall_cost(fixed_env):
     assert extras["falls"]==1 and extras["resets"]==0
     assert extras["collision_control_samples"]==2
     assert "reward_diagnostics" not in extras
+    assert "demonstration_group_stats" not in extras
+
+
+@pytest.mark.parametrize("second_index",[1,-1])
+def test_group_statistics_capture_pre_reset_identity_and_exclude_unimported(fixed_env,second_index):
+    env=fixed_env
+    env.config["demonstration_group_weights"]={"near":1.,"body":1.,"empty":0.}
+    env.reference.demonstration_index=torch.tensor([0,second_index]).numpy()
+    env.reference.demonstrations=[SimpleNamespace(metadata={"training_group":g}) for g in ["near","body"]]
+    env.reference.current=lambda _:torch.tensor([[1.,0.,0.],[2.,0.,0.]])
+    env.episode_length_buf[:]=torch.tensor([99,9])
+    def reset(ids):
+        assert ids.tolist()==[1]
+        env.reference.demonstration_index[ids.numpy()]=0
+        env.episode_length_buf[ids]=0
+    env.reset=reset
+    _,_,_,extras=env.step(torch.zeros(2,18))
+    groups=extras["demonstration_group_stats"]
+    assert groups["near"]["transitions"]==1
+    assert groups["near"]["position_error_sum_m"]==1.
+    assert groups["near"]["ended_episodes"]==0
+    assert groups["empty"]["transitions"]==0
+    if second_index>=0:
+        body=groups["body"]
+        assert body["transitions"]==body["falls"]==body["resets"]==body["ended_episodes"]==1
+        assert body["timeouts"]==0
+        assert body["ended_episode_seconds_sum"]==pytest.approx(.2)
+        assert body["position_error_sum_m"]==2.
+        assert body["nonterminal_preclip_sum"]<0
+        assert body["nonterminal_postclip_sum"]==0.
+    else:
+        assert all(value==0 for value in groups["body"].values())
+
+
+def test_group_statistics_timeout_and_fall_are_disjoint(fixed_env):
+    env=fixed_env
+    env.config["demonstration_group_weights"]={"near":1.}
+    env.reference.demonstration_index=torch.tensor([0,0]).numpy()
+    env.reference.demonstrations=[SimpleNamespace(metadata={"training_group":"near"})]
+    env.episode_length_buf[:]=999
+    _,_,_,extras=env.step(torch.zeros(2,18),auto_reset=False)
+    group=extras["demonstration_group_stats"]["near"]
+    assert group["transitions"]==group["ended_episodes"]==2
+    assert group["falls"]==group["timeouts"]==1
+    assert group["resets"]==0
+    assert group["ended_episode_seconds_sum"]==40.
 
 
 @pytest.mark.parametrize("clip",[True,False])

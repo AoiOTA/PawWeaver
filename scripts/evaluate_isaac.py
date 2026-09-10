@@ -89,6 +89,8 @@ def main():
             positions,orientations=batch_reference(batch,origins[:count],env.max_episode_length+5)
             env.reference.positions[:count]=torch.as_tensor(positions,device=args.device,dtype=torch.float32)
             env.reference.orientations_wxyz[:count]=torch.as_tensor(orientations,device=args.device,dtype=torch.float32)
+            # These goals now belong to the fixed suite, not the sampled training file.
+            env.reference.demonstration_index[:count]=-1
             state=env.state()
             env.observations.reset(ids,state,env.reference.current(env.episode_length_buf),torch.zeros(args.num_envs,device=args.device),
                                    goal_quat_w=env.reference.current_orientation(env.episode_length_buf))
