@@ -13,7 +13,7 @@
 
 上表位置到达沿用10秒内进入5cm并保持1秒的条件，位置跟踪沿用原报告条件；朝向验收仍未定义，不能称完整位姿通过。设计工作空间4例附近的几何见证用于构造训练分布，不是独立holdout；静态16例与holdout64共享测试几何池，不能宣称两者互相独立。MuJoCo设计workspace far完成60秒，不等于历史far_return60成功，两者必须按suite区分。原报告每例误差使用其实际存活时长，提前终止后的短均值不能直接与完整60秒前测比较。具体数值、终止原因和原报告索引见 [evaluation_summary.json](../artifacts/runs/diagnostic_pose_learning/wbc_random_training/evaluation_summary.json)。
 
-[运动读出](../artifacts/runs/diagnostic_pose_learning/wbc_random_training/motion_readout/README.md) 显示臂、身体和腿共同参与，但长期高抬单足、三足承载和倾倒仍未解决；局部任务收益不能替代用户要求的连贯、稳定全身动作。正在准备柔性关节余量＋轻卸载足高度代价＋有效PD界限均值正则联合候选，尚未训练或证明。单种子、临时硬件参数、`trained=false`及以下原验收边界保持不变。
+[运动读出](../artifacts/runs/diagnostic_pose_learning/wbc_random_training/motion_readout/README.md) 显示臂、身体和腿共同参与，但长期高抬单足、三足承载和倾倒仍未解决；局部任务收益不能替代用户要求的连贯、稳定全身动作。[支撑配方候选](../artifacts/runs/diagnostic_pose_learning/wbc_support_learning/README.md)已开始1000轮继续学习；新增足力分配与髋—足平面位置偏好，结合柔性限位和有效PD均值正则。相关CPU检查验证实现，不证明支撑或任务收益；新双引擎后测尚未完成。单种子、临时硬件参数、`trained=false`及以下原验收边界保持不变。
 
 **历史UMI-inspired证据**：[UMI-inspired 训练方案](../artifacts/runs/diagnostic_pose_learning/umi_recipe/README.md) 的1000轮与四项双引擎后测已全部实际退出0。训练98,304,000 transitions／20,000次更新、全部有限，累计13,865跌倒／42,092重置／1,248,573非足碰撞控制样本；力矩饱和16,918,732／17,694,720,000子步关节样本。两引擎local4均完整20秒，位置／朝向RMSE均值为PhysX .006117m／.010725rad、MuJoCo .003630m／.010436rad，均优于既有背景控制；moving均3/4提前跌倒，far分别6.68秒／1.64秒跌倒。当前仅支持局部精度改善，不支持移动／远距任务成功或完整WBC。逐例比较使用共同2秒至较早终点窗口；MuJoCo far无post-2秒共同窗口，明确null。原标准如下，保持不变。
 
