@@ -1,0 +1,337 @@
+{
+  "scope": "Training-task readout only, not held-out generalization. Hold metrics are over actually executed hold samples; completion remains explicit.",
+  "readouts": {
+    "initial": {
+      "evaluation_exit_code": 0,
+      "policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+      "cases": [
+        {
+          "case_id": "near_00",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.06652256664692924,
+          "orientation_rmse_rad": 0.3856194993028113,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.06628784078573924,
+            "orientation_rmse_rad": 0.3787025738617087
+          }
+        },
+        {
+          "case_id": "near_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.067073823500656,
+          "orientation_rmse_rad": 0.3820672462601841,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.06647562080778206,
+            "orientation_rmse_rad": 0.38211906827238534
+          }
+        },
+        {
+          "case_id": "near_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.06730248756453136,
+          "orientation_rmse_rad": 0.40857462476070794,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.06743099095701637,
+            "orientation_rmse_rad": 0.4161877503363062
+          }
+        },
+        {
+          "case_id": "near_03",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.06671588116644919,
+          "orientation_rmse_rad": 0.39063486674463177,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.06629811626955953,
+            "orientation_rmse_rad": 0.3801929072335339
+          }
+        },
+        {
+          "case_id": "body_low",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.1280500514205135,
+          "orientation_rmse_rad": 0.43740711132644583,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.13494725358466533,
+            "orientation_rmse_rad": 0.46236404040949813
+          }
+        },
+        {
+          "case_id": "body_high",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.03651820232253196,
+          "orientation_rmse_rad": 0.2471601840976293,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.01992521433764288,
+            "orientation_rmse_rad": 0.14568951093264315
+          }
+        },
+        {
+          "case_id": "body_lateral",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.041302053476524714,
+          "orientation_rmse_rad": 0.35542323665972825,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.03880242553952483,
+            "orientation_rmse_rad": 0.3671053345731509
+          }
+        },
+        {
+          "case_id": "step_00",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.03676291908281827,
+          "orientation_rmse_rad": 0.28359423643474746,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.018709236074865784,
+            "orientation_rmse_rad": 0.2770056167458617
+          }
+        },
+        {
+          "case_id": "step_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.06570205048939817,
+          "orientation_rmse_rad": 0.588484096663626,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.053550583787405306,
+            "orientation_rmse_rad": 0.6363234455983163
+          }
+        },
+        {
+          "case_id": "step_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.037031282721592396,
+          "orientation_rmse_rad": 0.2702593582239531,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.018170281807189746,
+            "orientation_rmse_rad": 0.1640055568412571
+          }
+        }
+      ]
+    },
+    "checkpoint500": {
+      "evaluation_exit_code": 0,
+      "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+      "cases": [
+        {
+          "case_id": "near_00",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.0858823455704301,
+          "orientation_rmse_rad": 0.21122645492847728,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.08700667503667703,
+            "orientation_rmse_rad": 0.21499838501122745
+          }
+        },
+        {
+          "case_id": "near_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.08886647133738962,
+          "orientation_rmse_rad": 0.22603624762490646,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.09076758220590034,
+            "orientation_rmse_rad": 0.2332886772041866
+          }
+        },
+        {
+          "case_id": "near_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.08982919271495965,
+          "orientation_rmse_rad": 0.23023041784096235,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.09176490116707889,
+            "orientation_rmse_rad": 0.23728765836889906
+          }
+        },
+        {
+          "case_id": "near_03",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.09648651301223525,
+          "orientation_rmse_rad": 0.2823062903782252,
+          "hold": {
+            "requested_start_s": 30.0,
+            "requested_end_s": 60,
+            "samples": 1500,
+            "position_rmse_m": 0.10315378615770508,
+            "orientation_rmse_rad": 0.2999679695113959
+          }
+        },
+        {
+          "case_id": "body_low",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.06693687355274835,
+          "orientation_rmse_rad": 0.227086894198416,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.05990349168391396,
+            "orientation_rmse_rad": 0.19379305656739643
+          }
+        },
+        {
+          "case_id": "body_high",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.053815676993946605,
+          "orientation_rmse_rad": 0.21207632982435895,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.028133190982031913,
+            "orientation_rmse_rad": 0.20549245754275164
+          }
+        },
+        {
+          "case_id": "body_lateral",
+          "completed": false,
+          "fallen": true,
+          "requested_steps": 3000,
+          "actual_steps": 447,
+          "position_rmse_m": 0.08985811470022495,
+          "orientation_rmse_rad": 0.23718161056564824,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 0,
+            "position_rmse_m": null,
+            "orientation_rmse_rad": null
+          }
+        },
+        {
+          "case_id": "step_00",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.05958786994545521,
+          "orientation_rmse_rad": 0.3770882338289989,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.03068469461918617,
+            "orientation_rmse_rad": 0.3523573267081281
+          }
+        },
+        {
+          "case_id": "step_01",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.0900233468695736,
+          "orientation_rmse_rad": 0.6730658795279284,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.05529975649963601,
+            "orientation_rmse_rad": 0.703496657295694
+          }
+        },
+        {
+          "case_id": "step_02",
+          "completed": true,
+          "fallen": false,
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "position_rmse_m": 0.040276632553380765,
+          "orientation_rmse_rad": 0.2179223908333593,
+          "hold": {
+            "requested_start_s": 20.0,
+            "requested_end_s": 60,
+            "samples": 2000,
+            "position_rmse_m": 0.025643752651205828,
+            "orientation_rmse_rad": 0.23908678898837352
+          }
+        }
+      ]
+    }
+  }
+}

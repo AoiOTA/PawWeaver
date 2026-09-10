@@ -25,7 +25,20 @@
             "RR_foot": -0.0007598908867713456,
             "RL_foot": -0.0005598690818270351
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.10592192907178966,
+            "position_p95_m": 0.10629694965568393,
+            "orientation_rmse_rad": 0.29825539067703344,
+            "orientation_p95_rad": 0.30337411165237427,
+            "base_height_mean_m": 0.23156355321407318,
+            "base_tilt_p95_rad": 0.5200610564745243
+          }
         },
         {
           "case_id": "high",
@@ -43,7 +56,20 @@
             "RR_foot": 0.46024700761834064,
             "RL_foot": -0.000514505800601222
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.04858728552026804,
+            "position_p95_m": 0.05569047942577767,
+            "orientation_rmse_rad": 0.10040982127636522,
+            "orientation_p95_rad": 0.13413047790527344,
+            "base_height_mean_m": 0.3806021809577942,
+            "base_tilt_p95_rad": 0.5181253125190007
+          }
         },
         {
           "case_id": "lateral",
@@ -61,7 +87,20 @@
             "RR_foot": -0.0003875427091013499,
             "RL_foot": -0.00048417057595591026
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.023876736249484984,
+            "position_p95_m": 0.029260201716889065,
+            "orientation_rmse_rad": 0.16836647067311164,
+            "orientation_p95_rad": 0.18584175407886505,
+            "base_height_mean_m": 0.22876550257205963,
+            "base_tilt_p95_rad": 0.4241888686985677
+          }
         },
         {
           "case_id": "far",
@@ -79,7 +118,20 @@
             "RR_foot": 0.04681582448563635,
             "RL_foot": 0.0186860182420031
           },
-          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923
+          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              24.0,
+              36.0
+            ],
+            "actual_samples": 601,
+            "position_rmse_m": 0.04916260880685944,
+            "position_p95_m": 0.06994673122809014,
+            "orientation_rmse_rad": 0.22122942909722676,
+            "orientation_p95_rad": 0.30527228116989136,
+            "base_height_mean_m": 0.2416219860315323,
+            "base_tilt_p95_rad": 0.2338977983596713
+          }
         }
       ]
     },
@@ -106,7 +158,20 @@
             "RR_foot": -0.0008027031577374225,
             "RL_foot": -0.0004919435888590208
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.08637299736061989,
+            "position_p95_m": 0.08681599402149975,
+            "orientation_rmse_rad": 0.2050315415605791,
+            "orientation_p95_rad": 0.21270015835762024,
+            "base_height_mean_m": 0.24085164070129395,
+            "base_tilt_p95_rad": 0.5746745922269841
+          }
         },
         {
           "case_id": "high",
@@ -124,7 +189,20 @@
             "RR_foot": 0.48550586003130236,
             "RL_foot": -0.0005311506203763206
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.04659158562935297,
+            "position_p95_m": 0.04784419477279494,
+            "orientation_rmse_rad": 0.09319372140404802,
+            "orientation_p95_rad": 0.09529288113117218,
+            "base_height_mean_m": 0.37692344188690186,
+            "base_tilt_p95_rad": 0.4565997998931488
+          }
         },
         {
           "case_id": "lateral",
@@ -142,7 +220,20 @@
             "RR_foot": -0.0006292289839038834,
             "RL_foot": -0.0006774515467304405
           },
-          "hold_nonfoot_ground_pair_fraction": 0.0
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.01804301669368721,
+            "position_p95_m": 0.021273608235564286,
+            "orientation_rmse_rad": 0.1409260362686531,
+            "orientation_p95_rad": 0.14351247251033783,
+            "base_height_mean_m": 0.22985035181045532,
+            "base_tilt_p95_rad": 0.29502817892332034
+          }
         },
         {
           "case_id": "far",
@@ -160,7 +251,153 @@
             "RR_foot": 0.04314482081256032,
             "RL_foot": 0.006023571801840614
           },
-          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923
+          "hold_nonfoot_ground_pair_fraction": 0.004991680532445923,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              24.0,
+              36.0
+            ],
+            "actual_samples": 601,
+            "position_rmse_m": 0.049681092326194574,
+            "position_p95_m": 0.07213459448211924,
+            "orientation_rmse_rad": 0.171565657632627,
+            "orientation_p95_rad": 0.25492632389068604,
+            "base_height_mean_m": 0.2258341908454895,
+            "base_tilt_p95_rad": 0.2021532796996071
+          }
+        }
+      ]
+    },
+    "500": {
+      "completed_iterations": 501,
+      "new_transitions": 49250304,
+      "evaluation_exit_code": 0,
+      "support_readout_exit_code": 0,
+      "policy_sha256": "68969d7bab125b8da39a060b3ba9191a4d9d063f88ede8e92ee6aaf5d7cfdf4d",
+      "cases": [
+        {
+          "case_id": "low",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.10450225098501968,
+          "position_p95_m": 0.13879136669573244,
+          "orientation_rmse_rad": 0.3576570266620692,
+          "orientation_p95_rad": 0.531353235244751,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0012998485909936441,
+            "FL_foot": 0.27468388320430875,
+            "RR_foot": -0.0008135983861822671,
+            "RL_foot": -0.00046723590081092025
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.10377875606727421,
+            "position_p95_m": 0.10416214442473376,
+            "orientation_rmse_rad": 0.28837282521533814,
+            "orientation_p95_rad": 0.2932637333869934,
+            "base_height_mean_m": 0.23769785463809967,
+            "base_tilt_p95_rad": 0.5534297723315232
+          }
+        },
+        {
+          "case_id": "high",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.07938165408355241,
+          "position_p95_m": 0.1675399219284176,
+          "orientation_rmse_rad": 0.3785575057619237,
+          "orientation_p95_rad": 0.8614203929901123,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.001431154227974044,
+            "FL_foot": 0.6753357500572418,
+            "RR_foot": 0.062014759847199584,
+            "RL_foot": 0.009198002865821718
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.06521858973056863,
+            "position_p95_m": 0.09321316672775842,
+            "orientation_rmse_rad": 0.2254997816171655,
+            "orientation_p95_rad": 0.3359650671482086,
+            "base_height_mean_m": 0.3489263355731964,
+            "base_tilt_p95_rad": 0.2893326228396008
+          }
+        },
+        {
+          "case_id": "lateral",
+          "requested_steps": 1000,
+          "actual_steps": 1000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.054568300939293164,
+          "position_p95_m": 0.11340455511079671,
+          "orientation_rmse_rad": 0.22964133400328526,
+          "orientation_p95_rad": 0.4468640983104706,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0011765543514660245,
+            "FL_foot": 0.1339207243528371,
+            "RR_foot": -0.000669952498968247,
+            "RL_foot": -0.0007192203465711568
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              8.0,
+              12.0
+            ],
+            "actual_samples": 201,
+            "position_rmse_m": 0.0163849542937432,
+            "position_p95_m": 0.016621118022771893,
+            "orientation_rmse_rad": 0.17918190809630982,
+            "orientation_p95_rad": 0.18282659351825714,
+            "base_height_mean_m": 0.22795268893241882,
+            "base_tilt_p95_rad": 0.30894571269076987
+          }
+        },
+        {
+          "case_id": "far",
+          "requested_steps": 3000,
+          "actual_steps": 3000,
+          "completed": true,
+          "fallen": false,
+          "position_rmse_m": 0.07522178365556453,
+          "position_p95_m": 0.10969891875358455,
+          "orientation_rmse_rad": 0.26473507830340626,
+          "orientation_p95_rad": 0.5303362011909485,
+          "hold_foot_bottom_mean_m": {
+            "FR_foot": -0.0015368678484796875,
+            "FL_foot": 0.12939284148688374,
+            "RR_foot": -0.0005022921664001309,
+            "RL_foot": -0.0006305728956318323
+          },
+          "hold_nonfoot_ground_pair_fraction": 0.0,
+          "designed_hold_metrics": {
+            "planned_window_seconds": [
+              24.0,
+              36.0
+            ],
+            "actual_samples": 601,
+            "position_rmse_m": 0.06257512537184749,
+            "position_p95_m": 0.06266872375276594,
+            "orientation_rmse_rad": 0.15734572799241994,
+            "orientation_p95_rad": 0.15755316615104675,
+            "base_height_mean_m": 0.20748142898082733,
+            "base_tilt_p95_rad": 0.24057243759829344
+          }
         }
       ]
     }
