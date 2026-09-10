@@ -1,0 +1,44 @@
+{
+  "cpu_only": true,
+  "gpu_used": false,
+  "mj_step_calls": 0,
+  "batch": 120,
+  "configured_group_probabilities": {
+    "near": 0.4,
+    "body": 0.3,
+    "step": 0.3
+  },
+  "actual_group_draw_counts": {
+    "near": 46,
+    "body": 38,
+    "step": 36
+  },
+  "actual_group_fractions": {
+    "near": 0.38333333333333336,
+    "body": 0.31666666666666665,
+    "step": 0.3
+  },
+  "all_10_files_selected": true,
+  "world_pose_matches_after_reset_alignment": true,
+  "nonzero_origin_fixed_translation_checked": true,
+  "source_split_train_only": true,
+  "test_pool_or_test_endpoint_reads": false,
+  "default_recipe_enabled": false,
+  "source_identity_correction": {
+    "files_checked": [
+      "near_00.npz",
+      "near_01.npz",
+      "near_02.npz",
+      "near_03.npz",
+      "body_low.npz",
+      "body_high.npz",
+      "body_lateral.npz",
+      "step_00.npz",
+      "step_01.npz",
+      "step_02.npz"
+    ],
+    "schema_timestamps_positions_quaternions_array_equal": true,
+    "only_npz_metadata_source_id_changed": true,
+    "manifest_source_id_and_hash_updated": true
+  }
+}

@@ -1,0 +1,620 @@
+{
+  "reset_tcp_xyz_m": [
+    0.2083460607339131,
+    1.1477813143442494e-08,
+    0.6462084193142115
+  ],
+  "reset_tcp_quat_wxyz": [
+    0.7372773403925712,
+    -1.6968035447628303e-08,
+    0.675590203706104,
+    3.643719237343864e-08
+  ],
+  "duration_s": 60.0,
+  "dt_s": 0.02,
+  "translation_pace_m_s": 0.3,
+  "rotation_pace_rad_s": 1.2562814070351758,
+  "position_tolerance_m": 0.05,
+  "additional_engineering_margin_m": 0.01,
+  "original_ground_contacts_xyz_m": [
+    [
+      0.20574103815185207,
+      -0.1654,
+      0.0
+    ],
+    [
+      0.20574103815185207,
+      0.1654,
+      0.0
+    ],
+    [
+      -0.21805896184814794,
+      -0.1654,
+      0.0
+    ],
+    [
+      -0.21805896184814794,
+      0.1654,
+      0.0
+    ]
+  ],
+  "contact_to_tcp_chain_bound_m": [
+    1.7845968359636384,
+    1.7845968359636384,
+    1.7845968359636384,
+    1.7845968359636384
+  ],
+  "source_hashes": {
+    "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json": "021ce18fd89ab44d008fa7ff2dc5e16862bef2a3f3ef3bcf82c6b9b2f3414728",
+    "artifacts/runs/diagnostic_pose_learning/umi_recipe/spec.json": "83c480bd81233a1188e459634abaf2bd424c0eb6decbc0afff5581fb3db7ee41",
+    "artifacts/runs/diagnostic_pose_learning/umi_recipe/config.json": "bac7f341dbe8e9504dfbcd4a869bfc35b357cf440a65e5e94b29c11a7519f184",
+    "assets/generated/diagnostic/robot.urdf": "b02b5739444abfafc2bbdaf9fb59ac3822c0fc2e55e4b16c20fa8a09e33bcfa5",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/prepare.py": "f383a99aa61c15d88de53eee3b861169442983b00860ba519e01cce4fed8ad46",
+    "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz": "22dd5bfe5164b2a5684d43d8e2fc13bd35889965b095c955e0acb9766f566c44",
+    "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz": "3f97c8ab2910067564e21a6651b9c2a65116cb9677fe2f238dd1d47e9d2e8d4a",
+    "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz": "41d71d4c027312eab18f45b08e3d0dcf04fdbf9e878924e3124834837305616d",
+    "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz": "39bca519f8c5a14cef2f30e0c378cef8282f1c86c3d083ae8c3408abbe506848"
+  },
+  "cases": [
+    {
+      "case_id": "near_00",
+      "training_group": "near",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_00.npz",
+      "target_xyz_m": [
+        0.2083460607339131,
+        1.1477813144309855e-08,
+        0.6462084193142115
+      ],
+      "target_quat_wxyz": [
+        0.683245173006515,
+        0.000771796066535155,
+        0.7301885552040056,
+        -0.00033428014586290986
+      ],
+      "hold_start_s": 30.0,
+      "hold_duration_s": 30.0,
+      "max_fd_speed_m_s": 0.03350338489079683,
+      "max_fd_angular_speed_rad_s": 0.08675706099346439,
+      "fixed_stand_wrist_bound_excess_m": -0.41860109586303307,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "schedule": "10s reset-orientation approach, original 20s local motion, 30s final hold"
+    },
+    {
+      "case_id": "near_01",
+      "training_group": "near",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_01.npz",
+      "target_xyz_m": [
+        0.2083460607339131,
+        1.1477813135961499e-08,
+        0.6462084193142115
+      ],
+      "target_quat_wxyz": [
+        0.683245173006515,
+        0.0007717960665351702,
+        0.7301885552040056,
+        -0.0003342801458629232
+      ],
+      "hold_start_s": 30.0,
+      "hold_duration_s": 30.0,
+      "max_fd_speed_m_s": 0.03131045548673774,
+      "max_fd_angular_speed_rad_s": 0.11452458030818977,
+      "fixed_stand_wrist_bound_excess_m": -0.41860109586303307,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "schedule": "10s reset-orientation approach, original 20s local motion, 30s final hold"
+    },
+    {
+      "case_id": "near_02",
+      "training_group": "near",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_02.npz",
+      "target_xyz_m": [
+        0.2083460607339131,
+        1.1477813140081467e-08,
+        0.6462084193142115
+      ],
+      "target_quat_wxyz": [
+        0.6832451730065151,
+        0.0007717960665351593,
+        0.7301885552040056,
+        -0.00033428014586291973
+      ],
+      "hold_start_s": 30.0,
+      "hold_duration_s": 30.0,
+      "max_fd_speed_m_s": 0.015714980138638507,
+      "max_fd_angular_speed_rad_s": 0.11181057155182833,
+      "fixed_stand_wrist_bound_excess_m": -0.41860109586303307,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "schedule": "10s reset-orientation approach, original 20s local motion, 30s final hold"
+    },
+    {
+      "case_id": "near_03",
+      "training_group": "near",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/references/train/train_local_03.npz",
+      "target_xyz_m": [
+        0.2083460607339131,
+        1.147781313628676e-08,
+        0.6462084193142115
+      ],
+      "target_quat_wxyz": [
+        0.6832451730065152,
+        0.0007717960665351519,
+        0.7301885552040055,
+        -0.0003342801458629389
+      ],
+      "hold_start_s": 30.0,
+      "hold_duration_s": 30.0,
+      "max_fd_speed_m_s": 0.01745703719835601,
+      "max_fd_angular_speed_rad_s": 0.10851445452576475,
+      "fixed_stand_wrist_bound_excess_m": -0.4186010958630332,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "schedule": "10s reset-orientation approach, original 20s local motion, 30s final hold"
+    },
+    {
+      "case_id": "body_low",
+      "training_group": "body",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0244",
+      "target_xyz_m": [
+        0.46156904944156074,
+        -0.045236139836367525,
+        0.0688950151523644
+      ],
+      "target_quat_wxyz": [
+        -0.11298849676404357,
+        -0.2782004983723699,
+        0.9528207910709462,
+        -0.044391692998838134
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.05925243474860646,
+      "max_fd_angular_speed_rad_s": 0.18298310692680697,
+      "fixed_stand_wrist_bound_excess_m": 0.020226879215865634,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "offline_whole_geometry_translation_xyz_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0244",
+        "body_source": "around_low",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.18
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -4.580675345818372e-12,
+          1.2544839416719378,
+          -2.410292709087975,
+          4.597212516807385e-12,
+          1.254483941671887,
+          -2.4102927090879174,
+          -4.519378976498026e-12,
+          1.254483941671918,
+          -2.4102927090879684,
+          4.519362775298844e-12,
+          1.2544839416719666,
+          -2.410292709087988,
+          -0.019761925400211617,
+          2.9261606060442684,
+          -2.2355012596001864,
+          -0.1654285159677857,
+          1.1634342360581253,
+          -0.5073028229511825
+        ],
+        "tcp_xyz_m": [
+          0.46156904944156074,
+          -0.045236139836367525,
+          0.0688950151523644
+        ],
+        "tcp_quat_wxyz": [
+          -0.11298849676404325,
+          -0.2782004983723699,
+          0.9528207910709463,
+          -0.0443916929988381
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.032910035441705475,
+        "com_projection_support_hull_margin_m": 0.15135565765781386,
+        "outside_fixed_stand_wrist_bound_m": 0.020226879215865523
+      },
+      "original_contact_chain_excess_m": -1.0697483623361048,
+      "remaining_chain_excess_after_position_tolerance_m": -1.1197483623361049,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    },
+    {
+      "case_id": "body_high",
+      "training_group": "body",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0018",
+      "target_xyz_m": [
+        0.1910193426242792,
+        0.12659983704717848,
+        1.295893975240226
+      ],
+      "target_quat_wxyz": [
+        0.901056845253561,
+        -0.053516302044677194,
+        0.24646372080499107,
+        0.35282885562850796
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.06207472837974463,
+      "max_fd_angular_speed_rad_s": 0.11065954556098484,
+      "fixed_stand_wrist_bound_excess_m": 0.014640015751146263,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "offline_whole_geometry_translation_xyz_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0018",
+        "body_source": "around_high",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          6.202417508123229e-14,
+          0.5248096311738303,
+          -1.0127551653009372,
+          -6.086679958200933e-14,
+          0.524809631173825,
+          -1.012755165300935,
+          6.197628700153319e-14,
+          0.5248096311738184,
+          -1.0127551653009204,
+          -6.19685891892696e-14,
+          0.5248096311738301,
+          -1.0127551653009488,
+          0.5834864353909411,
+          1.203787259408148,
+          -1.8357520216664431,
+          -0.005173321276345537,
+          -0.34165142885148264,
+          0.16737613258474685
+        ],
+        "tcp_xyz_m": [
+          0.1910193426242792,
+          0.12659983704717848,
+          1.295893975240226
+        ],
+        "tcp_quat_wxyz": [
+          0.901056845253561,
+          -0.053516302044677125,
+          0.24646372080499127,
+          0.3528288556285079
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03257410094136523,
+        "com_projection_support_hull_margin_m": 0.16202375907126162,
+        "outside_fixed_stand_wrist_bound_m": 0.014640015751146263
+      },
+      "original_contact_chain_excess_m": -0.39465073661678596,
+      "remaining_chain_excess_after_position_tolerance_m": -0.44465073661678595,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    },
+    {
+      "case_id": "body_lateral",
+      "training_group": "body",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0190",
+      "target_xyz_m": [
+        0.4719574517895686,
+        -0.5832330247266926,
+        0.7761975646416369
+      ],
+      "target_quat_wxyz": [
+        0.6638984366360533,
+        0.6201107536579986,
+        -0.08702123689753082,
+        0.40881392265765243
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.061228629777705004,
+      "max_fd_angular_speed_rad_s": 0.21103873707434453,
+      "fixed_stand_wrist_bound_excess_m": 0.017741731687791917,
+      "fixed_stand_excess_below_position_tolerance": true,
+      "offline_whole_geometry_translation_xyz_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0190",
+        "body_source": "around_lateral",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.28
+        ],
+        "base_rpy_rad": [
+          0.25,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          -0.257851244262281,
+          1.0078047906216683,
+          -1.9538371280859395,
+          -0.24301968589234482,
+          0.9175636868864488,
+          -1.7807382328828767,
+          -0.2578512442622763,
+          1.0078047906216792,
+          -1.9538371280859443,
+          -0.24301968589234482,
+          0.9175636868864491,
+          -1.7807382328828767,
+          -0.5802796361440127,
+          2.395256929079989,
+          -2.7709094950109665,
+          1.4856149289955716,
+          -0.4861987521822906,
+          0.42399709682769626
+        ],
+        "tcp_xyz_m": [
+          0.4719574517895686,
+          -0.5832330247266926,
+          0.7761975646416369
+        ],
+        "tcp_quat_wxyz": [
+          0.6638984366360535,
+          0.6201107536579986,
+          -0.08702123689753066,
+          0.4088139226576523
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.0330356394710253,
+        "com_projection_support_hull_margin_m": 0.11815521092529419,
+        "outside_fixed_stand_wrist_bound_m": 0.017741731687791917
+      },
+      "original_contact_chain_excess_m": -0.5043403319159139,
+      "remaining_chain_excess_after_position_tolerance_m": -0.5543403319159139,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    },
+    {
+      "case_id": "step_00",
+      "training_group": "step",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0086",
+      "target_xyz_m": [
+        0.7162071953921008,
+        0.9167401971312857,
+        1.1656143566528627
+      ],
+      "target_quat_wxyz": [
+        -0.03829309888652994,
+        0.23726760221131948,
+        0.2580848431940175,
+        0.9357510017264619
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.10965587409534087,
+      "max_fd_angular_speed_rad_s": 0.2670263317279922,
+      "fixed_stand_wrist_bound_excess_m": 0.5580687732580933,
+      "fixed_stand_excess_below_position_tolerance": false,
+      "offline_whole_geometry_translation_xyz_m": [
+        0.4604209329949939,
+        0.4604209329949939,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0086",
+        "body_source": "previous_high",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          6.202417508123229e-14,
+          0.5248096311738303,
+          -1.0127551653009372,
+          -6.086679958200933e-14,
+          0.524809631173825,
+          -1.012755165300935,
+          6.197628700153319e-14,
+          0.5248096311738184,
+          -1.0127551653009204,
+          -6.19685891892696e-14,
+          0.5248096311738301,
+          -1.0127551653009488,
+          1.1406032413846634,
+          1.94583729716527,
+          -2.2237654500058652,
+          0.3535186436176607,
+          -0.5353392776131216,
+          1.840188251689563
+        ],
+        "tcp_xyz_m": [
+          0.2557862623971069,
+          0.4563192641362918,
+          1.1656143566528627
+        ],
+        "tcp_quat_wxyz": [
+          -0.03829309888652981,
+          0.23726760221131948,
+          0.25808484319401753,
+          0.9357510017264619
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03257410094136523,
+        "com_projection_support_hull_margin_m": 0.13343977517442773,
+        "outside_fixed_stand_wrist_bound_m": 0.03562949648841818
+      },
+      "original_contact_chain_excess_m": 0.06000000000000005,
+      "remaining_chain_excess_after_position_tolerance_m": 0.01000000000000005,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    },
+    {
+      "case_id": "step_01",
+      "training_group": "step",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0363",
+      "target_xyz_m": [
+        0.8826075339535073,
+        0.680603457540512,
+        1.2146394123756523
+      ],
+      "target_quat_wxyz": [
+        0.9483499342664679,
+        -0.24610602927292727,
+        0.19902734581721387,
+        -0.021268289758566802
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.10443584886257652,
+      "max_fd_angular_speed_rad_s": 0.10970562337537824,
+      "fixed_stand_wrist_bound_excess_m": 0.5453273689700835,
+      "fixed_stand_excess_below_position_tolerance": false,
+      "offline_whole_geometry_translation_xyz_m": [
+        0.46932347420904574,
+        0.46932347420904574,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0363",
+        "body_source": "around_high",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          6.202417508123229e-14,
+          0.5248096311738303,
+          -1.0127551653009372,
+          -6.086679958200933e-14,
+          0.524809631173825,
+          -1.012755165300935,
+          6.197628700153319e-14,
+          0.5248096311738184,
+          -1.0127551653009204,
+          -6.19685891892696e-14,
+          0.5248096311738301,
+          -1.0127551653009488,
+          0.3075176498966835,
+          1.8771712493294301,
+          -2.28598974024924,
+          -0.6056761945113338,
+          -0.5955949664652181,
+          0.07278818229828597
+        ],
+        "tcp_xyz_m": [
+          0.41328405974446164,
+          0.2112799833314662,
+          1.2146394123756523
+        ],
+        "tcp_quat_wxyz": [
+          0.9483499342664679,
+          -0.2461060292729272,
+          0.19902734581721393,
+          -0.021268289758566802
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03257410094136523,
+        "com_projection_support_hull_margin_m": 0.15452856859951608,
+        "outside_fixed_stand_wrist_bound_m": 0.04530203539488731
+      },
+      "original_contact_chain_excess_m": 0.06000000000000005,
+      "remaining_chain_excess_after_position_tolerance_m": 0.01000000000000005,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    },
+    {
+      "case_id": "step_02",
+      "training_group": "step",
+      "source_training_identity": "artifacts/runs/diagnostic_pose_learning/wbc_random_paths/train_geometry_pool.json#train_0081",
+      "target_xyz_m": [
+        -0.6734898362490263,
+        0.9182591208291988,
+        1.2063057102538397
+      ],
+      "target_quat_wxyz": [
+        0.5681913736734356,
+        -0.17677135046069248,
+        0.1889466715038461,
+        0.7811591437517805
+      ],
+      "hold_start_s": 20.0,
+      "hold_duration_s": 40.0,
+      "max_fd_speed_m_s": 0.13039452226069356,
+      "max_fd_angular_speed_rad_s": 0.1861006217059589,
+      "fixed_stand_wrist_bound_excess_m": 0.5907202603388717,
+      "fixed_stand_excess_below_position_tolerance": false,
+      "offline_whole_geometry_translation_xyz_m": [
+        -0.4623162415650181,
+        0.4623162415650181,
+        0.0
+      ],
+      "source_endpoint_witness": {
+        "pool_id": "train_0081",
+        "body_source": "leg_range_level_10",
+        "base_xyz_m": [
+          0.0,
+          0.0,
+          0.4187457999825463
+        ],
+        "base_rpy_rad": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "joint_positions_rad": [
+          0.0,
+          0.40665,
+          -0.8133,
+          0.0,
+          0.40665,
+          -0.8133,
+          0.0,
+          0.40665,
+          -0.8133,
+          0.0,
+          0.40665,
+          -0.8133,
+          -1.0435312652797164,
+          0.3911416525954168,
+          -2.385218762076726,
+          1.4582316971226152,
+          0.1990637874270862,
+          1.5208017721825025
+        ],
+        "tcp_xyz_m": [
+          -0.21117359468400826,
+          0.45594287926418064,
+          1.2063057102538397
+        ],
+        "tcp_quat_wxyz": [
+          0.5681913736734356,
+          -0.17677135046069256,
+          0.18894667150384606,
+          0.7811591437517806
+        ],
+        "minimum_nonfoot_floor_clearance_m": 0.03238608243786448,
+        "com_projection_support_hull_margin_m": 0.12951569572836635,
+        "outside_fixed_stand_wrist_bound_m": 0.05929419461089225
+      },
+      "original_contact_chain_excess_m": 0.06000000000000005,
+      "remaining_chain_excess_after_position_tolerance_m": 0.01000000000000005,
+      "schedule": "20s quintic approach and shortest-path SLERP, 40s final hold"
+    }
+  ]
+}

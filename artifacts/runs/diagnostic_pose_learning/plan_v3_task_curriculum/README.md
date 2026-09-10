@@ -1,0 +1,29 @@
+# E2 第一批固定组训练目标：仅 CPU 准备
+
+2026-09-10 准备完成 10 条 schema-2、60 秒、50 Hz **世界系 TCP 位置＋朝向**轨迹；没有运行训练、GPU、MuJoCo 或 `mj_step`，默认配方未启用。`training_group` 为 `near/body/step`，供现有 `demonstration_group_weights` 消费。组名是训练候选用途，不是已学会的行为标签。
+
+| 组 | 数量与训练来源 | 时间安排 |
+|---|---|---|
+| near | `references/train/train_local_00..03.npz` | 10 秒从实际 reset 朝向平滑接入，20 秒原局部轨迹，30 秒末端保持 |
+| body | `wbc_random_paths/train_geometry_pool.json` 的 `train_0244/0018/0190` | 20 秒接近低／高／侧端点，40 秒保持 |
+| step | 同一训练池的 `train_0086/0363/0081`，离线整体水平平移 | 20 秒接近，40 秒保持 |
+
+所有轨迹从当前临时模型、UMI 配方默认关节位置和 `initial_base_height_m` 的精确 URDF FK 开始：TCP 约 `[.208346061, 0, .646208419] m`。仅保存 TCP pose 作为训练目标；离线根姿态／关节配置见证保存在生成说明，不是 Actor 命令。GoalBank 仅在回合 reset 时按起始 TCP 做一次固定平移，不随机器人底盘重新锚定。原位置 `.3 m/s` 上限和既有 `.3/tool_length = 1.256281407 rad/s` 工程角速度尺度保留；后者不是硬件限值或朝向验收阈值。接近使用五次位置插值、同参数最短路径 SLERP；原局部轨迹保持原数据与时钟。实际最大离散速度为 `.130395 m/s`、角速度 `.267027 rad/s`。
+
+三个 body 端点在指定精确朝向下超出固定站姿腕部外界分别 `.020227/.014640/.017742 m`，**都小于原 `.05 m` 位置容差**。它们是低高侧训练任务，不能据此宣称在原验收容差内必须改变身体姿态；朝向正式验收阈值仍未指定。
+
+三个 step 端点依次为 `[.716207,.916740,1.165614]`、`[.882608,.680603,1.214639]`、`[-.673490,.918259,1.206306] m`。它们仅对各自训练几何见证作整体水平平移，保留关节配置、高度、朝向及相对支撑几何。实际 URDF 原接触到 TCP 的保守树链长上界包含 `.028 m` 足球半径，约 `1.784596836 m`；每个新端点至少对一个原地面接触超出该界 `.060 m`。这在 `.05 m` 位置容差外仍留 `.01 m` **工程余量**，仅排除同时保持全部原接触位置；不区分迈步、滑动、抬足或失去支撑。任务仍耦合高位操作，未证明动态可达。
+
+训练池保存的是既有静态端点几何筛查结果。本次以独立 URDF FK 核对其 TCP pose，未重新运行碰撞检查；平坦均匀地面的整体水平平移保留离线端点相对几何，但 TCP 插值路径没有经过全路径碰撞／动力学筛查。没有读取 `test_geometry_pool.json` 或 `wbc_workspace` 测试端点，也没有把测试数据改标为训练。所有参数和结果仍是临时硬件下的工程准备，不能建立硬件有效性或正式里程碑完成。
+
+`generation_summary.json` 保存训练来源哈希、完整端点见证、平移量、链界、速度和保持时窗；`train/manifest.json` 列出这 10 个文件。真实 CPU GoalBank 消费检查使用示例概率 `{near:.4, body:.3, step:.3}`（只是本次检查，尚未写入训练配置），120 个 reset 实际抽到 `46/38/36`，覆盖全部 10 个文件；检查整个世界目标张量、四元数和非零环境原点的一次固定平移，结果见 `consumer_check.json`。
+
+执行命令（退出 0）：
+
+```bash
+env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  /home/lyb/miniconda3/envs/pawweaver-train/bin/python \
+  artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/prepare.py
+```
+
+输出已存在时脚本拒绝覆盖 manifest。`case_id` 标识本批任务，`source_id` 则保留原始训练来源：near 沿用原轨迹 `source_id`（缺失时用原训练路径），body/step 使用原训练池路径加 `#pool_id`，避免把增强数据误作独立来源。准备后已仅更正此身份元数据和相关哈希；CPU 逐数组精确检查确认时间、位置和四元数未变，检查记录在 `consumer_check.json`。后续课程需要明确选择实际配比并运行学习和独立评估；本批准备结果本身不证明训练收益。
