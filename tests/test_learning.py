@@ -90,7 +90,8 @@ def test_mean_bound_rejects_invalid_coefficient(coefficient):
         AuxiliaryPPO(leg_mean_bound_coef=coefficient)
 
 
-def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch):
+@pytest.mark.parametrize('effective_bounds',[False,True])
+def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch,effective_bounds):
     torch.manual_seed(613)
     obs=observations()
     actor=WholeBodyActor(obs,{"actor":["policy"]},"actor",18,prediction=False,velocity=False,
@@ -103,9 +104,11 @@ def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch):
         actor.mlp[-1].bias.copy_(bias)
         for parameter in critic.parameters():
             parameter.zero_()
+    lower=torch.full((12,),-.25);upper=torch.full((12,),.4)
     algorithm=AuxiliaryPPO(actor,critic,RolloutStorage("rl",8,1,obs,[18],"cpu"),
         num_learning_epochs=1,num_mini_batches=1,learning_rate=1e-5,
-        entropy_coef=0.,value_loss_coef=0.,leg_mean_bound_coef=.001)
+        entropy_coef=0.,value_loss_coef=0.,leg_mean_bound_coef=.001,
+        leg_mean_bounds=(lower,upper) if effective_bounds else None)
     with torch.no_grad():
         algorithm.act(obs)
         algorithm.process_env_step(obs,torch.zeros(8),torch.zeros(8,dtype=torch.bool),{})
@@ -119,9 +122,16 @@ def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch):
         return result
     monkeypatch.setattr(actor,"forward",record)
     losses=algorithm.update()
-    assert losses["leg_mean_bound"]==pytest.approx(.001*6/12)
-    expected=2*.001*(bias.abs()-1).clamp_min(0)*bias.sign()/(8*12)
-    expected[12:]=0
+    if effective_bounds:
+        below=(lower-bias[:12]).clamp_min(0);above=(bias[:12]-upper).clamp_min(0)
+        assert losses['leg_mean_bound']==pytest.approx(.001*(below.square()+above.square()).mean().item())
+        expected=torch.cat((2*.001*(above-below)/(8*12),torch.zeros(6)))
+        # Means already inside [-1,1] still get a restoring gradient at the tighter actual PD boundary.
+        assert expected[1]<0 and expected[3]>0
+    else:
+        assert losses["leg_mean_bound"]==pytest.approx(.001*6/12)
+        expected=2*.001*(bias.abs()-1).clamp_min(0)*bias.sign()/(8*12)
+        expected[12:]=0
     torch.testing.assert_close(means[0].grad,expected[None].expand(8,-1))
     assert torch.count_nonzero(actor.distribution.std_param.grad)==0
     with torch.no_grad():
@@ -130,6 +140,27 @@ def test_mean_bound_uses_live_means_in_actual_ppo_update(monkeypatch):
         assert torch.all(actor.mlp[-1].bias[[0,4,7]].abs()<bias[[0,4,7]].abs())
         assert torch.count_nonzero(actor.mlp[-1].weight)>0
     assert algorithm.storage.step==0
+
+
+def test_effective_mean_bounds_match_actual_pd_target_interval():
+    import json
+    from pathlib import Path
+    from pawweaver.contracts import ActuatorSpec
+    from pawweaver.control import JointPD
+    from pawweaver.learning import effective_pd_leg_mean_bounds,validate_leg_mean_config
+    path=Path(__file__).resolve().parents[1]/'artifacts/runs/diagnostic_pose_learning/wbc_random_training/spec.json'
+    pd=JointPD(ActuatorSpec.from_dict(json.loads(path.read_text())['actuators']),1,'cpu')
+    lower,upper=effective_pd_leg_mean_bounds(pd)
+    assert lower.shape==upper.shape==(12,)
+    assert ((lower>-1)|(upper<1)).any()
+    for bounds in (lower,upper):
+        action=torch.zeros(1,18);action[0,:12]=bounds
+        pd.command(action)
+        torch.testing.assert_close(pd.target[0,:12],pd.default_pos[:12]+pd.action_scale[:12]*bounds)
+        assert ((pd.target[0,:12]>=pd.lower[:12]-1e-6)&(pd.target[0,:12]<=pd.upper[:12]+1e-6)).all()
+    assert validate_leg_mean_config({'leg_mean_bound_effective_pd':True})=='identity'
+    with pytest.raises(ValueError,match='identity Gaussian'):
+        validate_leg_mean_config({'leg_mean_bound_effective_pd':True,'leg_mean_transform':'softsign'})
 
 
 def test_softsign_mean_distribution_and_derivative():

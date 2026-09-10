@@ -162,13 +162,17 @@ class GoalBank:
 
 def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velocity,action,previous_action,
                  torque,effort,q,qd,previous_qd,lower,upper,gravity_b,foot_velocity,foot_contact,
-                 collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5):
+                 collision,fallen,tracking_width=.15,orientation_tracking_width_rad=.5,
+                 joint_limit_margin_fraction=None,foot_clearance=None):
     if not np.isfinite(tracking_width) or tracking_width<=0:
         raise ValueError("Position reward width must be finite and positive")
     if not np.isfinite(orientation_tracking_width_rad) or orientation_tracking_width_rad<=0:
         raise ValueError("Orientation reward width must be finite and positive")
+    if joint_limit_margin_fraction is not None and (not np.isfinite(joint_limit_margin_fraction)
+            or not 0<joint_limit_margin_fraction<.5):
+        raise ValueError("Joint limit margin fraction must be finite and between zero and .5")
     error_norm=error.norm(dim=-1)
-    return {
+    terms={
         "tracking":torch.exp(-error_norm.square()/tracking_width**2),
         "orientation_tracking":torch.exp(-orientation_error.square()/orientation_tracking_width_rad**2),
         "progress":(previous_error-error_norm).clamp(-.1,.1)/.02,
@@ -181,6 +185,13 @@ def reward_terms(*,error,orientation_error,previous_error,tcp_velocity,goal_velo
         "foot_slip":(foot_velocity[:,:,:2].square().sum(-1)*foot_contact).sum(-1),
         "body_tilt":gravity_b[:,:2].square().sum(-1),
         "collision":collision.float(),"termination":fallen.float()}
+    if joint_limit_margin_fraction is not None:
+        relative=(q-lower)/(upper-lower)
+        terms["joint_limit"]=((joint_limit_margin_fraction-relative).clamp_min(0).square()
+            +(relative-(1-joint_limit_margin_fraction)).clamp_min(0).square()).sum(-1)
+    if foot_clearance is not None:
+        terms["unloaded_foot_height"]=(foot_clearance.clamp_min(0).square()*(~foot_contact.bool())).sum(-1)
+    return terms
 
 def sum_reward_terms(terms,weights,*,coupled_pose=False):
     """Combine control-rate rewards; termination remains a separate event cost."""

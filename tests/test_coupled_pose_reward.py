@@ -64,6 +64,51 @@ def test_position_width_preserves_default_and_changes_only_position_kernel(rewar
     assert torch.all(wider["tracking"][1:]>default["tracking"][1:])
 
 
+def test_optional_joint_margin_is_range_normalized_and_has_restoring_gradient(reward_inputs):
+    q=reward_inputs['q'].clone()
+    q[:,:6]=torch.tensor([-1.2,-1.,-.8,0.,.8,1.])
+    q.requires_grad_()
+    inputs=dict(reward_inputs,q=q)
+    default=reward_terms(**inputs)
+    explicit=reward_terms(**inputs,joint_limit_margin_fraction=None,foot_clearance=None)
+    assert default.keys()==explicit.keys()
+    for name in default:
+        assert torch.equal(default[name],explicit[name])
+    assert torch.equal(default['joint_limit'],
+        ((inputs['lower']+.02-q).clamp_min(0)+(q-inputs['upper']+.02).clamp_min(0)).sum(-1))
+    result=reward_terms(**inputs,joint_limit_margin_fraction=.1)
+    torch.testing.assert_close(result['joint_limit'],torch.full((3,),.06))
+    result['joint_limit'].sum().backward()
+    torch.testing.assert_close(q.grad[:,:6],torch.tensor([-.2,-.1,0.,0.,0.,.1]).expand(3,-1),atol=1e-7,rtol=0)
+    assert torch.count_nonzero(q.grad[:,6:])==0
+    changed=reward_terms(**dict(inputs,q=q.detach()*3+.7,
+        lower=inputs['lower']*3+.7,upper=inputs['upper']*3+.7),joint_limit_margin_fraction=.1)
+    torch.testing.assert_close(changed['joint_limit'],result['joint_limit'])
+    for name in default:
+        if name!='joint_limit':
+            assert torch.equal(default[name],result[name])
+
+
+@pytest.mark.parametrize('margin',[0.,-.1,.5,1.,float('nan'),float('inf')])
+def test_invalid_optional_joint_margin_fails(reward_inputs,margin):
+    with pytest.raises(ValueError,match='Joint limit margin fraction'):
+        reward_terms(**reward_inputs,joint_limit_margin_fraction=margin)
+
+
+def test_unloaded_foot_height_uses_clearance_not_contact_count(reward_inputs):
+    clearance=torch.tensor([[-.1,0.,.2,.3]]).repeat(3,1).requires_grad_()
+    contact=torch.tensor([[False,False,False,True]]).repeat(3,1)
+    terms=reward_terms(**dict(reward_inputs,foot_contact=contact),foot_clearance=clearance)
+    torch.testing.assert_close(terms['unloaded_foot_height'],torch.full((3,),.04))
+    terms['unloaded_foot_height'].sum().backward()
+    torch.testing.assert_close(clearance.grad,torch.tensor([[0.,0.,.4,0.]]).expand(3,-1))
+    # Old weight dictionaries still work because the optional term is absent by default.
+    old=reward_terms(**reward_inputs)
+    assert 'unloaded_foot_height' not in old
+    weights={name:1. for name in old}
+    assert torch.isfinite(sum_reward_terms(old,weights)).all()
+
+
 @pytest.mark.parametrize("width",[0.,-.1,float("nan"),float("inf"),-float("inf")])
 def test_position_width_rejects_nonpositive_or_nonfinite(reward_inputs,width):
     with pytest.raises(ValueError,match="Position reward width must be finite and positive"):
@@ -84,6 +129,7 @@ def test_isaac_step_passes_position_width_to_actual_reward(monkeypatch,config,ex
     state=SimpleNamespace(base_pos_w=torch.tensor([[0.,0.,.3]]),base_quat_w=quat,
         tcp_pos_w=vector,tcp_quat_w=quat,joint_pos=joints,joint_vel=joints)
     env.config=dict(config,domain_randomization=False)
+    env.termination=isaac_env.termination_config(env.config)
     # Exercise the actual step->reward call on fixed CPU state, without physics.
     env.spec=SimpleNamespace(decimation=0)
     env.num_envs=1

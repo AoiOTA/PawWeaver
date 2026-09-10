@@ -12,6 +12,20 @@ from .math import quat_apply,quat_apply_inverse,quat_mul,quat_angle_error,rpy_qu
 from .task import GoalBank,reward_terms,sum_reward_terms,UmiPoseReward,termination_config,fall_causes
 from .training_inputs import training_inputs
 
+def foot_sphere_geometry(tree,device):
+    """Canonical collision centers and radii, in the ordered foot link frames."""
+    centers=[];radii=[]
+    for name in FOOT_NAMES:
+        collisions=tree.links[name].findall("collision")
+        if len(collisions)!=1 or collisions[0].find("geometry/sphere") is None:
+            raise ValueError(f"Foot clearance requires one collision sphere: {name}")
+        collision=collisions[0]
+        center=collision.find("origin")
+        centers.append(numbers(None if center is None else center.get("xyz")))
+        radii.append(float(collision.find("geometry/sphere").get("radius")))
+    return (torch.tensor(np.array(centers),device=device,dtype=torch.float32),
+            torch.tensor(radii,device=device,dtype=torch.float32))
+
 class WholeBodyEnv:
     def __init__(self,asset:Path,config:dict,num_envs=1024,device="cuda:0",seed=0,*,diagnostic=False,provisional_spec=None):
         from .isaac_robot import create_scene
@@ -42,6 +56,10 @@ class WholeBodyEnv:
         self.foot_ids=named_indices(self.robot.body_names,FOOT_NAMES)
         self.gripper_id=self.robot.body_names.index("arm_gripper_base")
         tree=RobotTree.load(asset/"robot.urdf")
+        if config.get("reward_weights",{}).get("unloaded_foot_height",0.)!=0:
+            self.foot_sphere_centers,self.foot_sphere_radii=foot_sphere_geometry(tree,device)
+            ground=self.scene.cfg.ground
+            self.ground_height_m=ground.init_state.pos[2]+ground.spawn.size[2]/2
         self.tcp_offset=torch.tensor(numbers(tree.joints["tcp_mount"].find("origin").get("xyz")),device=device,dtype=torch.float32)
         self.tcp_rotation=torch.tensor(rpy_quat(numbers(tree.joints["tcp_mount"].find("origin").get("rpy","0 0 0"))),
             device=device,dtype=torch.float32)
@@ -70,6 +88,12 @@ class WholeBodyEnv:
         self.materials[:,:,2]=0.
         self.set_materials(torch.arange(num_envs,device=device))
         self.reset(torch.arange(num_envs,device=device))
+
+    def foot_clearance(self):
+        pose=self.robot.data.body_link_pose_w.torch[:,self.foot_ids]
+        centers=pose[:,:,:3]+quat_apply(pose[:,:,[6,3,4,5]],
+            self.foot_sphere_centers.unsqueeze(0).expand(self.num_envs,-1,-1))
+        return centers[:,:,2]-self.foot_sphere_radii-self.ground_height_m
 
     def state(self):
         data=self.robot.data
@@ -210,6 +234,9 @@ class WholeBodyEnv:
         terms=reward_terms(error=error,orientation_error=orientation_error,previous_error=self.previous_error,
             tracking_width=self.config.get("tracking_width_m",.15),
             orientation_tracking_width_rad=self.config.get("orientation_tracking_width_rad",.5),
+            joint_limit_margin_fraction=self.config.get("joint_limit_margin_fraction"),
+            foot_clearance=(self.foot_clearance()
+                if self.config.get("reward_weights",{}).get("unloaded_foot_height",0.)!=0 else None),
             tcp_velocity=(state.tcp_pos_w-self.previous_tcp)/.02,goal_velocity=(goal-last_goal)/.02,
             action=self.pd.last_action,previous_action=self.previous_action,torque=self.torque,
             effort=self.pd.effort,q=state.joint_pos,qd=state.joint_vel,previous_qd=self.previous_qd,

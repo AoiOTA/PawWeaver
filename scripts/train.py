@@ -51,7 +51,7 @@ try:
     from rsl_rl.models import MLPModel
     from rsl_rl.storage import RolloutStorage
     from pawweaver.isaac_env import WholeBodyEnv
-    from pawweaver.learning import WholeBodyActor,AuxiliaryPPO
+    from pawweaver.learning import WholeBodyActor,AuxiliaryPPO,effective_pd_leg_mean_bounds
     from pawweaver.bundle import export_bundle
     env=WholeBodyEnv(args.asset,config,args.num_envs,args.device,args.seed,
         diagnostic=args.diagnostic,provisional_spec=args.provisional_spec)
@@ -71,7 +71,8 @@ try:
     algorithm=AuxiliaryPPO(actor,critic,storage,device=args.device,num_learning_epochs=config["learning_epochs"],
         num_mini_batches=config["mini_batches"],gamma=config["gamma"],lam=config["lam"],
         learning_rate=config["learning_rate"],desired_kl=config["desired_kl"],entropy_coef=config["entropy_coef"],
-        clip_param=config["clip_param"],leg_mean_bound_coef=config.get("leg_mean_bound_coef",0.))
+        clip_param=config["clip_param"],leg_mean_bound_coef=config.get("leg_mean_bound_coef",0.),
+        leg_mean_bounds=effective_pd_leg_mean_bounds(env.pd) if config.get("leg_mean_bound_effective_pd",False) else None)
     args.output.mkdir(parents=True,exist_ok=True)
     metadata={"config":config,"seed":args.seed,"asset_hash":manifest["asset_hash"],"num_envs":args.num_envs,
               "engine":"PhysX","torch":torch.__version__,

@@ -12,6 +12,8 @@ def validate_leg_mean_config(config, previous=None, *, resume=False):
     mode = config.get("leg_mean_transform", "identity")
     if mode not in ("identity", "softsign"):
         raise ValueError(f"Unsupported leg_mean_transform: {mode!r}")
+    if config.get("leg_mean_bound_effective_pd",False) and mode!="identity":
+        raise ValueError("Effective PD mean bounds require identity Gaussian means")
     if previous is not None:
         source_mode = validate_leg_mean_config(previous)
         if resume and previous != config:
@@ -19,6 +21,11 @@ def validate_leg_mean_config(config, previous=None, *, resume=False):
         if source_mode == "softsign" and mode == "identity":
             raise ValueError("Unsupported softsign-to-identity initialization")
     return mode
+
+def effective_pd_leg_mean_bounds(pd):
+    """Intersection of action clipping and actual joint-target clipping, legs only."""
+    return (((pd.lower-pd.default_pos)/pd.action_scale).clamp_min(-1)[:12],
+            ((pd.upper-pd.default_pos)/pd.action_scale).clamp_max(1)[:12])
 
 class LegSoftsignGaussianDistribution(GaussianDistribution):
     def __init__(self, output_dim, **kwargs):
@@ -83,12 +90,22 @@ class WholeBodyActor(MLPModel):
 
 class AuxiliaryPPO(PPO):
     """Feed-forward, single-GPU PPO. Auxiliary labels stay in rollout storage, outside actor input."""
-    def __init__(self,*args,auxiliary_coef=1.,leg_mean_bound_coef=0.,**kwargs):
+    def __init__(self,*args,auxiliary_coef=1.,leg_mean_bound_coef=0.,leg_mean_bounds=None,**kwargs):
         if not math.isfinite(leg_mean_bound_coef) or leg_mean_bound_coef<0:
             raise ValueError("Leg mean-bound coefficient must be finite and nonnegative")
         super().__init__(*args,**kwargs)
         self.auxiliary_coef = auxiliary_coef
         self.leg_mean_bound_coef = leg_mean_bound_coef
+        self.leg_mean_bounds=None
+        if leg_mean_bounds is not None:
+            if type(self.actor.distribution) is not GaussianDistribution:
+                raise ValueError("Effective PD mean bounds require identity Gaussian means")
+            lower,upper=(torch.as_tensor(v,device=self.device,dtype=torch.float32).detach() for v in leg_mean_bounds)
+            if (lower.shape!=(12,) or upper.shape!=(12,) or not torch.isfinite(lower).all()
+                    or not torch.isfinite(upper).all() or not (lower<upper).all()
+                    or (lower< -1).any() or (upper>1).any()):
+                raise ValueError("Leg mean bounds require 12 finite ordered bounds inside [-1,1]")
+            self.leg_mean_bounds=(lower,upper)
         if self.is_multi_gpu or self.symmetry or self.rnd or self.actor.is_recurrent or self.critic.is_recurrent:
             raise ValueError("PawWeaver v1 supports feed-forward single-GPU PPO without RND/symmetry")
 
@@ -123,7 +140,13 @@ class AuxiliaryPPO(PPO):
             auxiliary = self.actor.auxiliary_loss(obs)
             loss = surrogate+self.value_loss_coef*value_loss-self.entropy_coef*entropy+self.auxiliary_coef*auxiliary
             if self.leg_mean_bound_coef>0:
-                leg_mean_bound = self.leg_mean_bound_coef*(self.actor.output_mean[:,:12].abs()-1).clamp_min(0).square().mean()
+                if self.leg_mean_bounds is None:
+                    leg_mean_bound = self.leg_mean_bound_coef*(self.actor.output_mean[:,:12].abs()-1).clamp_min(0).square().mean()
+                else:
+                    lower,upper=self.leg_mean_bounds
+                    mean=self.actor.output_mean[:,:12]
+                    leg_mean_bound=self.leg_mean_bound_coef*((lower-mean).clamp_min(0).square()
+                        +(mean-upper).clamp_min(0).square()).mean()
                 loss = loss+leg_mean_bound
             if not torch.isfinite(loss):
                 raise FloatingPointError("Non-finite PPO loss")
