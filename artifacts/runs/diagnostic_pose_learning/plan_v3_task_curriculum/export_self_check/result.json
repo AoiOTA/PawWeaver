@@ -1,0 +1,18 @@
+{
+  "checkpoint_iteration": 99,
+  "observations_source": "artifacts/runs/diagnostic_pose_learning/plan_v3_reward_signal/candidate_mujoco_workspace4/far/trace.npz",
+  "samples": 256,
+  "action_shape": [
+    256,
+    18
+  ],
+  "deterministic_actions_exactly_equal": true,
+  "max_abs_action_difference": 0.0,
+  "identity_fields_equal": true,
+  "source_policy_sha256": "4eb0a0bda2115b3cc2e4e3e427d72e3b3eab58138584b0a3be99d17ba2f89735",
+  "export_policy_sha256": "d5d68aeed4be00ea73e95bdb019757880cf47bac1b66073d367f8f29fee3ce17",
+  "overwrite_rejected": true,
+  "overwrite_exit_code": 1,
+  "overwrite_files_unchanged": true,
+  "evidence": "CPU export and saved-observation action comparison only; no training or simulation"
+}
