@@ -12,7 +12,9 @@
 
 [adaptive sampling对照](artifacts/runs/diagnostic_pose_learning/adaptive_sampling_comparison/README.md) 的250轮训练与四项固定后测均已实际退出0，**不采用候选、不追加预算或参数扫描**。唯一配置差异为`adaptive_sampling=false→true`，复用uniform softsign250同初始化、同预算控制；采样路径不同，不宣称逐轨迹配对。现有checkpoint确认概率与完成回合分布改变，采样并非未生效，但位置／跌倒EMA不含朝向／碰撞，不能替代位姿收益。test8两组两引擎均完整8×20秒无跌倒；共同2–20秒内PhysX朝向8例全退步，MuJoCo位置8例、朝向7例退步。PhysX far两组均60秒，位置RMSE仅.619860→.614141 m；MuJoCo由28.72秒跌倒变为完整60秒存活，但共同2–28.72秒位置RMSE **.572716→.598932 m**变差，候选完整60秒仍 **.621898 m**。存活改善不等于远目标跟踪成功，也不证明动作范围不足。默认配置、原验收与`trained=false`保持不变。
 
-[新腿动作范围对照](artifacts/runs/diagnostic_pose_learning/leg_range_comparison/README.md) 已实际启动新派生初始化的.2控制组250轮训练；.5候选训练及两组全部后测尚未开始。两组各250轮及四项固定后测，历史T50／softsign不能替代新控制。初始确定性腿PD目标及裁剪前角度std匹配，不代表加载站姿或任务表现；裁剪分布、归一化动作历史、动作变化率奖励及优化坐标差异均属于联合处理。.5仅为临时工程参数，默认与原验收不变。纯位姿学习稳定前暂缓视觉扩展；其余证据见 [运行手册](docs/runbook.md)，旧246维位置结果保留历史身份。
+[新腿动作范围对照](artifacts/runs/diagnostic_pose_learning/leg_range_comparison/README.md) 的新.2控制与新.5候选各250轮及四项固定后测，**十条命令均实际退出0，不采用.5，不自动追加预算或尺度扫描**。每组24,576,000 transitions／5,000次更新，全部有限；训练跌倒1,549→2,362，子步力矩饱和0.31045%→0.55579%。两组两引擎test8均完整20秒无跌倒，共同2–20秒平均位置／朝向RMSE：PhysX **.027977→.036483 m／.100327→.188344 rad**，MuJoCo **.026513→.031052 m／.107312→.161160 rad**；朝向各8例全退步。MuJoCo位置单项通过数7→8保留，不能称完整位姿成功。far两组两引擎均完整60秒无跌倒，共同2–60秒PhysX位置仅.636364→.628724 m小幅改善、朝向.180363→.186254 rad变差；MuJoCo位置／朝向 **.621293→.638153 m／.148586→.242929 rad**均变差。逐例P95、时长与全部训练事件见实验记录。
+
+初始确定性腿PD目标及裁剪前角度std匹配，不代表加载站姿；动作范围、裁剪／探索、归一化动作历史、动作变化率奖励及优化坐标属于联合处理，历史T50／softsign未替代新控制。[保存轨迹回读](artifacts/runs/diagnostic_pose_learning/leg_range_comparison/candidate_motion_readout/README.md) 显示候选两引擎2–30秒基座前进更少、最低高度更低；PhysX仅有50Hz RR足净力卸载记录，不能据此称有效步态或证明动作范围不足。[参考训练核对](artifacts/runs/diagnostic_pose_learning/leg_range_comparison/reference_training_audit/README.md) 已完成：UMI官方默认支持无步行检查点的单18动作直接训练，但目标表达、裁剪／探索、课程及PPO配方不同；没有因此选定新训练机制或预算。.5仍是临时工程参数，默认、原验收与`trained=false`不变。纯位姿学习稳定前暂缓视觉扩展；其余证据见 [运行手册](docs/runbook.md)，旧246维位置结果保留历史身份。
 
 项目持续以真实 PawWeaver 工作 dogfood `/home/lyb/kiss-my-agent-dogfood`：以减少无用设计、避免阻塞和缩短研究循环为目标。已移除无消费用途的 bundle 重复 metadata，并让批量评估继续推进，不把旧精确重放或新增完整 bundle hash 比较变成任务门槛；实际变化及其证据限制见 [验证记录](docs/validation.md)。
 
