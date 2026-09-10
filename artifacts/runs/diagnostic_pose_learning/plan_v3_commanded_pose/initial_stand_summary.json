@@ -1,0 +1,137 @@
+{
+  "mujoco": {
+    "metrics": {
+      "rmse_m": 0.10098339555532368,
+      "p95_m": 0.11044274270534515,
+      "executed_fragment_rmse_m": 0.09791047207255264,
+      "post_transient_samples": 901,
+      "orientation_rmse_rad": 0.09927049047809179,
+      "orientation_p95_rad": 0.1225111335515976,
+      "fallen": false,
+      "absolute_joint_work_j": 22.05531678631902,
+      "base_displacement_m": 0.14683759212493896,
+      "requested_steps": 1000,
+      "actual_steps": 1000,
+      "completed": true,
+      "termination_reason": "completed",
+      "base_linear_command_rmse_mps": 0.008102136135668967,
+      "base_linear_command_p95_mps": 0.019303077577110507,
+      "base_yaw_rate_command_rmse_radps": 0.0003143377743104684,
+      "base_yaw_rate_command_p95_radps": 0.00047724461182951927,
+      "task_kind": "velocity_ee_pose",
+      "elapsed_seconds": 20.0,
+      "metric_scope": "Post2 EE errors use the moving yaw-only task frame; command errors use yaw-frame XY velocity and wrapped finite-difference yaw rate.",
+      "pose_acceptance_passed": null,
+      "command_acceptance_passed": null,
+      "engine": "MuJoCo",
+      "trajectory": {
+        "case_id": "initial_stand",
+        "command_ramp_end_s": 0.0,
+        "command_source": "preset_trajectory",
+        "hardware_validation": false,
+        "pose_hold_start_s": 0.0,
+        "pose_transition_start_s": 2.0,
+        "scope": "Training-source geometric endpoints; paths and dynamics unvalidated",
+        "source_id": "q0 neutral pose",
+        "split": "train",
+        "task_frame": "base_xy_yaw_ground_z",
+        "task_kind": "velocity_ee_pose",
+        "training_group": "stand",
+        "units": {
+          "linear_velocity": "m/s",
+          "orientation": "wxyz",
+          "position": "m",
+          "time": "s",
+          "yaw_rate": "rad/s"
+        }
+      },
+      "policy_sha256": "f6475f4d2be79f54834a9e5cfda8629cc0647fcae3764830e06898455f0462e5",
+      "diagnostic": true,
+      "trained": false,
+      "fall_height": false,
+      "fall_tilt": false
+    },
+    "post2_mean_foot_contact_magnitude_N": [
+      31.397191393134776,
+      31.637234838514065,
+      88.15668031056052,
+      88.28512015812379
+    ],
+    "base_height_range_m": [
+      0.22724555432796478,
+      0.2734510004520416
+    ],
+    "actual_exit_code": 0,
+    "post2_robot_nonfoot_contact_above5N_fraction": 0.6714761376248612,
+    "contact_scope": "Net force magnitude, not vertical load; exclude MuJoCo world/empty body columns.",
+    "ground_contact_note": "Original trace records true nonfoot ground pairs from7.88s. Independent saved-state mj_forward at10/15/20s confirms floor to RL/RR_thigh_collision_2, not self collision; no physics time advanced. This is not clean unsupported-body standing."
+  },
+  "physx": {
+    "metrics": {
+      "rmse_m": 0.0679166316986084,
+      "p95_m": 0.06929736584424973,
+      "executed_fragment_rmse_m": 0.06720905750989914,
+      "post_transient_samples": 901,
+      "orientation_rmse_rad": 0.10395103585767732,
+      "orientation_p95_rad": 0.1098402589559555,
+      "fallen": false,
+      "absolute_joint_work_j": 10.030066531300545,
+      "base_displacement_m": 0.07618603110313416,
+      "requested_steps": 1000,
+      "actual_steps": 1000,
+      "completed": true,
+      "termination_reason": "completed",
+      "base_linear_command_rmse_mps": 0.0007994939089152791,
+      "base_linear_command_p95_mps": 0.0016434401498016124,
+      "base_yaw_rate_command_rmse_radps": 0.00014889250754721283,
+      "base_yaw_rate_command_p95_radps": 0.00022544991225004196,
+      "task_kind": "velocity_ee_pose",
+      "elapsed_seconds": 20.0,
+      "metric_scope": "Post2 EE errors use the moving yaw-only task frame; command errors use yaw-frame XY velocity and wrapped finite-difference yaw rate.",
+      "pose_acceptance_passed": null,
+      "command_acceptance_passed": null,
+      "engine": "PhysX",
+      "trajectory": {
+        "case_id": "initial_stand",
+        "command_ramp_end_s": 0.0,
+        "command_source": "preset_trajectory",
+        "hardware_validation": false,
+        "pose_hold_start_s": 0.0,
+        "pose_transition_start_s": 2.0,
+        "scope": "Training-source geometric endpoints; paths and dynamics unvalidated",
+        "source_id": "q0 neutral pose",
+        "split": "train",
+        "task_frame": "base_xy_yaw_ground_z",
+        "task_kind": "velocity_ee_pose",
+        "training_group": "stand",
+        "units": {
+          "linear_velocity": "m/s",
+          "orientation": "wxyz",
+          "position": "m",
+          "time": "s",
+          "yaw_rate": "rad/s"
+        }
+      },
+      "policy_sha256": "f6475f4d2be79f54834a9e5cfda8629cc0647fcae3764830e06898455f0462e5",
+      "diagnostic": true,
+      "trained": false,
+      "batch_index": 0,
+      "env_index": 0,
+      "fall_height": false,
+      "fall_tilt": false
+    },
+    "post2_mean_foot_contact_magnitude_N": [
+      45.56997299194336,
+      47.664859771728516,
+      78.98595428466797,
+      79.72309112548828
+    ],
+    "base_height_range_m": [
+      0.27370142936706543,
+      0.2810554504394531
+    ],
+    "actual_exit_code": 0,
+    "post2_robot_nonfoot_contact_above5N_fraction": 0.0,
+    "contact_scope": "Net force magnitude, not vertical load; exclude MuJoCo world/empty body columns."
+  }
+}

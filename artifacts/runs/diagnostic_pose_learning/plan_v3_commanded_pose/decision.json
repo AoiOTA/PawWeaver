@@ -76,5 +76,16 @@
     "No world-fixed EE-only success claim",
     "No base pose or gait commands"
   ],
-  "next": "CPU contract and zero-mean dual-engine stand20, then real training smoke and fresh continuous learning"
+  "next": "CPU contract and zero-mean dual-engine stand20, then real training smoke and fresh continuous learning",
+  "initial_validation": {
+    "cpu_integrated_tests_passed": 148,
+    "initial_mujoco_stand20_exit": 0,
+    "initial_physx_stand20_exit": 0,
+    "initial_mujoco_dev8_exit": 0,
+    "smoke2_exit": 0,
+    "main_train_started": true,
+    "main_train_output": "train1000",
+    "gpu_owner": "root",
+    "initial_stand_limitation": "MuJoCo true rear-thigh ground contact from7.88s; no clean support success claim. PhysX has no recorded robot nonfoot contact."
+  }
 }

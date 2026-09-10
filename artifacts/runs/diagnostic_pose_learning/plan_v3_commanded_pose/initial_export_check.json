@@ -1,0 +1,27 @@
+{
+  "observation_dim": 279,
+  "action_dim": 18,
+  "zero_mean_outputs": true,
+  "joint_std_rad": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02
+  ],
+  "trained": false,
+  "evidence_limit": "Deterministic q0 is identical; later fresh train RNG follows environment construction, so random hidden weights are not claimed identical."
+}

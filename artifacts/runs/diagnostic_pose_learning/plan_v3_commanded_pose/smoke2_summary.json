@@ -1,0 +1,35 @@
+{
+  "actual_exit_code": 0,
+  "iterations": 2,
+  "transitions": 3072,
+  "optimizer_steps": 40,
+  "finite": true,
+  "falls": 0,
+  "training_progress": {
+    "status": "completed",
+    "stop_reason": "iteration_budget",
+    "requested_iterations": 2,
+    "completed_iterations": 2,
+    "start_iteration": 0,
+    "last_completed_iteration": 1,
+    "completed_transitions": 3072
+  },
+  "observation_contract": {
+    "schema_version": 3,
+    "history_frames": 5,
+    "goal_frames": 4,
+    "proprio_dim": 42,
+    "action_dim": 18,
+    "joint_velocity_scale": 0.05,
+    "angular_velocity_scale": 0.25,
+    "max_goal_age": 0.5,
+    "control_dt": 0.02,
+    "orientation_encoding": "rotation_columns_0_xyz_then_1_xyz",
+    "task_mode": "velocity_ee_pose",
+    "target_frame": "current_base_xy_and_yaw_with_fixed_ground_z; excludes_base_height_roll_pitch",
+    "goal_history_frame": "task_frame; all_history_transformed_with_current_base_xy_yaw",
+    "velocity_command_order": "vx_yaw_m_s,vy_yaw_m_s,yaw_rate_rad_s",
+    "velocity_command_dim": 3
+  },
+  "reused_for_main_training": false
+}
