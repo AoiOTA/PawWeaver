@@ -1,0 +1,1591 @@
+{
+  "evaluation": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/initial_physx_stand20",
+  "bundle": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/initial_bundle",
+  "engine": "PhysX",
+  "task_kind": "velocity_ee_pose",
+  "observation_dim": 279,
+  "report_sha256": "6a5733fd86179c4531f5e2dd45bb9703fde8a509564b0978f49e286fd6c3036e",
+  "bundle_hash": "80de6c23d15fd8741ec2963f0a66d88767182345a241c19cba1bff4763c97bd4",
+  "policy_sha256": "f6475f4d2be79f54834a9e5cfda8629cc0647fcae3764830e06898455f0462e5",
+  "asset_hash": "1fe12b296656e1684165d60cdfb36e5c003cbb777f4d0e8525d14516d4f9176a",
+  "suite": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/initial_stand20",
+  "suite_sha256": "793763d1b151d76a9e358c33cd22434e113e753336c665e03e1076d136d8e13f",
+  "method_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/support_readout.py",
+  "method_source_sha256": "2a217c3b3e06f98764530ec9b0e3bc804e063fdf71c82398de8e737af4b9b255",
+  "reused_geometry_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_reward_signal/support_geometry.py",
+  "reused_geometry_source_sha256": "a5fe89b6c96d1c4a91369b3201292f83d0e1e0e335690bff0887142451ecad72",
+  "default_fk_self_check": {
+    "default_joint_positions_rad": [
+      0.0,
+      0.85,
+      -1.65,
+      0.0,
+      0.85,
+      -1.65,
+      0.0,
+      0.85,
+      -1.65,
+      0.0,
+      0.85,
+      -1.65,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "foot_sphere_centers_base_m": {
+      "FR_foot": [
+        0.20574103815185207,
+        -0.1654,
+        -0.28862150697067523
+      ],
+      "FL_foot": [
+        0.20574103815185207,
+        0.1654,
+        -0.28862150697067523
+      ],
+      "RR_foot": [
+        -0.21805896184814794,
+        -0.1654,
+        -0.28862150697067523
+      ],
+      "RL_foot": [
+        -0.21805896184814794,
+        0.1654,
+        -0.28862150697067523
+      ]
+    },
+    "analytic_fk_max_abs_error_m": 5.551115123125783e-17,
+    "gravity_projection_max_abs_error_m": 0.0,
+    "sphere_radii_m": {
+      "FR_foot": 0.028,
+      "FL_foot": 0.028,
+      "RR_foot": 0.028,
+      "RL_foot": 0.028
+    },
+    "analytic_model": "Hip0, thigh0.85rad, calf-1.65rad; lengths0.212/0.21344m; root hip origins x\u00b10.2119,y\u00b10.06 and lateral hip offset\u00b10.1054m."
+  },
+  "original_evaluation_summary": {
+    "episodes": 1,
+    "completed_episodes": 1,
+    "completion_rate": 1.0,
+    "no_fall_rate": 1.0,
+    "completed_no_fall_episodes": 1,
+    "completed_mean_metrics": {
+      "rmse_m": 0.0679166316986084,
+      "p95_m": 0.06929736584424973,
+      "orientation_rmse_rad": 0.10395103585767732,
+      "orientation_p95_rad": 0.1098402589559555,
+      "base_linear_command_rmse_mps": 0.0007994939089152791,
+      "base_linear_command_p95_mps": 0.0016434401498016124,
+      "base_yaw_rate_command_rmse_radps": 0.00014889250754721283,
+      "base_yaw_rate_command_p95_radps": 0.00022544991225004196
+    },
+    "acceptance_passed": null
+  },
+  "cases": [
+    {
+      "case_id": "initial_stand",
+      "trace": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/initial_physx_stand20/initial_stand/trace.npz",
+      "trace_sha256": "6f3d6c2660a81349a68c9bf54df0bd7912a9518b2a91767b7eb5ef7b9a2c6e1c",
+      "original_episode_metrics": {
+        "rmse_m": 0.0679166316986084,
+        "p95_m": 0.06929736584424973,
+        "executed_fragment_rmse_m": 0.06720905750989914,
+        "post_transient_samples": 901,
+        "orientation_rmse_rad": 0.10395103585767732,
+        "orientation_p95_rad": 0.1098402589559555,
+        "fallen": false,
+        "absolute_joint_work_j": 10.030066531300545,
+        "base_displacement_m": 0.07618603110313416,
+        "requested_steps": 1000,
+        "actual_steps": 1000,
+        "completed": true,
+        "termination_reason": "completed",
+        "base_linear_command_rmse_mps": 0.0007994939089152791,
+        "base_linear_command_p95_mps": 0.0016434401498016124,
+        "base_yaw_rate_command_rmse_radps": 0.00014889250754721283,
+        "base_yaw_rate_command_p95_radps": 0.00022544991225004196,
+        "task_kind": "velocity_ee_pose",
+        "elapsed_seconds": 20.0,
+        "metric_scope": "Post2 EE errors use the moving yaw-only task frame; command errors use yaw-frame XY velocity and wrapped finite-difference yaw rate.",
+        "pose_acceptance_passed": null,
+        "command_acceptance_passed": null,
+        "engine": "PhysX",
+        "trajectory": {
+          "case_id": "initial_stand",
+          "command_ramp_end_s": 0.0,
+          "command_source": "preset_trajectory",
+          "hardware_validation": false,
+          "pose_hold_start_s": 0.0,
+          "pose_transition_start_s": 2.0,
+          "scope": "Training-source geometric endpoints; paths and dynamics unvalidated",
+          "source_id": "q0 neutral pose",
+          "split": "train",
+          "task_frame": "base_xy_yaw_ground_z",
+          "task_kind": "velocity_ee_pose",
+          "training_group": "stand",
+          "units": {
+            "linear_velocity": "m/s",
+            "orientation": "wxyz",
+            "position": "m",
+            "time": "s",
+            "yaw_rate": "rad/s"
+          }
+        },
+        "policy_sha256": "f6475f4d2be79f54834a9e5cfda8629cc0647fcae3764830e06898455f0462e5",
+        "diagnostic": true,
+        "trained": false,
+        "batch_index": 0,
+        "env_index": 0,
+        "fall_height": false,
+        "fall_tilt": false
+      },
+      "aligned_samples": 1000,
+      "excluded_poststep_samples": 0,
+      "mujoco_hinge_kinematic_offset_s": 0.0,
+      "alignment_checks": {
+        "base_quaternion_norm_max_error": 1.4565282080436504e-07,
+        "base_up_z_max_error": 2.9756020758497925e-08,
+        "fk_tcp_world_xyz_max_error_m": 4.583203305728979e-07,
+        "fk_tcp_world_orientation_max_error_rad": 1.7221622979912049e-06
+      },
+      "ground_height_source": "saved ground_z",
+      "robot_nonfoot_force_body_names": [
+        "base_link",
+        "FL_hip",
+        "FR_hip",
+        "RL_hip",
+        "RR_hip",
+        "arm_base_link",
+        "FL_thigh",
+        "FR_thigh",
+        "RL_thigh",
+        "RR_thigh",
+        "arm_link1",
+        "FL_calf",
+        "FR_calf",
+        "RL_calf",
+        "RR_calf",
+        "arm_link2",
+        "arm_link3",
+        "arm_link4",
+        "arm_link5",
+        "arm_link6",
+        "arm_flange_link",
+        "arm_gripper_base",
+        "arm_gripper_link1",
+        "arm_gripper_link2",
+        "rgbd_stand",
+        "rgbd_body"
+      ],
+      "windows": {
+        "all_aligned": {
+          "samples": 1000,
+          "first_sample_s": 0.02,
+          "last_sample_s": 20.0,
+          "feet": {
+            "FR_foot": {
+              "sphere_bottom_height_min_m": -8.917538300741434e-07,
+              "sphere_bottom_height_max_m": 5.628821340107615e-07,
+              "sphere_bottom_height_mean_m": 2.3227945745551982e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "FL_foot": {
+              "sphere_bottom_height_min_m": -8.551220840903595e-07,
+              "sphere_bottom_height_max_m": 7.323630053755747e-07,
+              "sphere_bottom_height_mean_m": 2.8613006230643333e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RR_foot": {
+              "sphere_bottom_height_min_m": -5.801445420762497e-07,
+              "sphere_bottom_height_max_m": 4.6941321611357334e-07,
+              "sphere_bottom_height_mean_m": 1.6154223860834205e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RL_foot": {
+              "sphere_bottom_height_min_m": -4.796854499757031e-07,
+              "sphere_bottom_height_max_m": 6.970782943892251e-07,
+              "sphere_bottom_height_mean_m": 1.2109315617075956e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            }
+          },
+          "foot_net_force_gt1N_count_samples": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1000
+          },
+          "robot_nonfoot_net_force_gt5N_any_fraction": 0.0,
+          "robot_nonfoot_net_force_gt5N_longest": null,
+          "any_foot_above3cm_and_robot_nonfoot_net_gt5N_fraction": 0.0,
+          "nonfoot_ground_pairs": null
+        },
+        "post2": {
+          "samples": 901,
+          "first_sample_s": 2.0,
+          "last_sample_s": 20.0,
+          "feet": {
+            "FR_foot": {
+              "sphere_bottom_height_min_m": -3.421791958460596e-08,
+              "sphere_bottom_height_max_m": 5.616079794233675e-07,
+              "sphere_bottom_height_mean_m": 2.5546240056050723e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "FL_foot": {
+              "sphere_bottom_height_min_m": 8.723927854420443e-09,
+              "sphere_bottom_height_max_m": 5.894481957084696e-07,
+              "sphere_bottom_height_mean_m": 3.003568331542787e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RR_foot": {
+              "sphere_bottom_height_min_m": -1.3314060299043917e-07,
+              "sphere_bottom_height_max_m": 4.6941321611357334e-07,
+              "sphere_bottom_height_mean_m": 1.7184609389597436e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RL_foot": {
+              "sphere_bottom_height_min_m": -1.2179961939376427e-07,
+              "sphere_bottom_height_max_m": 3.914162905981067e-07,
+              "sphere_bottom_height_mean_m": 1.1077046697254244e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            }
+          },
+          "foot_net_force_gt1N_count_samples": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 901
+          },
+          "robot_nonfoot_net_force_gt5N_any_fraction": 0.0,
+          "robot_nonfoot_net_force_gt5N_longest": null,
+          "any_foot_above3cm_and_robot_nonfoot_net_gt5N_fraction": 0.0,
+          "nonfoot_ground_pairs": null
+        },
+        "post8": {
+          "samples": 601,
+          "first_sample_s": 8.0,
+          "last_sample_s": 20.0,
+          "feet": {
+            "FR_foot": {
+              "sphere_bottom_height_min_m": 7.847834792781838e-08,
+              "sphere_bottom_height_max_m": 5.616079794233675e-07,
+              "sphere_bottom_height_mean_m": 2.986734962648574e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "FL_foot": {
+              "sphere_bottom_height_min_m": 6.456760846471066e-08,
+              "sphere_bottom_height_max_m": 5.894481957084696e-07,
+              "sphere_bottom_height_mean_m": 3.272717489701763e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RR_foot": {
+              "sphere_bottom_height_min_m": -6.112687226181301e-08,
+              "sphere_bottom_height_max_m": 4.6941321611357334e-07,
+              "sphere_bottom_height_mean_m": 1.7581043475308571e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RL_foot": {
+              "sphere_bottom_height_min_m": -1.2179961939376427e-07,
+              "sphere_bottom_height_max_m": 2.9312588825311514e-07,
+              "sphere_bottom_height_mean_m": 7.955432310262492e-08,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            }
+          },
+          "foot_net_force_gt1N_count_samples": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 601
+          },
+          "robot_nonfoot_net_force_gt5N_any_fraction": 0.0,
+          "robot_nonfoot_net_force_gt5N_longest": null,
+          "any_foot_above3cm_and_robot_nonfoot_net_gt5N_fraction": 0.0,
+          "nonfoot_ground_pairs": null
+        },
+        "post20": {
+          "samples": 1,
+          "first_sample_s": 20.0,
+          "last_sample_s": 20.0,
+          "feet": {
+            "FR_foot": {
+              "sphere_bottom_height_min_m": 3.3864858261720143e-07,
+              "sphere_bottom_height_max_m": 3.3864858261720143e-07,
+              "sphere_bottom_height_mean_m": 3.3864858261720143e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "FL_foot": {
+              "sphere_bottom_height_min_m": 5.101622106394588e-07,
+              "sphere_bottom_height_max_m": 5.101622106394588e-07,
+              "sphere_bottom_height_mean_m": 5.101622106394588e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RR_foot": {
+              "sphere_bottom_height_min_m": 1.6516666380070322e-07,
+              "sphere_bottom_height_max_m": 1.6516666380070322e-07,
+              "sphere_bottom_height_mean_m": 1.6516666380070322e-07,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            },
+            "RL_foot": {
+              "sphere_bottom_height_min_m": 6.50631048308703e-08,
+              "sphere_bottom_height_max_m": 6.50631048308703e-08,
+              "sphere_bottom_height_mean_m": 6.50631048308703e-08,
+              "above3cm_fraction": 0.0,
+              "longest_above3cm": null,
+              "above3cm_and_net_force_le1N_fraction": 0.0,
+              "longest_above3cm_and_net_force_le1N": null,
+              "above3cm_and_net_force_gt1N_fraction": 0.0,
+              "net_force_gt1N_fraction": 1.0
+            }
+          },
+          "foot_net_force_gt1N_count_samples": {
+            "0": 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 1
+          },
+          "robot_nonfoot_net_force_gt5N_any_fraction": 0.0,
+          "robot_nonfoot_net_force_gt5N_longest": null,
+          "any_foot_above3cm_and_robot_nonfoot_net_gt5N_fraction": 0.0,
+          "nonfoot_ground_pairs": null
+        }
+      },
+      "hip_height": {
+        "all_aligned": {
+          "samples": 1000,
+          "first_sample_s": 0.02,
+          "last_sample_s": 20.0,
+          "base_world_z_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27376341819763184,
+            "median": 0.2753833532333374,
+            "mean": 0.27672314643859863,
+            "p95": 0.28259995579719543,
+            "max": 0.31587275862693787
+          },
+          "feet": {
+            "FR_foot": {
+              "thigh_link": "FR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2791507453724696,
+                "p05": 0.2791947021342398,
+                "median": 0.280343897968075,
+                "mean": 0.2814071723185025,
+                "p95": 0.2864639411155501,
+                "max": 0.3157849408310574
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999108246169926,
+                "p05": 0.028000051014781722,
+                "median": 0.02800025216319485,
+                "mean": 0.028000232279457454,
+                "p95": 0.028000421171002307,
+                "max": 0.02800056288213401
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -8.917538300741434e-07,
+                "p05": 5.1014781721203665e-08,
+                "median": 2.5216319484919203e-07,
+                "mean": 2.3227945745551982e-07,
+                "p95": 4.21171002306514e-07,
+                "max": 5.628821340107615e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.28778493856999166,
+                "p05": -0.25846379851079826,
+                "median": -0.2523435704471878,
+                "mean": -0.253406940039045,
+                "p95": -0.2511943233891868,
+                "max": -0.251150406723887
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.3157849385699917,
+                "p05": -0.28646379851079823,
+                "median": -0.2803435704471878,
+                "mean": -0.28140694003904504,
+                "p95": -0.27919432338918676,
+                "max": -0.27915040672388697
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "FL_foot": {
+              "thigh_link": "FL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2810402795584325,
+                "p05": 0.28105321549693363,
+                "median": 0.28173035273317204,
+                "mean": 0.28267852380726527,
+                "p95": 0.2867255970351946,
+                "max": 0.3157846513430051
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02799914487791591,
+                "p05": 0.028000069602836047,
+                "median": 0.028000303526509326,
+                "mean": 0.028000286130062307,
+                "p95": 0.02800048993234717,
+                "max": 0.028000732363005376
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -8.551220840903595e-07,
+                "p05": 6.960283604820484e-08,
+                "median": 3.035265093258299e-07,
+                "mean": 2.8613006230643333e-07,
+                "p95": 4.899323471724282e-07,
+                "max": 7.323630053755747e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.28778450557953017,
+                "p05": -0.25872527039695653,
+                "median": -0.25372998774158123,
+                "mean": -0.25467823767720293,
+                "p95": -0.253052665683353,
+                "max": -0.25303976939622186
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.3157845055795302,
+                "p05": -0.28672527039695656,
+                "median": -0.28172998774158126,
+                "mean": -0.282678237677203,
+                "p95": -0.281052665683353,
+                "max": -0.2810397693962219
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RR_foot": {
+              "thigh_link": "RR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2667146614323417,
+                "p05": 0.26681500674908065,
+                "median": 0.2692306976112493,
+                "mean": 0.27093971384707904,
+                "p95": 0.2784478222758408,
+                "max": 0.31596144231839124
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999419855457924,
+                "p05": 0.028000019751489115,
+                "median": 0.028000167347066854,
+                "mean": 0.028000161542238607,
+                "p95": 0.02800030239965225,
+                "max": 0.028000469413216114
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -5.801445420762497e-07,
+                "p05": 1.975148911440018e-08,
+                "median": 1.673470668532573e-07,
+                "mean": 1.6154223860834205e-07,
+                "p95": 3.0239965224873595e-07,
+                "max": 4.6941321611357334e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2879619640035156,
+                "p05": -0.2504478156302555,
+                "median": -0.24123052108263038,
+                "mean": -0.24293955230484043,
+                "p95": -0.2388148419673197,
+                "max": -0.23871449626567787
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.31596196400351556,
+                "p05": -0.2784478156302555,
+                "median": -0.26923052108263035,
+                "mean": -0.2709395523048404,
+                "p95": -0.26681484196731964,
+                "max": -0.2667144962656779
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RL_foot": {
+              "thigh_link": "RL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.26789638675156535,
+                "p05": 0.26798725843712307,
+                "median": 0.27022712787922715,
+                "mean": 0.27186659245161526,
+                "p95": 0.27876679084116823,
+                "max": 0.31596274048487744
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999520314550025,
+                "p05": 0.0279999673309957,
+                "median": 0.028000114182136757,
+                "mean": 0.02800012109315617,
+                "p95": 0.028000289806374444,
+                "max": 0.02800069707829439
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -4.796854499757031e-07,
+                "p05": -3.266900429899078e-08,
+                "median": 1.1418213675604139e-07,
+                "mean": 1.2109315617075956e-07,
+                "p95": 2.8980637444414575e-07,
+                "max": 6.970782943892251e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2879630089496271,
+                "p05": -0.2507666350608696,
+                "median": -0.24222696570903735,
+                "mean": -0.24386647135845907,
+                "p95": -0.23998728066195027,
+                "max": -0.23989632168846053
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.31596300894962714,
+                "p05": -0.2787666350608696,
+                "median": -0.27022696570903737,
+                "mean": -0.2718664713584591,
+                "p95": -0.2679872806619502,
+                "max": -0.2678963216884605
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            }
+          }
+        },
+        "post2": {
+          "samples": 901,
+          "first_sample_s": 2.0,
+          "last_sample_s": 20.0,
+          "base_world_z_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27375662326812744,
+            "median": 0.2750604450702667,
+            "mean": 0.2757687568664551,
+            "p95": 0.27993154525756836,
+            "max": 0.2810554504394531
+          },
+          "feet": {
+            "FR_foot": {
+              "thigh_link": "FR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2791507453724696,
+                "p05": 0.27919001588939535,
+                "median": 0.2801146963229149,
+                "mean": 0.2806628736861019,
+                "p95": 0.2839241881716483,
+                "max": 0.2849617833876896
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999965782080416,
+                "p05": 0.028000085309014155,
+                "median": 0.028000256984664365,
+                "mean": 0.02800025546240056,
+                "p95": 0.028000428028132962,
+                "max": 0.028000561607979424
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -3.421791958460596e-08,
+                "p05": 8.53090141549051e-08,
+                "median": 2.5698466436449574e-07,
+                "mean": 2.5546240056050723e-07,
+                "p95": 4.2802813296147213e-07,
+                "max": 5.616079794233675e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2569615858170565,
+                "p05": -0.25592398155613466,
+                "median": -0.2521144600067538,
+                "mean": -0.25266261822370134,
+                "p95": -0.25118984745574024,
+                "max": -0.251150406723887
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.28496158581705655,
+                "p05": -0.28392398155613463,
+                "median": -0.28011446000675383,
+                "mean": -0.28066261822370125,
+                "p95": -0.2791898474557402,
+                "max": -0.27915040672388697
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "FL_foot": {
+              "thigh_link": "FL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2810402795584325,
+                "p05": 0.2810517646450011,
+                "median": 0.28157485004333627,
+                "mean": 0.28204571183795624,
+                "p95": 0.284566089144923,
+                "max": 0.2854367269952213
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.028000008723927855,
+                "p05": 0.028000117720388018,
+                "median": 0.02800030202375718,
+                "mean": 0.028000300356833156,
+                "p95": 0.02800048359828307,
+                "max": 0.02800058944819571
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 8.723927854420443e-09,
+                "p05": 1.1772038801746709e-07,
+                "median": 3.020237571808859e-07,
+                "mean": 3.003568331542787e-07,
+                "p95": 4.835982830679597e-07,
+                "max": 5.894481957084696e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2574363714528143,
+                "p05": -0.2565658974490207,
+                "median": -0.2535745092119404,
+                "mean": -0.25404541148112303,
+                "p95": -0.2530514915714259,
+                "max": -0.25303976939622186
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2854363714528143,
+                "p05": -0.28456589744902067,
+                "median": -0.28157450921194044,
+                "mean": -0.282045411481123,
+                "p95": -0.28105149157142595,
+                "max": -0.2810397693962219
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RR_foot": {
+              "thigh_link": "RR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2667146614323417,
+                "p05": 0.26680400957938016,
+                "median": 0.2687669606066865,
+                "mean": 0.26968464364287736,
+                "p95": 0.2752938806723357,
+                "max": 0.27665764887060135
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02799986685939701,
+                "p05": 0.02800003560862277,
+                "median": 0.028000175515703385,
+                "mean": 0.028000171846093897,
+                "p95": 0.02800030470110368,
+                "max": 0.028000469413216114
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -1.3314060299043917e-07,
+                "p05": 3.56086227691621e-08,
+                "median": 1.7551570338433797e-07,
+                "mean": 1.7184609389597436e-07,
+                "p95": 3.047011036781677e-07,
+                "max": 4.6941321611357334e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.24865757108639894,
+                "p05": -0.24729377303022554,
+                "median": -0.2407667750537098,
+                "mean": -0.2416844717967835,
+                "p95": -0.23880382479847373,
+                "max": -0.23871449626567787
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.27665757108639893,
+                "p05": -0.27529377303022556,
+                "median": -0.26876677505370977,
+                "mean": -0.26968447179678345,
+                "p95": -0.26680382479847375,
+                "max": -0.2667144962656779
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RL_foot": {
+              "thigh_link": "RL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.26789638675156535,
+                "p05": 0.26797718151847133,
+                "median": 0.26978356049767044,
+                "mean": 0.2706806643683057,
+                "p95": 0.27594503784559343,
+                "max": 0.27716940344205554
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999878200380607,
+                "p05": 0.027999967790157954,
+                "median": 0.02800010719918855,
+                "mean": 0.02800011077046697,
+                "p95": 0.028000268381321886,
+                "max": 0.0280003914162906
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -1.2179961939376427e-07,
+                "p05": -3.220984204702071e-08,
+                "median": 1.07199188550261e-07,
+                "mean": 1.1077046697254244e-07,
+                "p95": 2.683813218849751e-07,
+                "max": 3.914162905981067e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.24916921957643523,
+                "p05": -0.24794489861407829,
+                "median": -0.2417834664375611,
+                "mean": -0.24268055359783866,
+                "p95": -0.23997726978578354,
+                "max": -0.23989632168846053
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2771692195764352,
+                "p05": -0.2759448986140783,
+                "median": -0.2697834664375611,
+                "mean": -0.27068055359783866,
+                "p95": -0.2679772697857835,
+                "max": -0.2678963216884605
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            }
+          }
+        },
+        "post8": {
+          "samples": 601,
+          "first_sample_s": 8.0,
+          "last_sample_s": 20.0,
+          "base_world_z_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.2737371325492859,
+            "median": 0.2743555009365082,
+            "mean": 0.2745496928691864,
+            "p95": 0.2759312391281128,
+            "max": 0.27620354294776917
+          },
+          "feet": {
+            "FR_foot": {
+              "thigh_link": "FR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2791507453724696,
+                "p05": 0.2791761617247515,
+                "median": 0.27961705008904025,
+                "mean": 0.27975037134293396,
+                "p95": 0.28071731458118543,
+                "max": 0.2809103198184146
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02800007847834793,
+                "p05": 0.028000153924765167,
+                "median": 0.02800029549468161,
+                "mean": 0.028000298673496266,
+                "p95": 0.028000448110107476,
+                "max": 0.028000561607979424
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 7.847834792781838e-08,
+                "p05": 1.5392476516648546e-07,
+                "median": 2.954946816090265e-07,
+                "mean": 2.986734962648574e-07,
+                "p95": 4.4811010747533575e-07,
+                "max": 5.616079794233675e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2529101251265532,
+                "p05": -0.25271714736940726,
+                "median": -0.2516168017278561,
+                "mean": -0.25175007266943766,
+                "p95": -0.2511758872368827,
+                "max": -0.251150406723887
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.28091012512655317,
+                "p05": -0.2807171473694073,
+                "median": -0.2796168017278561,
+                "mean": -0.2797500726694377,
+                "p95": -0.27917588723688275,
+                "max": -0.27915040672388697
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "FL_foot": {
+              "thigh_link": "FL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2810402795584325,
+                "p05": 0.28104780358611564,
+                "median": 0.28126717129950746,
+                "mean": 0.2813681111699161,
+                "p95": 0.2820010939839536,
+                "max": 0.2821475601842854
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.028000064567608465,
+                "p05": 0.028000161499038972,
+                "median": 0.02800033066117212,
+                "mean": 0.028000327271748972,
+                "p95": 0.028000491731899363,
+                "max": 0.02800058944819571
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 6.456760846471066e-08,
+                "p05": 1.614990389718629e-07,
+                "median": 3.306611721203001e-07,
+                "mean": 3.272717489701763e-07,
+                "p95": 4.917318993623299e-07,
+                "max": 5.894481957084696e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.2541473621237898,
+                "p05": -0.25400090865345987,
+                "median": -0.2532668281728868,
+                "mean": -0.2533677838981672,
+                "p95": -0.2530474729249435,
+                "max": -0.25303976939622186
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2821473621237898,
+                "p05": -0.2820009086534599,
+                "median": -0.28126682817288684,
+                "mean": -0.2813677838981672,
+                "p95": -0.28104747292494353,
+                "max": -0.2810397693962219
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RR_foot": {
+              "thigh_link": "RR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2667146614323417,
+                "p05": 0.2667723220516455,
+                "median": 0.26772310446922265,
+                "mean": 0.26799768586337214,
+                "p95": 0.2700108551537491,
+                "max": 0.2703881381604614
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02799993887312774,
+                "p05": 0.028000042510236134,
+                "median": 0.028000174866018385,
+                "mean": 0.028000175810434756,
+                "p95": 0.028000308840888666,
+                "max": 0.028000469413216114
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -6.112687226181301e-08,
+                "p05": 4.251023613330296e-08,
+                "median": 1.7486601838409555e-07,
+                "mean": 1.7581043475308571e-07,
+                "p95": 3.0884088866520165e-07,
+                "max": 4.6941321611357334e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.24238810916299353,
+                "p05": -0.24201055385938167,
+                "median": -0.23972298893188398,
+                "mean": -0.23999751005293737,
+                "p95": -0.23877219942976663,
+                "max": -0.23871449626567787
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.27038810916299355,
+                "p05": -0.27001055385938166,
+                "median": -0.26772298893188395,
+                "mean": -0.26799751005293737,
+                "p95": -0.26677219942976665,
+                "max": -0.2667144962656779
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RL_foot": {
+              "thigh_link": "RL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.26789638675156535,
+                "p05": 0.2679487580964974,
+                "median": 0.26881228472060026,
+                "mean": 0.26908029717505944,
+                "p95": 0.2709949128842453,
+                "max": 0.27136749479661315
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.027999878200380607,
+                "p05": 0.02799995731771468,
+                "median": 0.02800007967266918,
+                "mean": 0.028000079554323102,
+                "p95": 0.028000205465046363,
+                "max": 0.028000293125888254
+              },
+              "sphere_bottom_world_z_m": {
+                "min": -1.2179961939376427e-07,
+                "p05": -4.268228532069984e-08,
+                "median": 7.967266918082472e-08,
+                "mean": 7.955432310262492e-08,
+                "p95": 2.0546504636217988e-07,
+                "max": 2.9312588825311514e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.24336730909968762,
+                "p05": -0.24299486815341576,
+                "median": -0.24081227164963798,
+                "mean": -0.24108021762073636,
+                "p95": -0.2399487694831386,
+                "max": -0.23989632168846053
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.27136730909968765,
+                "p05": -0.2709948681534157,
+                "median": -0.268812271649638,
+                "mean": -0.26908021762073636,
+                "p95": -0.26794876948313856,
+                "max": -0.2678963216884605
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            }
+          }
+        },
+        "post20": {
+          "samples": 1,
+          "first_sample_s": 20.0,
+          "last_sample_s": 20.0,
+          "base_world_z_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27370142936706543,
+            "median": 0.27370142936706543,
+            "mean": 0.27370142936706543,
+            "p95": 0.27370142936706543,
+            "max": 0.27370142936706543
+          },
+          "feet": {
+            "FR_foot": {
+              "thigh_link": "FR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2791507453724696,
+                "p05": 0.2791507453724696,
+                "median": 0.2791507453724696,
+                "mean": 0.2791507453724696,
+                "p95": 0.2791507453724696,
+                "max": 0.2791507453724696
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.028000338648582618,
+                "p05": 0.028000338648582618,
+                "median": 0.028000338648582618,
+                "mean": 0.028000338648582618,
+                "p95": 0.028000338648582618,
+                "max": 0.028000338648582618
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 3.3864858261720143e-07,
+                "p05": 3.3864858261720143e-07,
+                "median": 3.3864858261720143e-07,
+                "mean": 3.3864858261720143e-07,
+                "p95": 3.3864858261720143e-07,
+                "max": 3.3864858261720143e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.251150406723887,
+                "p05": -0.251150406723887,
+                "median": -0.251150406723887,
+                "mean": -0.251150406723887,
+                "p95": -0.251150406723887,
+                "max": -0.251150406723887
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.27915040672388697,
+                "p05": -0.27915040672388697,
+                "median": -0.27915040672388697,
+                "mean": -0.27915040672388697,
+                "p95": -0.27915040672388697,
+                "max": -0.27915040672388697
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "FL_foot": {
+              "thigh_link": "FL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2810402795584325,
+                "p05": 0.2810402795584325,
+                "median": 0.2810402795584325,
+                "mean": 0.2810402795584325,
+                "p95": 0.2810402795584325,
+                "max": 0.2810402795584325
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02800051016221064,
+                "p05": 0.02800051016221064,
+                "median": 0.02800051016221064,
+                "mean": 0.02800051016221064,
+                "p95": 0.02800051016221064,
+                "max": 0.02800051016221064
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 5.101622106394588e-07,
+                "p05": 5.101622106394588e-07,
+                "median": 5.101622106394588e-07,
+                "mean": 5.101622106394588e-07,
+                "p95": 5.101622106394588e-07,
+                "max": 5.101622106394588e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.25303976939622186,
+                "p05": -0.25303976939622186,
+                "median": -0.25303976939622186,
+                "mean": -0.25303976939622186,
+                "p95": -0.25303976939622186,
+                "max": -0.25303976939622186
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2810397693962219,
+                "p05": -0.2810397693962219,
+                "median": -0.2810397693962219,
+                "mean": -0.2810397693962219,
+                "p95": -0.2810397693962219,
+                "max": -0.2810397693962219
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RR_foot": {
+              "thigh_link": "RR_thigh",
+              "thigh_world_z_m": {
+                "min": 0.2667146614323417,
+                "p05": 0.2667146614323417,
+                "median": 0.2667146614323417,
+                "mean": 0.2667146614323417,
+                "p95": 0.2667146614323417,
+                "max": 0.2667146614323417
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.0280001651666638,
+                "p05": 0.0280001651666638,
+                "median": 0.0280001651666638,
+                "mean": 0.0280001651666638,
+                "p95": 0.0280001651666638,
+                "max": 0.0280001651666638
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 1.6516666380070322e-07,
+                "p05": 1.6516666380070322e-07,
+                "median": 1.6516666380070322e-07,
+                "mean": 1.6516666380070322e-07,
+                "p95": 1.6516666380070322e-07,
+                "max": 1.6516666380070322e-07
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.23871449626567787,
+                "p05": -0.23871449626567787,
+                "median": -0.23871449626567787,
+                "mean": -0.23871449626567787,
+                "p95": -0.23871449626567787,
+                "max": -0.23871449626567787
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2667144962656779,
+                "p05": -0.2667144962656779,
+                "median": -0.2667144962656779,
+                "mean": -0.2667144962656779,
+                "p95": -0.2667144962656779,
+                "max": -0.2667144962656779
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            },
+            "RL_foot": {
+              "thigh_link": "RL_thigh",
+              "thigh_world_z_m": {
+                "min": 0.26789638675156535,
+                "p05": 0.26789638675156535,
+                "median": 0.26789638675156535,
+                "mean": 0.26789638675156535,
+                "p95": 0.26789638675156535,
+                "max": 0.26789638675156535
+              },
+              "sphere_center_world_z_m": {
+                "min": 0.02800006506310483,
+                "p05": 0.02800006506310483,
+                "median": 0.02800006506310483,
+                "mean": 0.02800006506310483,
+                "p95": 0.02800006506310483,
+                "max": 0.02800006506310483
+              },
+              "sphere_bottom_world_z_m": {
+                "min": 6.50631048308703e-08,
+                "p05": 6.50631048308703e-08,
+                "median": 6.50631048308703e-08,
+                "mean": 6.50631048308703e-08,
+                "p95": 6.50631048308703e-08,
+                "max": 6.50631048308703e-08
+              },
+              "sphere_center_minus_thigh_world_z_m": {
+                "min": -0.23989632168846053,
+                "p05": -0.23989632168846053,
+                "median": -0.23989632168846053,
+                "mean": -0.23989632168846053,
+                "p95": -0.23989632168846053,
+                "max": -0.23989632168846053
+              },
+              "sphere_bottom_minus_thigh_world_z_m": {
+                "min": -0.2678963216884605,
+                "p05": -0.2678963216884605,
+                "median": -0.2678963216884605,
+                "mean": -0.2678963216884605,
+                "p95": -0.2678963216884605,
+                "max": -0.2678963216884605
+              },
+              "center_above_thigh_fraction": 0.0,
+              "bottom_above_thigh_fraction": 0.0,
+              "longest_center_above_thigh": null,
+              "longest_bottom_above_thigh": null
+            }
+          }
+        }
+      },
+      "movement": {
+        "all_aligned": {
+          "samples": 1000,
+          "first_sample_s": 0.02,
+          "last_sample_s": 20.0,
+          "base_height_above_ground_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27376341819763184,
+            "median": 0.2753833532333374,
+            "mean": 0.27672314643859863,
+            "p95": 0.28259995579719543,
+            "max": 0.31587275862693787
+          },
+          "base_tilt_from_world_up_rad": {
+            "min": 0.0001935518685080926,
+            "p05": 0.018847811799953096,
+            "median": 0.02675688856225824,
+            "mean": 0.02541950718965212,
+            "p95": 0.0301597780449599,
+            "max": 0.030322770576160923
+          },
+          "base_up_z": {
+            "min": 0.99954030001729,
+            "p05": 0.9995452283674697,
+            "median": 0.9996420557885735,
+            "mean": 0.9996660715033693,
+            "p95": 0.9998223852504529,
+            "max": 0.9999999812688372
+          },
+          "feet": {
+            "FR_foot": {
+              "xy_path_length_m": 0.009785829434994871,
+              "xy_max_displacement_from_window_start_m": 0.009770615393354344,
+              "xy_endpoint_displacement_m": 0.009770615393354344,
+              "xy_min_m": [
+                0.1959069448250256,
+                -0.16569461159228793
+              ],
+              "xy_max_m": [
+                0.2056731939616557,
+                -0.16540247655265372
+              ]
+            },
+            "FL_foot": {
+              "xy_path_length_m": 0.009550764343487821,
+              "xy_max_displacement_from_window_start_m": 0.009531853381425913,
+              "xy_endpoint_displacement_m": 0.009531853381425913,
+              "xy_min_m": [
+                0.1961451513216321,
+                0.165105733148229
+              ],
+              "xy_max_m": [
+                0.2056723576802989,
+                0.16540333671739357
+              ]
+            },
+            "RR_foot": {
+              "xy_path_length_m": 0.010982291806342321,
+              "xy_max_displacement_from_window_start_m": 0.010976333686914412,
+              "xy_endpoint_displacement_m": 0.010976333686914412,
+              "xy_min_m": [
+                -0.22908891565419426,
+                -0.1656103028914127
+              ],
+              "xy_max_m": [
+                -0.2181145909049572,
+                -0.16540022412657351
+              ]
+            },
+            "RL_foot": {
+              "xy_path_length_m": 0.010814438502051429,
+              "xy_max_displacement_from_window_start_m": 0.01080775448951506,
+              "xy_endpoint_displacement_m": 0.01080775448951506,
+              "xy_min_m": [
+                -0.228919245216699,
+                0.16519166427513096
+              ],
+              "xy_max_m": [
+                -0.21811352688728722,
+                0.16540144628352751
+              ]
+            }
+          }
+        },
+        "post2": {
+          "samples": 901,
+          "first_sample_s": 2.0,
+          "last_sample_s": 20.0,
+          "base_height_above_ground_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27375662326812744,
+            "median": 0.2750604450702667,
+            "mean": 0.2757687568664551,
+            "p95": 0.27993154525756836,
+            "max": 0.2810554504394531
+          },
+          "base_tilt_from_world_up_rad": {
+            "min": 0.019552000839092105,
+            "p05": 0.02035644861811077,
+            "median": 0.02738347975257881,
+            "mean": 0.026436264650208714,
+            "p95": 0.030177827330229105,
+            "max": 0.030322770576160923
+          },
+          "base_up_z": {
+            "min": 0.99954030001729,
+            "p05": 0.9995446839251306,
+            "median": 0.9996250959461705,
+            "mean": 0.999645279892915,
+            "p95": 0.999792814654519,
+            "max": 0.9998088657206232
+          },
+          "feet": {
+            "FR_foot": {
+              "xy_path_length_m": 0.0020384033896268666,
+              "xy_max_displacement_from_window_start_m": 0.0020331500813790667,
+              "xy_endpoint_displacement_m": 0.0020331500813790667,
+              "xy_min_m": [
+                0.1959069448250256,
+                -0.16569461159228793
+              ],
+              "xy_max_m": [
+                0.19792755956519886,
+                -0.16546912071971664
+              ]
+            },
+            "FL_foot": {
+              "xy_path_length_m": 0.001842743309849402,
+              "xy_max_displacement_from_window_start_m": 0.0018357508625127768,
+              "xy_endpoint_displacement_m": 0.0018357508625127768,
+              "xy_min_m": [
+                0.1961451513216321,
+                0.165105733148229
+              ],
+              "xy_max_m": [
+                0.19796631466747386,
+                0.16533669915650478
+              ]
+            },
+            "RR_foot": {
+              "xy_path_length_m": 0.002468000395988525,
+              "xy_max_displacement_from_window_start_m": 0.0024651318328563977,
+              "xy_endpoint_displacement_m": 0.0024651318328563977,
+              "xy_min_m": [
+                -0.22908891565419426,
+                -0.1656103028914127
+              ],
+              "xy_max_m": [
+                -0.22662729927252254,
+                -0.16547861369145314
+              ]
+            },
+            "RL_foot": {
+              "xy_path_length_m": 0.0023365238904937947,
+              "xy_max_displacement_from_window_start_m": 0.0023333321835477022,
+              "xy_endpoint_displacement_m": 0.0023333321835477022,
+              "xy_min_m": [
+                -0.228919245216699,
+                0.16519166427513096
+              ],
+              "xy_max_m": [
+                -0.22658977269649574,
+                0.16532581663775392
+              ]
+            }
+          }
+        },
+        "post8": {
+          "samples": 601,
+          "first_sample_s": 8.0,
+          "last_sample_s": 20.0,
+          "base_height_above_ground_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.2737371325492859,
+            "median": 0.2743555009365082,
+            "mean": 0.2745496928691864,
+            "p95": 0.2759312391281128,
+            "max": 0.27620354294776917
+          },
+          "base_tilt_from_world_up_rad": {
+            "min": 0.025178713287183924,
+            "p05": 0.025671466580383776,
+            "median": 0.028835562233358078,
+            "mean": 0.02846780729261812,
+            "p95": 0.030229038382235993,
+            "max": 0.030322770576160923
+          },
+          "base_up_z": {
+            "min": 0.99954030001729,
+            "p05": 0.999543137410719,
+            "median": 0.9995842839818379,
+            "mean": 0.9995937531152059,
+            "p95": 0.9996705059977791,
+            "max": 0.9996830329447021
+          },
+          "feet": {
+            "FR_foot": {
+              "xy_path_length_m": 0.0007274707713342568,
+              "xy_max_displacement_from_window_start_m": 0.0007235764086583287,
+              "xy_endpoint_displacement_m": 0.0007235764086583287,
+              "xy_min_m": [
+                0.1959069448250256,
+                -0.16569461159228793
+              ],
+              "xy_max_m": [
+                0.19662259859166126,
+                -0.16558776075304815
+              ]
+            },
+            "FL_foot": {
+              "xy_path_length_m": 0.0006299958903358829,
+              "xy_max_displacement_from_window_start_m": 0.0006244952836871518,
+              "xy_endpoint_displacement_m": 0.0006244952836871518,
+              "xy_min_m": [
+                0.1961451513216321,
+                0.165105733148229
+              ],
+              "xy_max_m": [
+                0.1967602548431891,
+                0.165213631327619
+              ]
+            },
+            "RR_foot": {
+              "xy_path_length_m": 0.0009253348923690736,
+              "xy_max_displacement_from_window_start_m": 0.0009228041389982958,
+              "xy_endpoint_displacement_m": 0.0009228041389982958,
+              "xy_min_m": [
+                -0.22908891565419426,
+                -0.1656103028914127
+              ],
+              "xy_max_m": [
+                -0.2281673946053651,
+                -0.16556157216285297
+              ]
+            },
+            "RL_foot": {
+              "xy_path_length_m": 0.0008636579221269904,
+              "xy_max_displacement_from_window_start_m": 0.0008608225845088014,
+              "xy_endpoint_displacement_m": 0.0008608225845088014,
+              "xy_min_m": [
+                -0.228919245216699,
+                0.16519166427513096
+              ],
+              "xy_max_m": [
+                -0.22805983378223318,
+                0.16524093402558496
+              ]
+            }
+          }
+        },
+        "post20": {
+          "samples": 1,
+          "first_sample_s": 20.0,
+          "last_sample_s": 20.0,
+          "base_height_above_ground_m": {
+            "min": 0.27370142936706543,
+            "p05": 0.27370142936706543,
+            "median": 0.27370142936706543,
+            "mean": 0.27370142936706543,
+            "p95": 0.27370142936706543,
+            "max": 0.27370142936706543
+          },
+          "base_tilt_from_world_up_rad": {
+            "min": 0.030322770576160923,
+            "p05": 0.030322770576160923,
+            "median": 0.030322770576160923,
+            "mean": 0.030322770576160923,
+            "p95": 0.030322770576160923,
+            "max": 0.030322770576160923
+          },
+          "base_up_z": {
+            "min": 0.99954030001729,
+            "p05": 0.99954030001729,
+            "median": 0.99954030001729,
+            "mean": 0.99954030001729,
+            "p95": 0.99954030001729,
+            "max": 0.99954030001729
+          },
+          "feet": {
+            "FR_foot": {
+              "xy_path_length_m": 0.0,
+              "xy_max_displacement_from_window_start_m": 0.0,
+              "xy_endpoint_displacement_m": 0.0,
+              "xy_min_m": [
+                0.1959069448250256,
+                -0.1656945432678485
+              ],
+              "xy_max_m": [
+                0.1959069448250256,
+                -0.1656945432678485
+              ]
+            },
+            "FL_foot": {
+              "xy_path_length_m": 0.0,
+              "xy_max_displacement_from_window_start_m": 0.0,
+              "xy_endpoint_displacement_m": 0.0,
+              "xy_min_m": [
+                0.1961451513216321,
+                0.165105733148229
+              ],
+              "xy_max_m": [
+                0.1961451513216321,
+                0.165105733148229
+              ]
+            },
+            "RR_foot": {
+              "xy_path_length_m": 0.0,
+              "xy_max_displacement_from_window_start_m": 0.0,
+              "xy_endpoint_displacement_m": 0.0,
+              "xy_min_m": [
+                -0.22908891565419426,
+                -0.16561021818547733
+              ],
+              "xy_max_m": [
+                -0.22908891565419426,
+                -0.16561021818547733
+              ]
+            },
+            "RL_foot": {
+              "xy_path_length_m": 0.0,
+              "xy_max_displacement_from_window_start_m": 0.0,
+              "xy_endpoint_displacement_m": 0.0,
+              "xy_min_m": [
+                -0.228919245216699,
+                0.16519166427513096
+              ],
+              "xy_max_m": [
+                -0.228919245216699,
+                0.16519166427513096
+              ]
+            }
+          }
+        }
+      },
+      "whole_trace_nonfoot_force_longest": null
+    }
+  ],
+  "time_alignment": "Every saved post-state is used, including the last. MuJoCo q alone backs up physics_dt*qvel to match saved implicitfast body poses and contacts; PhysX uses direct post q.",
+  "window_scope": "post2/post8/post20 include samples at or after the stated second. Missing windows are null; a single endpoint sample is not a sustained hold.",
+  "geometry_scope": "Foot sphere bottom world Z is reported relative to saved ground; thigh differences use same-side world link origins. XY motion is sphere-center displacement, not contact-point slip or a footstep label.",
+  "contact_scope": "50Hz net-force magnitudes, not vertical loading or contact pairs. world and empty names are excluded from robot nonfoot force statistics; saved nonfoot ground-pair counts are separate.",
+  "threshold_scope": "Existing 3cm clearance, net foot force 1N, robot nonfoot force 5N and zero thigh-height difference are descriptions, not new acceptance thresholds. FK tolerance 1e-4 validates saved-state alignment only.",
+  "evidence_limit": "CPU saved-state FK on a provisional model; no new simulation, hardware validity, world-fixed EE-only success or proof of gait/support success."
+}
