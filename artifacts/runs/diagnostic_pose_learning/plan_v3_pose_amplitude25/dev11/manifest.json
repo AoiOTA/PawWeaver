@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_stand",
+      "path": "../train/neutral_stand.npz",
+      "sha256": "a3b3a016097079b34765c3d24a3d9b530c3801cc68f7073e06e79741a2f4fcc8"
+    },
+    {
+      "case_id": "neutral_forward",
+      "path": "../train/neutral_forward.npz",
+      "sha256": "2e336090d05e5fb575522c77e2935d5949de165f9f86e5a8a3cda446afcccf33"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "../train/neutral_backward.npz",
+      "sha256": "8bd9014b29fb4eb47ee53a32c008c23406e3fc1cbf07f82ff9516b00b44b8068"
+    },
+    {
+      "case_id": "neutral_left",
+      "path": "../train/neutral_left.npz",
+      "sha256": "41a48cb9ef454b0f892e543c51da7a0c233c32790d0e96e9ee3ea9a6fb0559b3"
+    },
+    {
+      "case_id": "neutral_right",
+      "path": "../train/neutral_right.npz",
+      "sha256": "a12abb79191646b58944b831936d80838a09447e761e97f7a3bd11b680789989"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "path": "../train/neutral_yaw.npz",
+      "sha256": "a473474c0ae92a1545547182461f4aed59b68dd0abd9b21ccb0fec358183d051"
+    },
+    {
+      "case_id": "neutral_arc",
+      "path": "../train/neutral_arc.npz",
+      "sha256": "5be4552216bf36b978de67007466b1c000d90b6b49975e66288e9eccf01a63ec"
+    },
+    {
+      "case_id": "low_stand",
+      "path": "../train/low_stand.npz",
+      "sha256": "e1500a2bbde85721efa77c48fc55b6170dcccb8c88970edb1bc9b847fe866d87"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "../train/high_stand.npz",
+      "sha256": "baa92f0d3282bd6970c5672ee317ddfd8920d52039f696a18267eb41ff3ef52a"
+    },
+    {
+      "case_id": "lateral_stand",
+      "path": "../train/lateral_stand.npz",
+      "sha256": "9737a8c413c87f3afc12c00bd8820ec0e9ef5eda19c4c858d55e17b6ceb301d0"
+    },
+    {
+      "case_id": "lateral_arc",
+      "path": "../train/lateral_arc.npz",
+      "sha256": "719cd2c1e78b9f429ccc7dcbc5277557c42444cbe5981e8fb0c430c4535b95b6"
+    }
+  ],
+  "scope": "25% train-derived course; not held-out or formal acceptance",
+  "amplitude": 0.25
+}

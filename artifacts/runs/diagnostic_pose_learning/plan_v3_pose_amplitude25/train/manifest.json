@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_stand",
+      "path": "neutral_stand.npz",
+      "sha256": "a3b3a016097079b34765c3d24a3d9b530c3801cc68f7073e06e79741a2f4fcc8"
+    },
+    {
+      "case_id": "neutral_forward",
+      "path": "neutral_forward.npz",
+      "sha256": "2e336090d05e5fb575522c77e2935d5949de165f9f86e5a8a3cda446afcccf33"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "neutral_backward.npz",
+      "sha256": "8bd9014b29fb4eb47ee53a32c008c23406e3fc1cbf07f82ff9516b00b44b8068"
+    },
+    {
+      "case_id": "neutral_left",
+      "path": "neutral_left.npz",
+      "sha256": "41a48cb9ef454b0f892e543c51da7a0c233c32790d0e96e9ee3ea9a6fb0559b3"
+    },
+    {
+      "case_id": "neutral_right",
+      "path": "neutral_right.npz",
+      "sha256": "a12abb79191646b58944b831936d80838a09447e761e97f7a3bd11b680789989"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "path": "neutral_yaw.npz",
+      "sha256": "a473474c0ae92a1545547182461f4aed59b68dd0abd9b21ccb0fec358183d051"
+    },
+    {
+      "case_id": "neutral_arc",
+      "path": "neutral_arc.npz",
+      "sha256": "5be4552216bf36b978de67007466b1c000d90b6b49975e66288e9eccf01a63ec"
+    },
+    {
+      "case_id": "low_stand",
+      "path": "low_stand.npz",
+      "sha256": "e1500a2bbde85721efa77c48fc55b6170dcccb8c88970edb1bc9b847fe866d87"
+    },
+    {
+      "case_id": "low_forward",
+      "path": "low_forward.npz",
+      "sha256": "bcd503cdc3e24755d0ff555023a9001723b038ec329181bc66325aabe73e0ec6"
+    },
+    {
+      "case_id": "low_backward",
+      "path": "low_backward.npz",
+      "sha256": "99039b8b3409c7115df06f13fafc1a2c8b6d075dbb0df209348335985f20d9ec"
+    },
+    {
+      "case_id": "low_left",
+      "path": "low_left.npz",
+      "sha256": "5fb3b9f89556cacf84b05161181a0d645828c2c14129341deb54ac73622f7079"
+    },
+    {
+      "case_id": "low_right",
+      "path": "low_right.npz",
+      "sha256": "4502cbbfb7bc4d72b9574347f12dd04feda2e57a633195acc4cefb796f35b881"
+    },
+    {
+      "case_id": "low_yaw",
+      "path": "low_yaw.npz",
+      "sha256": "6c034c40af5fcc7e4b919e239986e6c2065facf54bfb7b33989684f29f2880b9"
+    },
+    {
+      "case_id": "low_arc",
+      "path": "low_arc.npz",
+      "sha256": "b62583386eb56fae90bc60a4b1a4dfe00171d010737909d86ae68b8b9613abc7"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "high_stand.npz",
+      "sha256": "baa92f0d3282bd6970c5672ee317ddfd8920d52039f696a18267eb41ff3ef52a"
+    },
+    {
+      "case_id": "high_forward",
+      "path": "high_forward.npz",
+      "sha256": "8f09b383daf850ff117ab265480a57f56332b02fe33384cdd4a1087c8068dbcc"
+    },
+    {
+      "case_id": "high_backward",
+      "path": "high_backward.npz",
+      "sha256": "101af1856a0d26b66daa35b1fbc8bef3abc85dbfd7a6dc15c96bd0660041d9e1"
+    },
+    {
+      "case_id": "high_left",
+      "path": "high_left.npz",
+      "sha256": "04bd3dd9e5688fb6a191502f25af8e8f204ac421b391d08520e318d352fadff1"
+    },
+    {
+      "case_id": "high_right",
+      "path": "high_right.npz",
+      "sha256": "069aadd206b305a77a238d52cd2cff70d41fb108e25ab179bdcc16e58a9c793b"
+    },
+    {
+      "case_id": "high_yaw",
+      "path": "high_yaw.npz",
+      "sha256": "042e7d90b623e3d3c3c7b1daffac818e86d5d8d5ada9e967543097fb17f4905b"
+    },
+    {
+      "case_id": "high_arc",
+      "path": "high_arc.npz",
+      "sha256": "f6516bca891cec081e18b614be4dd917c0d02d1bf1aa97bb1827c095f9a7dcbd"
+    },
+    {
+      "case_id": "lateral_stand",
+      "path": "lateral_stand.npz",
+      "sha256": "9737a8c413c87f3afc12c00bd8820ec0e9ef5eda19c4c858d55e17b6ceb301d0"
+    },
+    {
+      "case_id": "lateral_forward",
+      "path": "lateral_forward.npz",
+      "sha256": "66d56627d289194998cdd110661e8d133dc359d23cc6f3deb02ec61f59747474"
+    },
+    {
+      "case_id": "lateral_backward",
+      "path": "lateral_backward.npz",
+      "sha256": "a0968bf106b57e1d940f4e777565126bef9e3b6c9a26a3c2ccfa08ca27427a6e"
+    },
+    {
+      "case_id": "lateral_left",
+      "path": "lateral_left.npz",
+      "sha256": "ec3216530f3e97cf340d7d7e59eb1831ef9f853e5e3889c14e9b55102b54231b"
+    },
+    {
+      "case_id": "lateral_right",
+      "path": "lateral_right.npz",
+      "sha256": "8c9b58ab9520e81993cefb0bf4418ea4d90959659fd9cd04685a8c6c65559359"
+    },
+    {
+      "case_id": "lateral_yaw",
+      "path": "lateral_yaw.npz",
+      "sha256": "d600d46b67f2f0504917d9be26c9c4ed68f7fdf6de0416591f7212a3ec848b51"
+    },
+    {
+      "case_id": "lateral_arc",
+      "path": "lateral_arc.npz",
+      "sha256": "719cd2c1e78b9f429ccc7dcbc5277557c42444cbe5981e8fb0c430c4535b95b6"
+    }
+  ],
+  "scope": "25% train-derived course; not held-out or formal acceptance",
+  "amplitude": 0.25
+}

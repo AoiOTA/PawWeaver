@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "evidence_level": "CPU input and static caller validation only",
+  "dev_cases": [
+    "neutral_stand",
+    "neutral_forward",
+    "neutral_backward",
+    "neutral_left",
+    "neutral_right",
+    "neutral_yaw",
+    "neutral_arc",
+    "low_stand",
+    "high_stand",
+    "lateral_stand",
+    "lateral_arc"
+  ],
+  "physx_initial_and_final_num_envs": 11,
+  "config_changed_keys": [
+    "demonstrations"
+  ],
+  "observation_size": 279,
+  "action_size": 18,
+  "training_transitions": 49152000,
+  "optimizer_updates": 10000,
+  "paths_exist": [
+    "scripts/train.py",
+    "scripts/evaluate_commanded_isaac.py",
+    "scripts/evaluate_commanded_mujoco.py",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/export_checkpoint.py",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/support_readout.py",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/summarize.py",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/checkpoint_000499.pt",
+    "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle",
+    "artifacts/runs/diagnostic_pose_learning/wbc_low_noise_learning/spec.json",
+    "assets/generated/diagnostic"
+  ],
+  "simulation_run": false,
+  "trained": false
+}
