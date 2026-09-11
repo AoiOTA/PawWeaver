@@ -13,14 +13,14 @@ case "$phase" in
 train500)
  cmd=(env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 "$T" scripts/train.py --asset assets/generated/diagnostic --diagnostic --provisional-spec "$S" --config "$O/config.json" --initialize-from "$N/train500/checkpoint_000499.pt" --output "$O/train500" --seed 0 --num-envs 4096 --iterations 500 --stop-file "$O/STOP" --headless);;
 export250)
- cmd=(env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES= "$R" "$E/export_checkpoint.py" --checkpoint "$O/train500/checkpoint_000250.pt" --output "$O/checkpoint250_bundle");;
+ cmd=(env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES= "$T" "$E/export_checkpoint.py" --checkpoint "$O/train500/checkpoint_000250.pt" --output "$O/checkpoint250_bundle");;
 initial_mujoco_dev8|initial_physx_dev8|checkpoint250_mujoco_dev8|final_mujoco_dev8|final_physx_dev8|final_mujoco_neutral7|final_physx_neutral7)
  bundle="$O/train500/bundle"; suite="$E/dev8"; count=8
  [[ "$phase" != initial_* ]] || bundle="$N/train500/bundle"
  [[ "$phase" != checkpoint250_* ]] || bundle="$O/checkpoint250_bundle"
  if [[ "$phase" == *_neutral7 ]]; then suite="$N/neutral7"; count=7; fi
  cmd=(env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1)
- if [[ "$phase" == *_physx_* ]]; then cmd+=("$T" scripts/evaluate_isaac.py --num-envs "$count" --headless); else cmd+=(CUDA_VISIBLE_DEVICES= "$R" scripts/evaluate_mujoco.py); fi
+ if [[ "$phase" == *_physx_* ]]; then cmd+=("$T" scripts/evaluate_commanded_isaac.py --num-envs "$count" --headless); else cmd+=(CUDA_VISIBLE_DEVICES= "$R" scripts/evaluate_commanded_mujoco.py); fi
  cmd+=(--asset assets/generated/diagnostic --bundle "$bundle" --suite "$suite" --output "$O/$phase" --seed 0 --diagnostic --provisional-spec "$S");;
 *) echo "Unknown phase: $phase" >&2; exit 2;;
 esac

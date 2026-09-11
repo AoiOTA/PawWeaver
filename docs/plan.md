@@ -1,10 +1,10 @@
 # PawWeaver：当前目标与推进依据
 
-**当前推进（E3之后）**：已明确安排新的[B路线中立末端学习前置实验](../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md)，不是旧E3原样自动续训。fresh279输入、单18关节Actor，只使用原有7条neutral轨迹，站立／移动采样30/70；初始腿／臂std为.25/.02rad、std可学习、entropy .01。独立连续500轮预算为4096×24、49,152,000次交互／10,000次更新；训练正在运行，250检查点的MuJoCo实际开发读出尚待完成（neutral7为训练来源，非独立测试集），训练均值不证明命令移动。`b_neutral_learning`是本次唯一GPU operator；先判读实际速度、末端误差和接触支撑，若形成有支撑的命令移动再返回完整末端任务组合，不自动加预算。
+**当前决策（2026-09-11）**：[neutral500](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)已出现有足支撑的命令移动与中立末端保持，满足返回完整末端任务组合的前置条件；PhysX右移仍有缺口。现在执行[原28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)：从最终499初始化，新500轮预算，保留单279输入／18关节Actor及B路线坐标与命令来源。
 
-[固定关节参考PD保持探针](../artifacts/runs/diagnostic_pose_learning/plan_v3_pd_hold_probe/README.md)已实际退出0：两组均运行20秒且未触发既有跌倒判据，但都未保持目标。kp30修复了局部joint3力矩缺口，TCP误差却从1.153增至1.403m，首次非足接地由8.28提前到5.28秒；不采用为任务修复。该局部结果不改变当前训练PD。
+下一决策是低／高／侧向及朝向变化任务能否改善，同时保住neutral移动和合理支撑；根据实际开发结果决定是否值得运行独立test8，不自动扩训或进入E4／E5。原A路线、远距、主动下蹲／倾身／支撑转换与视觉闭环目标仍未完成。
 
-PawWeaver与`/home/lyb/kiss-my-agent-dogfood`持续作为同等重要的两个目标推进。KMA已完成`8931a47`的分工／复用与兼容修正，后续`a217b97`补充组件探针应保留下游约束语义；最新部署为`0.2.7+codex.20260910135927`。后者源于worker提出绕过约束的方案，由root在测试前纠正，不能宣称指导已自主预防此问题。文档与视频等真实交付已使用更新后的分工指导；这证明本轮执行，不证明量化效率提升、新会话角色全部刷新或WBC成功。
+PawWeaver与KMA仍同等重要、持续并行推进；当前KMA部署与实际应用边界见[项目首页](../README.md)。
 
 **已完成结果（E3，2026-09-10）**：速度＋末端目标B路线fresh1000轮已实际退出0，98,304,000次交互／20,000次更新全部有限，3987次训练跌倒。初始与最终双引擎dev8／独立来源test8评估均已退出0：初始每组8/8完整60秒；最终PhysX为7/8、4/8，MuJoCo为7/8、1/8。完整命令窗实际移动速度接近0，非中立末端任务仍有大误差，部分存活回合也有非足接触。此预算内未形成可用移动操作策略，不采用为成果，也不直接追加预算或启动E4／E5。详见[完整配对与支撑结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)。A路线276输入世界系EE-only保留；B路线279输入单18关节Actor的EE系跟随base XY/yaw、地面Z固定，仿真速度来自预设命令，未来部署拟由操作员提供。结果不证明世界固定EE-only成功、硬件有效性或完整WBC，`trained=false`。
 
