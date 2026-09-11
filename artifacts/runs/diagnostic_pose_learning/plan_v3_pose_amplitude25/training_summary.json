@@ -1,0 +1,20 @@
+{
+  "training_progress": {
+    "status": "stopped_early",
+    "stop_reason": "stop_file",
+    "requested_iterations": 500,
+    "completed_iterations": 326,
+    "start_iteration": 0,
+    "last_completed_iteration": 325,
+    "completed_transitions": 32047104
+  },
+  "completed_optimizer_updates": 6520,
+  "finite_checks_passed": true,
+  "training_falls": 993,
+  "last100_falls": 120,
+  "final_checkpoint": "artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt",
+  "final_checkpoint_sha256": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd",
+  "final_policy_sha256": "d33e712e384ec71585ab87b06d448317992f4e404ac716a1f7d508414b56ed35",
+  "stop_decision": "Root requested normal STOP after checkpoint250 neutral commanded-motion regression",
+  "actual_exit_code": 0
+}

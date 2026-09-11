@@ -1,0 +1,112 @@
+{
+  "newW_oldN": {
+    "action_max_abs_error_vs_checkpoint_swap": 0.0,
+    "saved_old_observation_count": 60,
+    "all_deployed_tensors_verified": [
+      "normalizer._mean",
+      "normalizer._var",
+      "normalizer._std",
+      "normalizer.count",
+      "features.velocity_net.0.weight",
+      "features.velocity_net.0.bias",
+      "features.velocity_net.2.weight",
+      "features.velocity_net.2.bias",
+      "features.velocity_net.4.weight",
+      "features.velocity_net.4.bias",
+      "features.future_net.0.weight",
+      "features.future_net.0.bias",
+      "features.future_net.2.weight",
+      "features.future_net.2.bias",
+      "features.future_net.4.weight",
+      "features.future_net.4.bias",
+      "network.0.weight",
+      "network.0.bias",
+      "network.2.weight",
+      "network.2.bias",
+      "network.4.weight",
+      "network.4.bias",
+      "network.6.weight",
+      "network.6.bias"
+    ],
+    "provenance": {
+      "derived_diagnostic": true,
+      "trained": false,
+      "purpose": "CPU closed-loop normalizer exchange, no training; not an original checkpoint export",
+      "weights_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle",
+      "normalizer_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle",
+      "source_hashes": {
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/policy.pt": "521945729b7a97f4d44128a57d7de39b4a65a48c2f1722f52b222d4ce33b99d2",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/manifest.json": "6217e425f8bbebd2d6b2d7881bf9e58e11951505a831dd83eda465be3e01cc00",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/checkpoint_000499.pt": "baab65855e873637fbd7d64e7099752bb3b8d4511290f23c8db22ec81ee25f99",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/policy.pt": "d33e712e384ec71585ab87b06d448317992f4e404ac716a1f7d508414b56ed35",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/manifest.json": "cd14b6e0151179c3e6bd708ff103146ab2831577fbe0220708ad951c7f4e4179",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd"
+      },
+      "exchanged_buffers": [
+        "normalizer._mean",
+        "normalizer._var",
+        "normalizer._std",
+        "normalizer.count"
+      ],
+      "source_counts": {
+        "old": 49152000,
+        "new": 81199104
+      }
+    }
+  },
+  "oldW_newN": {
+    "action_max_abs_error_vs_checkpoint_swap": 0.0,
+    "saved_old_observation_count": 60,
+    "all_deployed_tensors_verified": [
+      "normalizer._mean",
+      "normalizer._var",
+      "normalizer._std",
+      "normalizer.count",
+      "features.velocity_net.0.weight",
+      "features.velocity_net.0.bias",
+      "features.velocity_net.2.weight",
+      "features.velocity_net.2.bias",
+      "features.velocity_net.4.weight",
+      "features.velocity_net.4.bias",
+      "features.future_net.0.weight",
+      "features.future_net.0.bias",
+      "features.future_net.2.weight",
+      "features.future_net.2.bias",
+      "features.future_net.4.weight",
+      "features.future_net.4.bias",
+      "network.0.weight",
+      "network.0.bias",
+      "network.2.weight",
+      "network.2.bias",
+      "network.4.weight",
+      "network.4.bias",
+      "network.6.weight",
+      "network.6.bias"
+    ],
+    "provenance": {
+      "derived_diagnostic": true,
+      "trained": false,
+      "purpose": "CPU closed-loop normalizer exchange, no training; not an original checkpoint export",
+      "weights_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle",
+      "normalizer_source": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle",
+      "source_hashes": {
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/policy.pt": "521945729b7a97f4d44128a57d7de39b4a65a48c2f1722f52b222d4ce33b99d2",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/manifest.json": "6217e425f8bbebd2d6b2d7881bf9e58e11951505a831dd83eda465be3e01cc00",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/checkpoint_000499.pt": "baab65855e873637fbd7d64e7099752bb3b8d4511290f23c8db22ec81ee25f99",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/policy.pt": "d33e712e384ec71585ab87b06d448317992f4e404ac716a1f7d508414b56ed35",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/manifest.json": "cd14b6e0151179c3e6bd708ff103146ab2831577fbe0220708ad951c7f4e4179",
+        "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd"
+      },
+      "exchanged_buffers": [
+        "normalizer._mean",
+        "normalizer._var",
+        "normalizer._std",
+        "normalizer.count"
+      ],
+      "source_counts": {
+        "old": 49152000,
+        "new": 81199104
+      }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "attempts": [
+    {
+      "name": "old_attempt1",
+      "exit_code": 139,
+      "stage": "Kit startup; no environment or episode",
+      "cause_evidence": "native getenv/XOpenDisplay/platforminfo stack; root cause unknown"
+    },
+    {
+      "name": "old_attempt2",
+      "exit_code": 0,
+      "cases": 3,
+      "steps_per_case": 3000
+    },
+    {
+      "name": "new_attempt1",
+      "exit_code": 0,
+      "cases": 3,
+      "steps_per_case": 3000
+    },
+    {
+      "name": "readout_attempt1",
+      "exit_code": 1,
+      "cause": "local print SyntaxError: missing closing brace"
+    },
+    {
+      "name": "readout_attempt2",
+      "exit_code": 0,
+      "scope": "saved traces only"
+    }
+  ],
+  "gpu_released": true,
+  "no_further_experiment": true
+}

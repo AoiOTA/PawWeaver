@@ -1,15 +1,17 @@
 # PawWeaver：当前目标与推进依据
 
-**当前决策（2026-09-11）**：[原28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)新500轮及所有计划后测已结束，不采用或原样加训。保留[neutral500](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)的部分有足支撑命令移动能力，执行有明确位姿奖励依据的[25%目标幅度课程](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md>)。缩幅只改训练任务，完整范围与原验收保留，单279输入／18关节Actor及B路线坐标与命令来源不变。
+**当前状态（2026-09-11）**：按用户要求在当前诊断收尾、两个仓库提交推送后暂停推进。下文继续执行及历史命令均不授权自动启动新工作。完整全身控制、世界系EE-only、低／高／侧／远目标、主动下蹲／倾身／支撑转换、视觉闭环与KMA实际收益目标仍未完成，原验收和临时硬件参数边界保留。
 
-下一决策是缩幅是否能建立有支撑的位姿变化并保住neutral移动，随后才值得返回更大幅度。CPU起点10/11完整，侧向弧线仍跌倒；GPU已交给`amplitude_course`完成同布局PhysX基线与固定500轮训练流程。新实验将7项neutral和4项复杂任务合成dev11前后对照，避免重复案例与旧单环境逐例评估成本。完整幅度dev8和独立test8按真实结果选择，不自动扩训或进入E4／E5。原A路线、远距、主动下蹲／倾身／支撑转换与视觉闭环目标仍未完成。
+[原28任务迁移](../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md)500轮已结束并因技能退化未采用；[25%幅度课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md)在250检查点明确退化后正常STOP，实际326轮、32,047,104次交互、6,520次优化更新，993次训练跌倒，最终checkpoint325。初始双引擎dev11各10/11完整，最终各11/11完整60秒。存活改善不等于任务成功：后退／侧移／yaw严重退化，后退两引擎保持窗100%非足净力>5N，前进有约+.18rad/s非指令转向。最终low位置RMSE为MuJoCo/PhysX .05280/.05506m，high .21209/.21065m，lateral .21782/.21237m；低位MuJoCo非足地面接触比例.64118，PhysX地面接触对未采集，保留为未知。高／侧位置较起点恶化，候选不采用，不补足500、不机械缩幅。完整位置、朝向、支撑、失败窗及FK对齐见实验记录。
 
-PawWeaver与KMA仍同等重要、持续并行推进；当前KMA部署与实际应用边界见[项目首页](../README.md)。
+[统计量交换闭环](../artifacts/runs/diagnostic_pose_learning/plan_v3_normalizer_closed_loop/README.md)已完成四个额外CPU回合并复用原对照：新权重换旧N，前进vx=.04344m/s，后退27.88秒跌倒；旧权重换新N，前进／后退vx=.15689/−.13564m/s，均完整且保持窗无非足接触。这不支持换旧统计量作为修复，也不单独确立训练根因。[最后固定奖励诊断](../artifacts/runs/diagnostic_pose_learning/plan_v3_reward_objective_probe/README.md)保存同任务／同奖励宽度下旧新策略的实际分项。原[neutral500](../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md)保留；其PhysX右移缺口仍未闭合。B路线保持279输入、单18关节Actor，EE随base XY/yaw、地面Z固定，仿真速度来自预设命令、部署拟由操作员提供；它不是世界固定EE-only证明。
+
+最后六例固定奖励对照已完成，旧／新各3个60秒任务，全部实际退出0。20–60秒加权非终止奖励均值（乘dt前）为前进6.36999→5.65574、后退6.55069→.54430、高位2.34501→2.10926；本批新策略前进仍移动，后退近零，高位位置误差增大。三项奖励均降低，不支持在这些固定任务上以更高配置奖励解释行为退化，也不能据此确定PPO更新或训练退化的唯一原因。首次Isaac原生启动崩溃exit139，原样单次重试后完成；本地读出语法错误已修复并读取原轨迹成功。失败记录保留，GPU已释放。
 
 **已完成结果（E3，2026-09-10）**：速度＋末端目标B路线fresh1000轮已实际退出0，98,304,000次交互／20,000次更新全部有限，3987次训练跌倒。初始与最终双引擎dev8／独立来源test8评估均已退出0：初始每组8/8完整60秒；最终PhysX为7/8、4/8，MuJoCo为7/8、1/8。完整命令窗实际移动速度接近0，非中立末端任务仍有大误差，部分存活回合也有非足接触。此预算内未形成可用移动操作策略，不采用为成果，也不直接追加预算或启动E4／E5。详见[完整配对与支撑结果](../artifacts/runs/diagnostic_pose_learning/plan_v3_commanded_pose/README.md)。A路线276输入世界系EE-only保留；B路线279输入单18关节Actor的EE系跟随base XY/yaw、地面Z固定，仿真速度来自预设命令，未来部署拟由操作员提供。结果不证明世界固定EE-only成功、硬件有效性或完整WBC，`trained=false`。
 
 
-**v3方案执行已恢复（2026-09-10）**：用户在新请求中明确要求执行 `/home/lyb/Desktop/PawWeaver_KISS_My_Agent_完整项目改进方案_2026-09-10_v3.md`。下文“本阶段最后一轮／整理后停止”保留为上一阶段历史边界，本次继续计划内开发与仿真；不是重新运行已完成的2000轮。先处理真实奖励信号、采样消费者、完整评估及完整更新保存，再按任务效果决定训练路线和预算。主代理协调GPU所有权，每次仅一名operator操作，当前分配见顶部；本次不由文档内历史发布命令自动触发远程推送。世界系EE-only主路线、可选单Actor速度＋EE方法比较、下蹲／倾身／支撑移动目标、原验收和临时参数边界保留；正式朝向阈值仍未指定。
+**历史：v3方案执行恢复（2026-09-10，当前暂停以顶部为准）**：用户在新请求中明确要求执行 `/home/lyb/Desktop/PawWeaver_KISS_My_Agent_完整项目改进方案_2026-09-10_v3.md`。下文“本阶段最后一轮／整理后停止”保留为上一阶段历史边界，本次继续计划内开发与仿真；不是重新运行已完成的2000轮。先处理真实奖励信号、采样消费者、完整评估及完整更新保存，再按任务效果决定训练路线和预算。主代理协调GPU所有权，每次仅一名operator操作，当前分配见顶部；本次不由文档内历史发布命令自动触发远程推送。世界系EE-only主路线、可选单Actor速度＋EE方法比较、下蹲／倾身／支撑移动目标、原验收和临时参数边界保留；正式朝向阈值仍未指定。
 
 已完成的[E2固定任务课程](../artifacts/runs/diagnostic_pose_learning/plan_v3_task_curriculum/README.md)给出了连续1000轮及双引擎证据；其后的[折足成本对照](../artifacts/runs/diagnostic_pose_learning/plan_v3_foot_fold/README.md)未支持采用。E3训练及初始／最终双引擎开发与独立测试现已完成，当前配方未形成可用移动操作策略；保留负结果，不原样自动追加训练。 E4仍是条件性的任务贡献分配诊断：只有证据支持普通PPO偏顾某一任务而忽略另一任务，才在E3同任务内考虑匹配的Advantage Mixing比较；两项都未学会不自动满足该条件。E5独立双引擎、多种子正式统计只对筛选出的可用方案开展，不把当前诊断后测称作E5完成。
 

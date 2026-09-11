@@ -1,0 +1,32 @@
+{
+  "source_evaluator": {
+    "path": "scripts/evaluate_commanded_isaac.py",
+    "sha256": "ab117b1915e78888ff47b6f79297475c72b7f30e54a6e961f1920031215e6755"
+  },
+  "score_checkpoint": {
+    "path": "artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt",
+    "sha256": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd"
+  },
+  "score_state": {
+    "position_ema_m": 0.09248333959490956,
+    "orientation_ema_rad": 0.13189914749260098,
+    "position_sigma_m2": 0.005,
+    "orientation_sigma_rad": 0.5
+  },
+  "config_sha256": "7199dd188f3be367bded748b3d4e469423b32cd9ea17a10393c1785a9dc09811",
+  "suite_sha256": "944f294070ce0bb2bf7dbb9b97d4e01e7b8ec4a1e40269e97c41ef60210982e0",
+  "policies": {
+    "old": {
+      "bundle": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle",
+      "policy_sha256": "521945729b7a97f4d44128a57d7de39b4a65a48c2f1722f52b222d4ce33b99d2",
+      "checkpoint": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/checkpoint_000499.pt",
+      "checkpoint_sha256": "baab65855e873637fbd7d64e7099752bb3b8d4511290f23c8db22ec81ee25f99"
+    },
+    "new": {
+      "bundle": "artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle",
+      "policy_sha256": "d33e712e384ec71585ab87b06d448317992f4e404ac716a1f7d508414b56ed35",
+      "checkpoint": "artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt",
+      "checkpoint_sha256": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd"
+    }
+  }
+}

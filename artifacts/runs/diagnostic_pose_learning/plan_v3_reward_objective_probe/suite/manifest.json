@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_forward",
+      "path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train/neutral_forward.npz",
+      "sha256": "2e336090d05e5fb575522c77e2935d5949de165f9f86e5a8a3cda446afcccf33"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train/neutral_backward.npz",
+      "sha256": "8bd9014b29fb4eb47ee53a32c008c23406e3fc1cbf07f82ff9516b00b44b8068"
+    },
+    {
+      "case_id": "high_stand",
+      "path": "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train/high_stand.npz",
+      "sha256": "baa92f0d3282bd6970c5672ee317ddfd8920d52039f696a18267eb41ff3ef52a"
+    }
+  ],
+  "scope": "25% train-derived course; not held-out or formal acceptance",
+  "amplitude": 0.25
+}

@@ -1,0 +1,11 @@
+{
+  "all_original_files_unchanged": true,
+  "files": {
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/policy.pt": "521945729b7a97f4d44128a57d7de39b4a65a48c2f1722f52b222d4ce33b99d2",
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/bundle/manifest.json": "6217e425f8bbebd2d6b2d7881bf9e58e11951505a831dd83eda465be3e01cc00",
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/train500/checkpoint_000499.pt": "baab65855e873637fbd7d64e7099752bb3b8d4511290f23c8db22ec81ee25f99",
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/policy.pt": "d33e712e384ec71585ab87b06d448317992f4e404ac716a1f7d508414b56ed35",
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/bundle/manifest.json": "cd14b6e0151179c3e6bd708ff103146ab2831577fbe0220708ad951c7f4e4179",
+    "/home/lyb/pawweaver/artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/train500/checkpoint_000325.pt": "425c8e1c968a11105bed9e8793758ae29ccedd4c4e2b1949927234e84d8e28dd"
+  }
+}

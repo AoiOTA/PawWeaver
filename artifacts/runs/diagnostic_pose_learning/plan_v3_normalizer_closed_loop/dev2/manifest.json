@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_forward",
+      "path": "neutral_forward.npz",
+      "sha256": "2e336090d05e5fb575522c77e2935d5949de165f9f86e5a8a3cda446afcccf33"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "neutral_backward.npz",
+      "sha256": "8bd9014b29fb4eb47ee53a32c008c23406e3fc1cbf07f82ff9516b00b44b8068"
+    }
+  ],
+  "scope": "25% train-derived course; not held-out or formal acceptance",
+  "amplitude": 0.25
+}
