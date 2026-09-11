@@ -43,8 +43,6 @@ obs_spec=observation_spec(config)
 if obs_spec.size==279:
     if config.get("trajectory_prediction",False) or config.get("velocity_estimation",False):
         raise ValueError("velocity_ee_pose currently requires prediction and velocity estimation disabled")
-    if args.initialize_from:
-        raise ValueError("velocity_ee_pose requires fresh initialization or same-contract resume")
 checkpoint_path=args.resume or args.initialize_from
 if checkpoint_path:
     checkpoint=torch.load(checkpoint_path,map_location="cpu",weights_only=False)
@@ -52,6 +50,9 @@ if checkpoint_path:
         raise ValueError("Checkpoint observation contract differs; 246, 276 and 279 inputs cannot be padded or migrated")
 leg_mean_transform=validate_leg_mean_config(config,
     checkpoint["metadata"]["config"] if checkpoint else None, resume=bool(args.resume))
+if args.initialize_from and obs_spec.size==279:
+    if checkpoint["metadata"]["config"].get("leg_mean_transform","identity")!=leg_mean_transform:
+        raise ValueError("279 initialization requires the same leg_mean_transform")
 if args.resume and config.get("umi_pose_reward",False):
     # Missing or malformed course state fails before starting the simulator.
     UmiPoseReward().load_state_dict(checkpoint.get("umi_pose_reward"))

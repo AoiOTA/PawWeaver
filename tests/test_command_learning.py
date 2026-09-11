@@ -1,4 +1,4 @@
-"""Both explicit policy contracts, bundle rejection and fresh-only units."""
+"""Both explicit policy contracts, bundle rejection and initialization units."""
 import ast
 import copy
 import json
@@ -139,7 +139,7 @@ def test_invalid_fresh_configuration_fails_before_mutating_actor(config):
     assert all(torch.equal(v,actor.state_dict()[k]) for k,v in before.items())
 
 
-def test_training_command_contract_rejects_transfer_before_simulator():
+def test_training_command_contract_allows_transfer_but_rejects_auxiliary_heads():
     source=Path(__file__).resolve().parents[1]/'scripts/train.py'
     tree=ast.parse(source.read_text())
     branch=next(node for node in tree.body if isinstance(node,ast.If) and ast.unparse(node.test)=='obs_spec.size == 279')
@@ -147,8 +147,7 @@ def test_training_command_contract_rejects_transfer_before_simulator():
     namespace={'obs_spec':CommandObservationSpec(),'config':{},'args':SimpleNamespace(initialize_from=None)}
     exec(code,namespace)
     namespace['args'].initialize_from='old.pt'
-    with pytest.raises(ValueError,match='fresh initialization'):
-        exec(code,namespace)
+    exec(code,namespace)
     namespace['args'].initialize_from=None;namespace['config']['velocity_estimation']=True
     with pytest.raises(ValueError,match='disabled'):
         exec(code,namespace)
