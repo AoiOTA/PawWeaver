@@ -1,0 +1,18 @@
+# Neutral500 to original full EE mix: conditional transfer
+
+Prepared; no training or simulations started. Root owns adoption and must explicitly hand over the shared GPU/simulation resource after the neutral experiment and its assigned replay finish.
+
+Question: can the single 18-joint B-route Actor retain neutral500's supported commanded movement while learning E3's original 28 EE trajectories? `config.json` copies neutral learning and changes only `demonstrations` to the exact E3 list. Existing paths retain the exact trajectories, rather than regenerating them. Learnable std, entropy .01, stand/move .30/.70, LR 1e-4 and floor 1e-7, PD, q0, rewards, action transforms and fall criteria are unchanged. Initial mean/std config values affect fresh creation only; checkpoint loading restores learned Actor/Critic/std/normalizers without resetting them.
+
+Initialize from `../plan_v3_neutral_learning/train500/checkpoint_000499.pt` using `--initialize-from`, fresh optimizer, RNG and UMI reward-width course. No resume. Budget is exactly 500 new iterations × 4096 × 24 = 49,152,000 transitions / 10,000 PPO updates. Checkpoint index 250 contains 251 completed new iterations; final index 499 contains 500. No automatic extension or parameter sweep. Own stop-file path is `STOP` (absent unless a stop is requested). Preserve internal/nonfinite failures and return them to root; do not relabel partial episodes as completed tasks.
+
+After root's handoff, run each phase with `bash artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/run.sh PHASE` from the repository. The script records the exact command, original console and actual subprocess exit code, and refuses to overwrite an earlier phase log. Existing environments and a cleared inherited PYTHONPATH are used.
+
+1. `initial_mujoco_dev8`, `initial_physx_dev8`: unchanged neutral500 exported Actor on exact E3 dev8, full 60 seconds. Initial neutral7 is the preceding experiment's final neutral7 and is reused.
+2. `train500`: continuous bounded transfer. While it runs, `export250` then `checkpoint250_mujoco_dev8` once checkpoint index 250 exists. No concurrent PhysX evaluation.
+3. Following actual successful training exit: `final_mujoco_dev8`, `final_physx_dev8`, `final_mujoco_neutral7`, `final_physx_neutral7`.
+4. Read each saved evaluation using `env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES='' /home/lyb/miniconda3/envs/pawweaver-runtime/bin/python artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/readout.py PHASE`. This reuses E3 full-window metrics and support/FK, binding the suite root at this caller. It preserves complete windows versus executed failure fragments, full command and 20–60 second EE hold, real contacts, foot/thigh geometry, body height/tilt and nonfoot relation. Full 60 seconds alone is not task success.
+
+Root decides whether final development improvement warrants the existing independent-source test8. It is not scheduled automatically; there is no full28 × neutral7 × test8 Cartesian product. No new stand/smoke or unchanged-path CPU testing.
+
+B-route EE coordinates follow base XY/yaw with fixed ground Z. Velocity commands are preset simulation trajectories; intended deployment inputs come from an operator. This is not world-fixed EE-only A-route success or an independent far target test. Low/high/lateral/orientation tasks and purposeful crouching, leaning and support redistribution remain required capabilities; unchanged provisional hardware and `trained=false` prohibit formal/hardware acceptance. This is a curriculum/recipe experiment, not causal attribution to added velocity inputs alone. No commits, push or installs by this operator.
