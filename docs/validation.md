@@ -2,7 +2,9 @@
 
 **最新验证（2026-09-11）**：[neutral500最终结果](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)两引擎均7/7完整60秒；前进、后退、左移、yaw及arc出现有足支撑的实际命令运动，末端保持位置RMSE约.4–.9cm，支撑采样未见机器人非足净力>5N。PhysX右移仍静止，MuJoCo右移有效，不能称全命令双引擎通过。两段保存状态跟随视频已完成解码及画面检查。
 
-这些是训练来源neutral7上的临时参数工程证据，不是独立测试、完整WBC、世界系EE-only或硬件验收。现进行[完整28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)，起点评估已显示neutral技能尚未覆盖复杂末端任务，新阶段训练中；需要同时检查非中立末端任务、移动保持与真实接触。此前[PD保持探针](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pd_hold_probe/README.md>)的负结果和未采用结论保留。
+这些是训练来源neutral7上的临时参数工程证据，不是独立测试、完整WBC、世界系EE-only或硬件验收。[完整28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)新500轮及全部后测已结束：最终双引擎dev8均6/8完整、neutral7均7/7完整。低位保持位置误差为MuJoCo .32610m／PhysX .31755m，高位为.90208／.90432m，侧向两例仍跌倒。两引擎所有neutral案例的位置／朝向误差都退步；PhysX前进与后退近静止。不采用候选，也不启动其独立test8。高位虽撑满时长，却在高目标下错误降低身体；无非足接触时，不以低高度单独判物理塌陷。完整逐例命令、支撑及共享失败窗见实验结果。
+
+后续[25%幅度课程](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md>)已有CPU起点10/11完整证据：低／高／侧向站立hold位置.086606／.145655／.129112m，均四足支撑且非足接触为0；lateral_arc在17.66秒跌倒，没有完整保持窗。新PhysX基线与新500轮正在按阶段推进，不把缩幅结果当原范围验收。此前[PD保持探针](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pd_hold_probe/README.md>)的负结果和未采用结论保留。
 
 PawWeaver与KMA仍同等重要、持续并行推进；当前KMA部署与实际应用边界见[项目首页](../README.md)。
 

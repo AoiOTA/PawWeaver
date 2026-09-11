@@ -1,8 +1,8 @@
 # 运行手册
 
-**当前运行入口（2026-09-11）**：[neutral500](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)训练、双引擎读出及两段跟随视频已完成；现已启动[原28任务迁移阶段](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)，唯一GPU operator为`full_pose_learning`。从neutral最终499初始化，新500轮预算尚未完成；模型、std与normalizer继承，优化器／RNG／奖励课程重建。
+**当前运行入口（2026-09-11）**：[原28任务迁移阶段](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)新500轮及所有计划后测已实际结束，GPU已释放；负结果保留，不采用或原样扩训。现在唯一GPU operator为`amplitude_course`，执行[25%末端幅度课程](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md>)：新鲜同布局dev11基线、从neutral最终499初始化、新500轮、250时一次MuJoCo读出以及最终双引擎dev11。
 
-现有阶段入口为`bash artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/run.sh PHASE`；具体阶段、命令与退出记录见实验README。运行期间勿重复启动或并行占用GPU。neutral右移的PhysX缺口保留，最终按完整末端任务与移动能力是否兼得判断。
+当前阶段入口为`bash artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/run.sh PHASE`；具体阶段、命令与退出记录见实验README。初末PhysX同为11环境，覆盖7项neutral及4项缩幅复杂任务；原单环境neutral7不充当这轮的精确配对基线。初始化继承模型／std／normalizer，重建优化器／RNG／奖励宽度课程。原幅度dev8和独立test8需由实际收益决定，不自动扩幅或续训。
 
 PawWeaver与KMA仍同等重要、持续并行推进；当前KMA部署与实际应用边界见[项目首页](../README.md)。
 

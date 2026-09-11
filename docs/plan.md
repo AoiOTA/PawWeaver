@@ -1,8 +1,8 @@
 # PawWeaver：当前目标与推进依据
 
-**当前决策（2026-09-11）**：[neutral500](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)已出现有足支撑的命令移动与中立末端保持，满足返回完整末端任务组合的前置条件；PhysX右移仍有缺口。现在执行[原28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)：从最终499初始化，新500轮预算，保留单279输入／18关节Actor及B路线坐标与命令来源。
+**当前决策（2026-09-11）**：[原28任务迁移](<../artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md>)新500轮及所有计划后测已结束，不采用或原样加训。保留[neutral500](<../artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md>)的部分有足支撑命令移动能力，执行有明确位姿奖励依据的[25%目标幅度课程](<../artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md>)。缩幅只改训练任务，完整范围与原验收保留，单279输入／18关节Actor及B路线坐标与命令来源不变。
 
-下一决策是低／高／侧向及朝向变化任务能否改善，同时保住neutral移动和合理支撑；根据实际开发结果决定是否值得运行独立test8，不自动扩训或进入E4／E5。原A路线、远距、主动下蹲／倾身／支撑转换与视觉闭环目标仍未完成。
+下一决策是缩幅是否能建立有支撑的位姿变化并保住neutral移动，随后才值得返回更大幅度。CPU起点10/11完整，侧向弧线仍跌倒；GPU已交给`amplitude_course`完成同布局PhysX基线与固定500轮训练流程。新实验将7项neutral和4项复杂任务合成dev11前后对照，避免重复案例与旧单环境逐例评估成本。完整幅度dev8和独立test8按真实结果选择，不自动扩训或进入E4／E5。原A路线、远距、主动下蹲／倾身／支撑转换与视觉闭环目标仍未完成。
 
 PawWeaver与KMA仍同等重要、持续并行推进；当前KMA部署与实际应用边界见[项目首页](../README.md)。
 

@@ -18,7 +18,7 @@ initial_mujoco_dev8|initial_physx_dev8|checkpoint250_mujoco_dev8|final_mujoco_de
  bundle="$O/train500/bundle"; suite="$E/dev8"; count=8
  [[ "$phase" != initial_* ]] || bundle="$N/train500/bundle"
  [[ "$phase" != checkpoint250_* ]] || bundle="$O/checkpoint250_bundle"
- if [[ "$phase" == *_neutral7 ]]; then suite="$N/neutral7"; count=7; fi
+ if [[ "$phase" == *_neutral7 ]]; then suite="$N/neutral7"; count=1; fi
  cmd=(env -u PYTHONPATH PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1)
  if [[ "$phase" == *_physx_* ]]; then cmd+=("$T" scripts/evaluate_commanded_isaac.py --num-envs "$count" --headless); else cmd+=(CUDA_VISIBLE_DEVICES= "$R" scripts/evaluate_commanded_mujoco.py); fi
  cmd+=(--asset assets/generated/diagnostic --bundle "$bundle" --suite "$suite" --output "$O/$phase" --seed 0 --diagnostic --provisional-spec "$S");;

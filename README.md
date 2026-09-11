@@ -8,7 +8,9 @@ PawWeaver以AS2 EDU＋Piper-H为对象，用一个强化学习Actor统一输出1
 
 [neutral500](artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/README.md)已完成：两引擎均7/7完整60秒，出现有足支撑的前后、左移、转向与弧线运动，末端保持位置误差约.4–.9cm；PhysX右移仍静止，MuJoCo右移有效。可查看[完整60秒后退跟随视频](artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/video_replay/final500_neutral_backward_follow.mp4)，这是保存状态回放。
 
-现在从该策略进入[原28末端任务迁移](artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md)，执行新的500轮预算，检验能否保住移动并学会非中立末端任务，结果尚未完成。neutral训练来源结果不等于完整WBC或硬件验收；此前[PD保持探针](artifacts/runs/diagnostic_pose_learning/plan_v3_pd_hold_probe/README.md)未支持采用增益修改。
+[原28末端任务迁移](artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/README.md)的500轮及全部双引擎后测已结束，候选不采用：低位保持位置误差虽改善至约32cm，高位仍约90cm，侧向仍跌倒；两引擎全部neutral案例的末端位置／朝向精度退化，PhysX前进和后退近静止。保留原neutral500，不原样扩训或启动独立test8。
+
+现在执行[25%末端幅度课程](artifacts/runs/diagnostic_pose_learning/plan_v3_pose_amplitude25/README.md)的同布局基线与新500轮流程。仅缩小训练轨迹的位置／朝向变化，速度命令、奖励和动作映射保留；原范围与验收不变。CPU基线10/11完整，侧向弧线仍跌倒；完整能力尚待学习。依据见[动作因素读出](artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/action_shift_readout.md)与[位姿奖励读出](artifacts/runs/diagnostic_pose_learning/plan_v3_full_pose_transfer/pose_reward_readout.md)，不把旧normalizer替换或统一加宽奖励当作已证实修复。
 
 2026-09-10的v3改进方案正在执行。完整评估时长、正常停止时保存最后完整更新、实际奖励分项和固定组采样已接通。取消非负裁零的受控实验改善了位置跟踪；连续1000轮世界系课程仍存在持续折足、支撑转换失败与精度退化。单项折足惩罚没有一致收益，未采用。
 
