@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "task_kind": "velocity_ee_pose",
+  "task_frame": "base_xy_yaw_ground_z",
+  "units": {
+    "time": "s",
+    "position": "m",
+    "orientation": "wxyz",
+    "linear_velocity": "m/s",
+    "yaw_rate": "rad/s"
+  },
+  "split": "train",
+  "cases": [
+    {
+      "case_id": "neutral_stand",
+      "path": "../../plan_v3_commanded_pose/train/neutral_stand.npz",
+      "sha256": "dc614437bc58a320c2dd9e71355e057be2569fe159e154dc66682491cddeebe4"
+    },
+    {
+      "case_id": "neutral_forward",
+      "path": "../../plan_v3_commanded_pose/train/neutral_forward.npz",
+      "sha256": "9ebfb6148b9638b39215c6dbe6c1113e5d620d5ae2dc9ccf685123c01a766c59"
+    },
+    {
+      "case_id": "neutral_backward",
+      "path": "../../plan_v3_commanded_pose/train/neutral_backward.npz",
+      "sha256": "34e81cc3450b5a6f010b1411df12f1029eb57b2d592e08244ea5ebcefb5a6bdc"
+    },
+    {
+      "case_id": "neutral_left",
+      "path": "../../plan_v3_commanded_pose/train/neutral_left.npz",
+      "sha256": "9e3e69c63033a9609f27449b927eeb4867d02e8726072fcc11e621b9e366c90f"
+    },
+    {
+      "case_id": "neutral_right",
+      "path": "../../plan_v3_commanded_pose/train/neutral_right.npz",
+      "sha256": "43dd65205d9ad77d9a1cb05ccdcd6fc02209f8c0f4f41516a8de5d1d941ed40e"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "path": "../../plan_v3_commanded_pose/train/neutral_yaw.npz",
+      "sha256": "68871e5f56534b256f909a07470b5e8e13f8e2131c56ff4f8d5334e2970ca086"
+    },
+    {
+      "case_id": "neutral_arc",
+      "path": "../../plan_v3_commanded_pose/train/neutral_arc.npz",
+      "sha256": "8749d68428b78434914c5895f6841d85f5e3713cfa9a79672072161fe1f52f4b"
+    }
+  ],
+  "scope": "Exact existing seven neutral training trajectories; train-derived development readout, not held-out test or formal acceptance"
+}

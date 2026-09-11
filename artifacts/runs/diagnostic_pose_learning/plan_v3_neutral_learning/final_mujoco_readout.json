@@ -1,0 +1,1048 @@
+{
+  "status": "reported",
+  "directory": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/final_mujoco_neutral7",
+  "engine": "MuJoCo",
+  "report_sha256": "31dcea37267303b096e2d7e56f912e7cb3a202d5afe257aaa792abeba2d9f5dc",
+  "policy_sha256": "521945729b7a97f4d44128a57d7de39b4a65a48c2f1722f52b222d4ce33b99d2",
+  "suite_sha256": "035921abdd1d94f5c182567558632ef3499d04a3b0c0236384f58c656f45cd6f",
+  "completed_episodes": 7,
+  "episodes": [
+    {
+      "case_id": "neutral_stand",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.003946836335512695,
+              "p95": 0.004339716397225857
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0038884709882248927,
+              "p95": 0.003991214092820883
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.00012256850172174378,
+              "p95": 0.0002593064617330916
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.00014449524903871485,
+              "p95": 0.00021583400666713715
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0038970949694298795,
+              "p95": 0.004001878411509096
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.003958385693158418,
+              "p95": 0.003991231927648187
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 2.5233124430826595e-05,
+              "p95": 6.737450176282809e-05
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 4.3159065817386824e-05,
+              "p95": 7.853494025766824e-05
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              -1.1067864526386363e-05,
+              1.4784168261984985e-06,
+              5.994404021363992e-06
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.0,
+              0.0,
+              0.0
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0038797560776580083,
+              "p95": 0.0038841233821585775
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.003987043737539067,
+              "p95": 0.003991337562911213
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 2.63054369472189e-06,
+              "p95": 7.2765936468467e-06
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 1.8817674675253683e-05,
+              "p95": 5.12762926518917e-05
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "08c19c8e5597dc6097c5b8eceaa2e282b7eedfec936961bb675e1982157c194b"
+    },
+    {
+      "case_id": "neutral_forward",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007757675775084554,
+              "p95": 0.0098916320130229
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.010478795441490772,
+              "p95": 0.015783391892910004
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.021404170959645807,
+              "p95": 0.03620796558659146
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.039145363713930244,
+              "p95": 0.09998232126235962
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007994321635856696,
+              "p95": 0.0099348203279078
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.010863878657087682,
+              "p95": 0.01591762751340865
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.017056332147537337,
+              "p95": 0.031071650728086344
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.04077159194810242,
+              "p95": 0.10131314396858215
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              0.19140723200944754,
+              0.001549941686116304,
+              0.0030815240189146537
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.1999999999999928,
+              0.0,
+              0.0
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007980157490799427,
+              "p95": 0.009911072021350265
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.01083625422291521,
+              "p95": 0.015881191100925205
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.017091426519646468,
+              "p95": 0.0310220909688221
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.04067517547982146,
+              "p95": 0.10064484551548958
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "17e4c1b54ef687b3000006cc7fb3de055dbc1d14a070b645b51471339f4288ab"
+    },
+    {
+      "case_id": "neutral_backward",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007383603581633597,
+              "p95": 0.008703997358679771
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0032789026403164364,
+              "p95": 0.004476563539355993
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.024226208280888444,
+              "p95": 0.039779177458288816
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.01816374835110342,
+              "p95": 0.03319382667541504
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007571648743608857,
+              "p95": 0.008704668423160911
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0031173426834895717,
+              "p95": 0.00435870769433677
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.010874648080952358,
+              "p95": 0.015971372366227997
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.018635453339790532,
+              "p95": 0.03328742459416389
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              -0.14900352376011702,
+              -0.003888374694866238,
+              0.014178604141164284
+            ],
+            "command_mean_vx_vy_yawdot": [
+              -0.14999999999999483,
+              0.0,
+              0.0
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007571187530417163,
+              "p95": 0.00870330175384879
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0031173360798653765,
+              "p95": 0.004356122389435768
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.010866270363403105,
+              "p95": 0.016044889088175245
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.018635132223132265,
+              "p95": 0.03334343433380127
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "cc82b551403bdbee914c3d44adb029b86161447840c2fec9d4a2edcc65f8506f"
+    },
+    {
+      "case_id": "neutral_left",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.007931166271880945,
+              "p95": 0.010109813883900642
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0039013356196214762,
+              "p95": 0.006113762967288494
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.026104929315327794,
+              "p95": 0.04345803398111581
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.02940826754878595,
+              "p95": 0.05466751754283905
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.008124709325666418,
+              "p95": 0.010119584249332547
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.003922002614972975,
+              "p95": 0.006152685359120366
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.022880707482255798,
+              "p95": 0.037102801000349274
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.030462420475181242,
+              "p95": 0.056234784424304914
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              -0.002466609949173849,
+              0.10045921109330196,
+              0.0034925400007229583
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.0,
+              0.12000000000000337,
+              0.0
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.00811790902458369,
+              "p95": 0.010118270013481378
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.003916001337826246,
+              "p95": 0.006163603928871453
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.02286456642977229,
+              "p95": 0.03657884362085439
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.030528454847810055,
+              "p95": 0.05557190626859664
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "244babc262758449cf711f1a82fd130a941432b21eb3813ff8610a0538b55d75"
+    },
+    {
+      "case_id": "neutral_right",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0038658418710422102,
+              "p95": 0.00482966797426343
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.00421557123464072,
+              "p95": 0.005856153089553118
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.01969935149778025,
+              "p95": 0.03047323944428749
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.019026831005235337,
+              "p95": 0.038932450115680695
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0038548032357005723,
+              "p95": 0.004837233200669288
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.004205099248553156,
+              "p95": 0.005783016909845173
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.008507046943762581,
+              "p95": 0.014261422733761884
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.01985180605920815,
+              "p95": 0.039222445338964455
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              -0.004023331165003758,
+              -0.12059862123372463,
+              0.00105715603979591
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.0,
+              -0.12000000000000337,
+              0.0
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0038573575336943978,
+              "p95": 0.004835547204129398
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.004204494408080057,
+              "p95": 0.005783282476477325
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.008519556308629977,
+              "p95": 0.014209099032357692
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.019786401525515834,
+              "p95": 0.039162756875157356
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "4a667612ff6993d665f43cb9612cc80c1e492e086495cde18263991f6d6b803f"
+    },
+    {
+      "case_id": "neutral_yaw",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.004433068537235913,
+              "p95": 0.005146912764757872
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0026713559817761003,
+              "p95": 0.004033996257930994
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.006872248788478174,
+              "p95": 0.010289441083751478
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.06095209277149673,
+              "p95": 0.10520009994506835
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.0044002273172329435,
+              "p95": 0.005143750179558992
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.0026414930295768834,
+              "p95": 0.004035328957252204
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.006968947245474592,
+              "p95": 0.010140500386943896
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.058165357739446734,
+              "p95": 0.10334283411502836
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              -0.001842408875773939,
+              -0.0001980435515221101,
+              0.25864980382414965
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.0,
+              0.0,
+              0.29999999999998966
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.004398398390632039,
+              "p95": 0.005145391542464494
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.002646659063739904,
+              "p95": 0.004039021022617817
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.006962419896362704,
+              "p95": 0.010112940396183833
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.0580705445171485,
+              "p95": 0.10334283411502837
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "d5112d84a5ba260ad51190c29a7df0e5ff2aa50d18aae18cb9c15f52026091b5"
+    },
+    {
+      "case_id": "neutral_arc",
+      "completed": true,
+      "fallen": false,
+      "termination_reason": "completed",
+      "requested_duration_s": 60.0,
+      "actual_duration_s": 60.0,
+      "actual_steps": 3000,
+      "windows": {
+        "post_transient": {
+          "selection_time": "poststate_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            1.98,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            1.98,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            2.0,
+            60.0
+          ],
+          "samples": 2901,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.004717464450135043,
+              "p95": 0.006209007930010557
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.004099102145994839,
+              "p95": 0.005790584720671177
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.019711504505034557,
+              "p95": 0.03302771078502217
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.035391326513252754,
+              "p95": 0.07350766658782959
+            }
+          },
+          "executed_fragment_metrics": null
+        },
+        "steady_command": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            8.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            8.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            8.02,
+            60.0
+          ],
+          "samples": 2600,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.004778592526639347,
+              "p95": 0.006225508917123079
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.003999570139349517,
+              "p95": 0.005429681832902131
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.016196754563952122,
+              "p95": 0.029001145157273048
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.032266949031133765,
+              "p95": 0.06914281845092762
+            }
+          },
+          "executed_fragment_metrics": null,
+          "full_window_response": {
+            "actual_mean_vx_vy_yawdot": [
+              0.14516176618349094,
+              -0.007730451455001737,
+              -0.23710662585611528
+            ],
+            "command_mean_vx_vy_yawdot": [
+              0.14999999999999483,
+              0.0,
+              -0.25
+            ]
+          },
+          "executed_fragment_response": null
+        },
+        "pose_hold": {
+          "selection_time": "target_time",
+          "boundary_convention": "Inclusive first/last sampled timestamps; target60 is not an extra requested control tick.",
+          "requested_target_time_bounds_s": [
+            20.0,
+            59.98
+          ],
+          "requested_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "observed_target_time_bounds_s": [
+            20.0,
+            59.980000000000004
+          ],
+          "observed_poststate_time_bounds_s": [
+            20.02,
+            60.0
+          ],
+          "samples": 2000,
+          "complete_no_fall_window": true,
+          "full_window_metrics": {
+            "ee_position_m": {
+              "rmse": 0.004774944317245131,
+              "p95": 0.006228501186706125
+            },
+            "ee_orientation_rad": {
+              "rmse": 0.004001226686964792,
+              "p95": 0.00542422856669873
+            },
+            "base_linear_velocity_mps": {
+              "rmse": 0.016208558042037108,
+              "p95": 0.029012432548195105
+            },
+            "base_yaw_rate_radps": {
+              "rmse": 0.03220613159633028,
+              "p95": 0.06913387775421141
+            }
+          },
+          "executed_fragment_metrics": null
+        }
+      },
+      "trace_sha256": "12a8392db186a57b3ddd1f3e80150045cdcd3fb10c61077c53cdd092713db581"
+    }
+  ],
+  "scope": "Exact neutral train-derived cases, provisional hardware, trained=false; full windows separate from fallen fragments; no full WBC or world-fixed EE-only acceptance"
+}

@@ -1,0 +1,60 @@
+{
+  "forward": {
+    "video": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/video_replay/final500_neutral_forward_follow.mp4",
+    "sha256": "0142e0caee12b4b59cce22842ed0370fe42f52af6002efab45186325e23eafc6",
+    "ffprobe": {
+      "programs": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 720,
+          "r_frame_rate": "50/1",
+          "duration": "60.000000",
+          "nb_read_frames": "3000"
+        }
+      ]
+    },
+    "render_exit_code": 0,
+    "full_decode_exit_code": 0,
+    "visual_QA": {
+      "frames": [
+        0,
+        1499,
+        2999
+      ],
+      "body_fully_visible": true,
+      "labels_readable": true,
+      "view": "Following saved base translation at2.4m; fixed world azimuth; all saved3000frames; same ground and saved target/TCP traces"
+    },
+    "metadata": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/video_replay/final500_neutral_forward_follow.json"
+  },
+  "backward": {
+    "video": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/video_replay/final500_neutral_backward_follow.mp4",
+    "sha256": "d41f2491cf145ae5196aa70c8ee2b11c8b0a3ca6e1e0bb3a2ee7d3cc684f7dd6",
+    "ffprobe": {
+      "programs": [],
+      "streams": [
+        {
+          "width": 1280,
+          "height": 720,
+          "r_frame_rate": "50/1",
+          "duration": "60.000000",
+          "nb_read_frames": "3000"
+        }
+      ]
+    },
+    "render_exit_code": 0,
+    "full_decode_exit_code": 0,
+    "visual_QA": {
+      "frames": [
+        0,
+        1499,
+        2999
+      ],
+      "body_fully_visible": true,
+      "labels_readable": true,
+      "view": "Following saved base translation at2.4m; fixed world azimuth; all saved3000frames; same ground and saved target/TCP traces"
+    },
+    "metadata": "artifacts/runs/diagnostic_pose_learning/plan_v3_neutral_learning/video_replay/final500_neutral_backward_follow.json"
+  }
+}

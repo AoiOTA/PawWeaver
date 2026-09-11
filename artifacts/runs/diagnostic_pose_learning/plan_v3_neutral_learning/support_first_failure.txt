@@ -1,0 +1,3 @@
+Initial unchanged E3 support_readout.py invocation exited 1:
+ValueError: No preserved experiment suite matches report suite_sha256
+Cause: helper scans ROOT */manifest.json and ROOT is fixed to E3 directory. New suite lives in this owned experiment. support.py imports the unchanged helper and overrides only ROOT for suite discovery; underlying FK/contact consumer and identity checks unchanged. No simulation rerun.

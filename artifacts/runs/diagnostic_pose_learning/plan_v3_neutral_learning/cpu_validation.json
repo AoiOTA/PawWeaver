@@ -1,0 +1,88 @@
+{
+  "sampler_consumer": "WholeBodyEnv -> CommandedPoseBank: config demonstrations list, not directory scan or suite manifest",
+  "group_indices": [
+    [
+      0
+    ],
+    [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ]
+  ],
+  "group_probabilities": [
+    0.3,
+    0.7
+  ],
+  "sample_counts": [
+    33,
+    18,
+    12,
+    15,
+    18,
+    12,
+    20
+  ],
+  "cases": [
+    "neutral_stand",
+    "neutral_forward",
+    "neutral_backward",
+    "neutral_left",
+    "neutral_right",
+    "neutral_yaw",
+    "neutral_arc"
+  ],
+  "initial_action_std": [
+    0.3184713125228882,
+    0.08771929889917374,
+    0.22367361187934875,
+    0.3184713125228882,
+    0.08771929889917374,
+    0.22367361187934875,
+    0.3184713125228882,
+    0.07485029846429825,
+    0.22367361187934875,
+    0.3184713125228882,
+    0.07485029846429825,
+    0.22367361187934875,
+    0.007639437448233366,
+    0.0063661979511380196,
+    0.00674067996442318,
+    0.008488263003528118,
+    0.012803525663912296,
+    0.009549296461045742
+  ],
+  "initial_joint_std_rad": [
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.25,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02,
+    0.02
+  ],
+  "learn_std": true,
+  "observation_size": 279,
+  "action_size": 18,
+  "config_changed_keys": [
+    "entropy_coef",
+    "demonstrations",
+    "learn_std",
+    "initial_joint_std_rad"
+  ],
+  "trained": false
+}
