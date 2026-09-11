@@ -21,6 +21,8 @@ Fresh500 training and both final engines exited0. Budget completed exactly:49,15
 
 Actual neutral movement emerged, including backward at final500 (checkpoint250 backward was static). **PhysX right remains static while MuJoCo right moves**; do not claim all-command two-engine success. Return to full EE task decisions, no automatic neutral extension.
 
+[Existing-trace comparison of the rightward gap](rightward_gap.md) confirms matching task inputs and actual command observations; the trajectories diverge in support transitions. It does not establish a causal parameter defect or justify changing the command interface.
+
 | Engine | Case | Actual mean vx / vy / yawdot | EE position RMSE m | EE orientation RMSE rad |
 |---|---|---|---:|---:|
 | physx | stand | -0.0000 / 0.0000 / 0.0000 | 0.00411 | 0.00280 |
